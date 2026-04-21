@@ -28,131 +28,290 @@ from agno.utils.log import logger
 # ─── Derivation maps ──────────────────────────────────────────────────────────
 
 _MODEL_DEPS: dict[str, list[str]] = {
-    "openai":    ["agno[openai]", "openai"],
+    "openai": ["agno[openai]", "openai"],
     "anthropic": ["agno[anthropic]", "anthropic"],
-    "google":    ["agno[google]", "google-generativeai"],
-    "ollama":    ["agno[ollama]", "ollama"],
-    "other":     ["agno"],
+    "google": ["agno[google]", "google-generativeai"],
+    "ollama": ["agno[ollama]", "ollama"],
+    "other": ["agno"],
 }
 
 _MODEL_ENV_VARS: dict[str, list[dict]] = {
-    "openai":    [{"var_name": "OPENAI_API_KEY",    "description": "OpenAI API key",    "required_by": "model_provider=openai"}],
-    "anthropic": [{"var_name": "ANTHROPIC_API_KEY", "description": "Anthropic API key", "required_by": "model_provider=anthropic"}],
-    "google":    [{"var_name": "GOOGLE_API_KEY",    "description": "Google AI API key", "required_by": "model_provider=google"}],
-    "ollama":    [],
-    "other":     [],
+    "openai": [
+        {
+            "var_name": "OPENAI_API_KEY",
+            "description": "OpenAI API key",
+            "required_by": "model_provider=openai",
+        }
+    ],
+    "anthropic": [
+        {
+            "var_name": "ANTHROPIC_API_KEY",
+            "description": "Anthropic API key",
+            "required_by": "model_provider=anthropic",
+        }
+    ],
+    "google": [
+        {
+            "var_name": "GOOGLE_API_KEY",
+            "description": "Google AI API key",
+            "required_by": "model_provider=google",
+        }
+    ],
+    "ollama": [],
+    "other": [],
 }
 
 _STORAGE_DEPS: dict[str, list[str]] = {
-    "postgres":  ["psycopg[binary]"],
-    "mongodb":   ["pymongo"],
-    "redis":     ["redis"],
-    "sqlite":    [],
+    "postgres": ["psycopg[binary]"],
+    "mongodb": ["pymongo"],
+    "redis": ["redis"],
+    "sqlite": [],
     "in_memory": [],
 }
 
 _VECTOR_DB_DEPS: dict[str, list[str]] = {
-    "lancedb":  ["lancedb"],
+    "lancedb": ["lancedb"],
     "pgvector": ["pgvector", "psycopg[binary]"],
-    "chroma":   ["chromadb"],
+    "chroma": ["chromadb"],
     "pinecone": ["pinecone"],
-    "qdrant":   ["qdrant-client"],
-    "milvus":   ["pymilvus"],
+    "qdrant": ["qdrant-client"],
+    "milvus": ["pymilvus"],
     "weaviate": ["weaviate-client"],
-    "redis":    ["redis"],
+    "redis": ["redis"],
 }
 
 _TOOL_DEPS: dict[str, list[str]] = {
-    "DuckDuckGoTools":   ["ddgs"],
-    "TavilyTools":       ["tavily-python"],
-    "ExaTools":          ["exa-py"],
-    "PostgresTools":     ["psycopg[binary]"],
-    "YFinanceTools":     ["yfinance"],
-    "PandasTools":       ["pandas"],
-    "SpiderTools":       ["spider-client"],
-    "GitHubTools":       ["PyGithub"],
-    "TwilioTools":       ["twilio"],
-    "SlackTools":        ["slack-sdk"],
-    "WikipediaTools":    ["wikipedia"],
-    "ArxivTools":        ["arxiv"],
-    "SerpApiTools":      ["google-search-results"],
+    "DuckDuckGoTools": ["ddgs"],
+    "TavilyTools": ["tavily-python"],
+    "ExaTools": ["exa-py"],
+    "PostgresTools": ["psycopg[binary]"],
+    "YFinanceTools": ["yfinance"],
+    "PandasTools": ["pandas"],
+    "SpiderTools": ["spider-client"],
+    "GitHubTools": ["PyGithub"],
+    "TwilioTools": ["twilio"],
+    "SlackTools": ["slack-sdk"],
+    "WikipediaTools": ["wikipedia"],
+    "ArxivTools": ["arxiv"],
+    "SerpApiTools": ["google-search-results"],
     "GoogleSearchTools": ["google-api-python-client"],
-    "NewsApiTools":      ["newsapi-python"],
+    "NewsApiTools": ["newsapi-python"],
 }
 
 _TOOL_ENV_VARS: dict[str, list[dict]] = {
-    "TavilyTools":    [{"var_name": "TAVILY_API_KEY",      "description": "Tavily search API key",          "required_by": "TavilyTools"}],
-    "ExaTools":       [{"var_name": "EXA_API_KEY",         "description": "Exa search API key",             "required_by": "ExaTools"}],
-    "BraveTools":     [{"var_name": "BRAVE_API_KEY",       "description": "Brave search API key",           "required_by": "BraveTools"}],
-    "SpiderTools":    [{"var_name": "SPIDER_API_KEY",      "description": "Spider crawler API key",         "required_by": "SpiderTools"}],
-    "SerpApiTools":   [{"var_name": "SERPAPI_API_KEY",     "description": "SerpAPI key",                    "required_by": "SerpApiTools"}],
-    "NewsApiTools":   [{"var_name": "NEWS_API_KEY",        "description": "NewsAPI key",                    "required_by": "NewsApiTools"}],
-    "GitHubTools":    [{"var_name": "GITHUB_TOKEN",        "description": "GitHub personal access token",  "required_by": "GitHubTools"}],
-    "SlackTools":     [{"var_name": "SLACK_BOT_TOKEN",     "description": "Slack bot token",                "required_by": "SlackTools"}],
+    "TavilyTools": [
+        {
+            "var_name": "TAVILY_API_KEY",
+            "description": "Tavily search API key",
+            "required_by": "TavilyTools",
+        }
+    ],
+    "ExaTools": [
+        {
+            "var_name": "EXA_API_KEY",
+            "description": "Exa search API key",
+            "required_by": "ExaTools",
+        }
+    ],
+    "BraveTools": [
+        {
+            "var_name": "BRAVE_API_KEY",
+            "description": "Brave search API key",
+            "required_by": "BraveTools",
+        }
+    ],
+    "SpiderTools": [
+        {
+            "var_name": "SPIDER_API_KEY",
+            "description": "Spider crawler API key",
+            "required_by": "SpiderTools",
+        }
+    ],
+    "SerpApiTools": [
+        {
+            "var_name": "SERPAPI_API_KEY",
+            "description": "SerpAPI key",
+            "required_by": "SerpApiTools",
+        }
+    ],
+    "NewsApiTools": [
+        {
+            "var_name": "NEWS_API_KEY",
+            "description": "NewsAPI key",
+            "required_by": "NewsApiTools",
+        }
+    ],
+    "GitHubTools": [
+        {
+            "var_name": "GITHUB_TOKEN",
+            "description": "GitHub personal access token",
+            "required_by": "GitHubTools",
+        }
+    ],
+    "SlackTools": [
+        {
+            "var_name": "SLACK_BOT_TOKEN",
+            "description": "Slack bot token",
+            "required_by": "SlackTools",
+        }
+    ],
     "TwilioTools": [
-        {"var_name": "TWILIO_ACCOUNT_SID", "description": "Twilio account SID",  "required_by": "TwilioTools"},
-        {"var_name": "TWILIO_AUTH_TOKEN",  "description": "Twilio auth token",   "required_by": "TwilioTools"},
+        {
+            "var_name": "TWILIO_ACCOUNT_SID",
+            "description": "Twilio account SID",
+            "required_by": "TwilioTools",
+        },
+        {
+            "var_name": "TWILIO_AUTH_TOKEN",
+            "description": "Twilio auth token",
+            "required_by": "TwilioTools",
+        },
     ],
     "ZendeskTools": [
-        {"var_name": "ZENDESK_SUBDOMAIN", "description": "Zendesk subdomain", "required_by": "ZendeskTools"},
-        {"var_name": "ZENDESK_API_KEY",   "description": "Zendesk API key",   "required_by": "ZendeskTools"},
+        {
+            "var_name": "ZENDESK_SUBDOMAIN",
+            "description": "Zendesk subdomain",
+            "required_by": "ZendeskTools",
+        },
+        {
+            "var_name": "ZENDESK_API_KEY",
+            "description": "Zendesk API key",
+            "required_by": "ZendeskTools",
+        },
     ],
 }
 
 _OBS_DEPS: dict[str, list[str]] = {
-    "langfuse":  ["langfuse"],
+    "langfuse": ["langfuse"],
     "langsmith": ["langsmith"],
-    "arize":     ["arize-phoenix"],
+    "arize": ["arize-phoenix"],
     "langwatch": ["langwatch"],
 }
 
 _OBS_ENV_VARS: dict[str, list[dict]] = {
     "langfuse": [
-        {"var_name": "LANGFUSE_PUBLIC_KEY", "description": "Langfuse public key",  "required_by": "observability=langfuse"},
-        {"var_name": "LANGFUSE_SECRET_KEY", "description": "Langfuse secret key",  "required_by": "observability=langfuse"},
-        {"var_name": "LANGFUSE_HOST",       "description": "Langfuse host URL",    "required_by": "observability=langfuse"},
+        {
+            "var_name": "LANGFUSE_PUBLIC_KEY",
+            "description": "Langfuse public key",
+            "required_by": "observability=langfuse",
+        },
+        {
+            "var_name": "LANGFUSE_SECRET_KEY",
+            "description": "Langfuse secret key",
+            "required_by": "observability=langfuse",
+        },
+        {
+            "var_name": "LANGFUSE_HOST",
+            "description": "Langfuse host URL",
+            "required_by": "observability=langfuse",
+        },
     ],
     "langsmith": [
-        {"var_name": "LANGCHAIN_API_KEY",    "description": "LangSmith API key",            "required_by": "observability=langsmith"},
-        {"var_name": "LANGCHAIN_TRACING_V2", "description": "Enable tracing (set to true)", "required_by": "observability=langsmith"},
+        {
+            "var_name": "LANGCHAIN_API_KEY",
+            "description": "LangSmith API key",
+            "required_by": "observability=langsmith",
+        },
+        {
+            "var_name": "LANGCHAIN_TRACING_V2",
+            "description": "Enable tracing (set to true)",
+            "required_by": "observability=langsmith",
+        },
     ],
     "arize": [
-        {"var_name": "PHOENIX_API_KEY", "description": "Arize Phoenix API key", "required_by": "observability=arize"},
+        {
+            "var_name": "PHOENIX_API_KEY",
+            "description": "Arize Phoenix API key",
+            "required_by": "observability=arize",
+        },
     ],
     "langwatch": [
-        {"var_name": "LANGWATCH_API_KEY", "description": "LangWatch API key", "required_by": "observability=langwatch"},
+        {
+            "var_name": "LANGWATCH_API_KEY",
+            "description": "LangWatch API key",
+            "required_by": "observability=langwatch",
+        },
     ],
 }
 
 # JSONB columns — values must be json.dumps()'d before INSERT/UPDATE
-_JSONB_COLUMNS: frozenset[str] = frozenset({
-    "sub_roles", "knowledge_sources", "tools", "custom_tools", "hitl_actions",
-    "output_schema", "guardrails", "session_state_schema", "deployment_interfaces",
-    "multimodal_inputs", "skills_domains", "instructions", "required_env_vars",
-    "pip_dependencies",
-})
+_JSONB_COLUMNS: frozenset[str] = frozenset(
+    {
+        "sub_roles",
+        "knowledge_sources",
+        "tools",
+        "custom_tools",
+        "hitl_actions",
+        "output_schema",
+        "guardrails",
+        "session_state_schema",
+        "deployment_interfaces",
+        "multimodal_inputs",
+        "skills_domains",
+        "instructions",
+        "required_env_vars",
+        "pip_dependencies",
+    }
+)
 
 # Whitelist of writable columns — prevents SQL injection via column names
-_WRITABLE_COLUMNS: frozenset[str] = frozenset({
-    "agent_name", "purpose", "target_users", "user_type", "cognitive_mode",
-    "architecture_type", "sub_roles", "knowledge_sources", "memory_type",
-    "enable_agentic_memory", "update_memory_on_run", "storage_type", "storage_db_url",
-    "vector_db_type", "tools", "custom_tools", "hitl_enabled", "hitl_actions",
-    "reasoning_level", "output_format", "output_schema", "guardrails",
-    "session_state_schema", "enable_agentic_state", "deployment_interfaces",
-    "model_provider", "model_id", "multimodal_inputs", "schedule_enabled",
-    "schedule_cron", "observability_level", "observability_provider",
-    "skills_domains", "system_prompt", "instructions", "description",
-    "expected_output", "cost_preference", "latency_requirement",
-    "runtime_environment", "required_env_vars", "pip_dependencies",
-    "additional_setup_notes", "status", "design_system_id", "created_by",
-})
+_WRITABLE_COLUMNS: frozenset[str] = frozenset(
+    {
+        "agent_name",
+        "purpose",
+        "target_users",
+        "user_type",
+        "cognitive_mode",
+        "architecture_type",
+        "sub_roles",
+        "knowledge_sources",
+        "memory_type",
+        "enable_agentic_memory",
+        "update_memory_on_run",
+        "storage_type",
+        "storage_db_url",
+        "vector_db_type",
+        "tools",
+        "custom_tools",
+        "hitl_enabled",
+        "hitl_actions",
+        "reasoning_level",
+        "output_format",
+        "output_schema",
+        "guardrails",
+        "session_state_schema",
+        "enable_agentic_state",
+        "deployment_interfaces",
+        "model_provider",
+        "model_id",
+        "multimodal_inputs",
+        "schedule_enabled",
+        "schedule_cron",
+        "observability_level",
+        "observability_provider",
+        "skills_domains",
+        "system_prompt",
+        "instructions",
+        "description",
+        "expected_output",
+        "cost_preference",
+        "latency_requirement",
+        "runtime_environment",
+        "required_env_vars",
+        "pip_dependencies",
+        "additional_setup_notes",
+        "status",
+        "design_system_id",
+        "created_by",
+    }
+)
 
 _VALID_STATUSES = ["draft", "spec_complete", "code_generated", "tested", "deployed"]
 
 
 def _serialize(obj: Any) -> str:
     """Serialize a row dict or list to a JSON string, handling datetime and UUID values."""
+
     def _default(o: Any) -> str:
         if isinstance(o, datetime):
             return o.isoformat()
@@ -185,7 +344,9 @@ class AgentSpecTools(Toolkit):
         super().__init__(name="agent_spec_tools")
         self.db_url = db_url or os.environ.get("SUPABASE_DB_URL", "")
         self.default_user_id = os.environ.get("AGENT_SPEC_USER_ID", "")
-        self.default_design_system_id = os.environ.get("AGENT_SPEC_DESIGN_SYSTEM_ID", "")
+        self.default_design_system_id = os.environ.get(
+            "AGENT_SPEC_DESIGN_SYSTEM_ID", ""
+        )
         self.register(self.create_design_system)
         self.register(self.list_design_systems)
         self.register(self.create_agent_spec)
@@ -205,7 +366,9 @@ class AgentSpecTools(Toolkit):
 
     # ─── Design System ────────────────────────────────────────────────────────
 
-    def create_design_system(self, name: str, description: str = "", user_id: str = "") -> str:
+    def create_design_system(
+        self, name: str, description: str = "", user_id: str = ""
+    ) -> str:
         """
         Create a new design system and return its UUID.
         A design system groups related agent specs together (e.g. one per project or product).
@@ -365,7 +528,9 @@ class AgentSpecTools(Toolkit):
             values.append(val)
 
         values.append(spec_id)
-        sql = f"UPDATE public.agent_spec SET {', '.join(set_clauses)} WHERE id = %s::uuid"
+        sql = (
+            f"UPDATE public.agent_spec SET {', '.join(set_clauses)} WHERE id = %s::uuid"
+        )
 
         try:
             with self._connect() as conn:
@@ -506,9 +671,13 @@ class AgentSpecTools(Toolkit):
                 "Provision a PostgreSQL database. Set the connection URL in storage_db_url or via env var."
             )
         elif storage == "mongodb":
-            setup_notes.append("Start a MongoDB instance. Provide the connection URL in storage_db_url.")
+            setup_notes.append(
+                "Start a MongoDB instance. Provide the connection URL in storage_db_url."
+            )
         elif storage == "redis":
-            setup_notes.append("Start a Redis instance. Provide the connection URL in storage_db_url.")
+            setup_notes.append(
+                "Start a Redis instance. Provide the connection URL in storage_db_url."
+            )
 
         # Vector DB (NULL means none needed)
         vector_db = row.get("vector_db_type")
@@ -525,14 +694,20 @@ class AgentSpecTools(Toolkit):
                     "Pass a `path` argument to persist data between runs."
                 )
             elif vector_db == "pinecone":
-                env_vars.append({
-                    "var_name": "PINECONE_API_KEY",
-                    "description": "Pinecone API key",
-                    "required_by": "vector_db_type=pinecone",
-                })
-                setup_notes.append("Create a Pinecone index. Set PINECONE_API_KEY and PINECONE_INDEX_NAME.")
+                env_vars.append(
+                    {
+                        "var_name": "PINECONE_API_KEY",
+                        "description": "Pinecone API key",
+                        "required_by": "vector_db_type=pinecone",
+                    }
+                )
+                setup_notes.append(
+                    "Create a Pinecone index. Set PINECONE_API_KEY and PINECONE_INDEX_NAME."
+                )
             elif vector_db == "qdrant":
-                setup_notes.append("Start Qdrant: `docker run -p 6333:6333 qdrant/qdrant:latest`")
+                setup_notes.append(
+                    "Start Qdrant: `docker run -p 6333:6333 qdrant/qdrant:latest`"
+                )
             elif vector_db == "weaviate":
                 setup_notes.append(
                     "Start Weaviate: `docker run -p 8080:8080 semitechnologies/weaviate:latest`"
@@ -577,7 +752,8 @@ class AgentSpecTools(Toolkit):
 
         seen_vars: set[str] = set()
         unique_vars = [
-            v for v in env_vars
+            v
+            for v in env_vars
             if not (v["var_name"] in seen_vars or seen_vars.add(v["var_name"]))  # type: ignore[func-returns-value]
         ]
 
