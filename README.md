@@ -16,6 +16,19 @@ Run AI agents on your machine, manage them through [os.agno.com](https://os.agno
 
 ---
 
+## Quick start for Rifadh
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and open the app to ensure it's running (don't really need an account so skip login if possible)
+2. Open your terminal and go to a directory you will store this app
+3. Clone the repo and `cd` into it `git clone https://github.com/pedrogrande/edgeai && cd agnoai`
+4. In the terminal run `bash setup.sh` and wait for it to complete (this installs dependencies, starts the local database and MCP Toolbox, and seeds the Agno docs knowledge base)
+5. Run `python edgeai.py` to start the server
+5. Go to [os.agno.com](https://os.agno.com) and sign in
+6. Connect a new OS with these details:
+	 - Environment: Local
+	 - Endpoint URL: http://localhost:8000
+	 - OS Name: EdgeAI (or whatever you want)
+
 ## Before you start
 
 Make sure you have these installed:
@@ -108,11 +121,13 @@ This takes a few minutes the first time. You'll see checkmarks as each step comp
 
 ### 5. Activate the virtual environment
 
+Run this in your terminal after setup completes:
+
 ```bash
 source .venv/bin/activate
 ```
 
-> You need to do this each time you open a new terminal.
+> This can't be done automatically by the setup script — `source` only affects the shell it runs in, and the script runs in its own subshell. You need to run this command manually each time you open a new terminal before starting the server.
 
 ---
 
