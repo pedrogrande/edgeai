@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: edgeai-postgres
+    environment:
+      POSTGRES_USER: edgeai
+      POSTGRES_PASSWORD: edgeai
+      POSTGRES_DB: edgeai
+    ports:
+      - "5533:5432"
+    volumes:
+      - edgeai_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edgeai -d edgeai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  toolbox:
+    image: us-central1-docker.pkg.dev/database-toolbox/toolbox/toolbox:1.1.0
+    platform: linux/amd64
+    container_name: edgeai-toolbox
+    command: ["--config", "/app/tools.yaml", "--address", "0.0.0.0", "--port", "5000"]
+    volumes:
+      - ./db/tools.yaml:/app/tools.yaml:ro
+    ports:
+      - "5001:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  edgeai_postgres_data:

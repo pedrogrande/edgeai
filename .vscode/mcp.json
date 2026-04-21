@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=ahhcqfvrtqjjtytbrtee&features=docs%2Cdatabase%2Cdebugging%2Cbranching"
+    },
+    "agno-docs": {
+      "type": "http",
+      "url": "https://docs.agno.com/mcp"
+    }
+  }
+}

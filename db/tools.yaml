@@ -1,0 +1,185 @@
+# @format
+
+sources:
+  agno-docs-db:
+    kind: postgres
+    host: postgres
+    port: 5432
+    database: edgeai
+    user: edgeai
+    password: edgeai
+
+tools:
+  search-features:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Search Agno documentation features by name or description.
+      Returns matching features with their categories and doc page URLs.
+    parameters:
+      - name: query
+        type: string
+        description: "Search term for feature name or description"
+    statement: |
+      SELECT f.slug, f.name, f.description, f.feature_type,
+             c.name AS category, c.slug AS category_slug
+      FROM features f
+      JOIN categories c ON f.category_id = c.id
+      WHERE f.name ILIKE '%' || $1 || '%'
+         OR f.description ILIKE '%' || $1 || '%'
+      ORDER BY c.sort_order, f.sort_order
+
+  get-feature-by-category:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Get all features in a given category (e.g. 'agents', 'tools', 'memory').
+      Returns feature name, description, type, and all associated doc page URLs.
+    parameters:
+      - name: category_slug
+        type: string
+        description: "The category slug, e.g. 'agents', 'tools', 'memory'"
+    statement: |
+      SELECT f.slug, f.name, f.description, f.feature_type,
+             f.is_experimental,
+             json_agg(
+               json_build_object(
+                 'url', dp.url,
+                 'type', dp.page_type,
+                 'title', dp.title,
+                 'is_current', dp.is_current
+               )
+             ) FILTER (WHERE dp.id IS NOT NULL) AS doc_pages
+      FROM features f
+      JOIN categories c ON f.category_id = c.id
+      LEFT JOIN doc_pages dp ON dp.feature_id = f.id AND dp.is_current = TRUE
+      WHERE c.slug = $1
+      GROUP BY f.id, f.slug, f.name, f.description, f.feature_type, f.is_experimental
+      ORDER BY f.sort_order
+
+  get-feature-details:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Get full details for a specific feature including all doc pages,
+      code snippets, and related pages (colocated, related, prerequisite).
+    parameters:
+      - name: feature_slug
+        type: string
+        description: "The feature slug, e.g. 'memory-tools', 'mcp'"
+    statement: |
+      SELECT f.name, f.description, f.feature_type, f.is_experimental,
+             c.name AS category,
+             json_agg(DISTINCT
+               json_build_object(
+                 'url', dp.url,
+                 'type', dp.page_type,
+                 'title', dp.title,
+                 'summary', dp.summary,
+                 'code_snippet', dp.code_snippet,
+                 'is_current', dp.is_current
+               )
+             ) FILTER (WHERE dp.id IS NOT NULL) AS doc_pages,
+             json_agg(DISTINCT
+               json_build_object(
+                 'url', rp.url,
+                 'title', rp.title,
+                 'relation', r.relation_type
+               )
+             ) FILTER (WHERE r.id IS NOT NULL) AS related_pages
+      FROM features f
+      JOIN categories c ON f.category_id = c.id
+      LEFT JOIN doc_pages dp ON dp.feature_id = f.id
+      LEFT JOIN doc_page_relations r ON r.from_page_id = dp.id
+      LEFT JOIN doc_pages rp ON r.to_page_id = rp.id
+      WHERE f.slug = $1
+      GROUP BY f.id, f.name, f.description, f.feature_type, f.is_experimental, c.name
+
+  list-categories:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      List all documentation categories with their feature counts.
+      Use this to discover the top-level organization of Agno docs.
+    parameters: []
+    statement: |
+      SELECT c.slug, c.name, c.description,
+             COUNT(f.id) AS feature_count,
+             SUM(CASE WHEN f.feature_type = 'subfeature' THEN 1 ELSE 0 END) AS subfeature_count
+      FROM categories c
+      LEFT JOIN features f ON f.category_id = c.id
+      GROUP BY c.id, c.slug, c.name, c.description
+      ORDER BY c.sort_order
+
+  get-colocated-pages:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Find pages that are colocated with a given doc page URL.
+      Returns related pages that cover similar topics.
+    parameters:
+      - name: url
+        type: string
+        description: "A doc page URL to find colocated pages for"
+    statement: |
+      SELECT rp.url, rp.title, rp.page_type, r.relation_type
+      FROM doc_page_relations r
+      JOIN doc_pages dp ON r.from_page_id = dp.id
+      JOIN doc_pages rp ON r.to_page_id = rp.id
+      WHERE dp.url = $1
+      ORDER BY r.relation_type
+
+  get-recent-changes:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Get recent changes to the documentation database.
+      Shows new features, updated pages, and URL changes.
+    parameters:
+      - name: limit
+        type: integer
+        description: "Number of recent changes to return (default 20)"
+    statement: |
+      SELECT cl.entity_type, cl.entity_id, cl.action, cl.change_note,
+             cl.old_value, cl.new_value, cl.changed_by, cl.created_at
+      FROM changelog cl
+      ORDER BY cl.created_at DESC
+      LIMIT $1
+
+  search-doc-pages:
+    kind: postgres-sql
+    source: agno-docs-db
+    description: >
+      Search doc pages by keyword in title, summary, or URL.
+      Returns matching pages with their feature and category.
+    parameters:
+      - name: query
+        type: string
+        description: "Search term for doc page title, summary, or URL"
+    statement: |
+      SELECT dp.url, dp.title, dp.summary, dp.page_type, dp.is_current,
+             f.name AS feature_name, f.slug AS feature_slug,
+             c.name AS category_name, c.slug AS category_slug
+      FROM doc_pages dp
+      JOIN features f ON dp.feature_id = f.id
+      JOIN categories c ON f.category_id = c.id
+      WHERE dp.is_current = TRUE
+        AND (dp.title ILIKE '%' || $1 || '%'
+          OR dp.summary ILIKE '%' || $1 || '%'
+          OR dp.url ILIKE '%' || $1 || '%')
+      ORDER BY dp.page_type, c.sort_order, f.sort_order
+
+toolsets:
+  agno-docs-search:
+    - search-features
+    - search-doc-pages
+    - get-feature-details
+    - get-colocated-pages
+
+  agno-docs-browse:
+    - list-categories
+    - get-feature-by-category
+    - get-feature-details
+
+  agno-docs-changes:
+    - get-recent-changes
