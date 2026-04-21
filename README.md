@@ -18,16 +18,48 @@ Run AI agents on your machine, manage them through [os.agno.com](https://os.agno
 
 ## Quick start for Rifadh
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and open the app to ensure it's running (don't really need an account so skip login if possible)
-2. Open your terminal and go to a directory you will store this app
-3. Clone the repo and `cd` into it `git clone https://github.com/pedrogrande/edgeai && cd agnoai`
-4. In the terminal run `bash setup.sh` and wait for it to complete (this installs dependencies, starts the local database and MCP Toolbox, and seeds the Agno docs knowledge base)
-5. Run `python edgeai.py` to start the server
-5. Go to [os.agno.com](https://os.agno.com) and sign in
-6. Connect a new OS with these details:
+### 1. Install Docker
+
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) and open the app to ensure it's running (don't really need an account so skip login if possible)
+
+### 2. Open your terminal 
+
+Go  to a directory you will store this app eg. `cd ~/projects/`
+
+### 3. Clone the repo
+
+Clone the repo and `cd` into it:
+
+```bash
+git clone https://github.com/pedrogrande/edgeai && cd agnoai
+```
+
+### 4. Run set up script
+
+In the terminal run `bash setup.sh` and wait for it to complete (this installs dependencies, starts the local database and MCP Toolbox, and seeds the Agno docs knowledge base)
+
+```bash
+bash setup.sh
+```
+
+### 5. Start the agent server
+
+```base
+python edgeai.py
+```
+
+### 6. In your browser
+
+Go to [os.agno.com](https://os.agno.com) and sign in
+
+
+### 7. Connect a new OS with these details:
 	 - Environment: Local
 	 - Endpoint URL: http://localhost:8000
 	 - OS Name: EdgeAI (or whatever you want)
+
+### 8. Chat with the "Agno Agent Designer" agent to design new agents!
+___
 
 ## Before you start
 
