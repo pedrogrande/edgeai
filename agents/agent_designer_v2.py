@@ -107,7 +107,7 @@ Follow the 7-phase design process via your skills (design-process, design-templa
 
 # ─── Agent ────────────────────────────────────────────────────
 agent_designer = Agent(
-    name="Agno Agent Designer",
+    name="Agent Engineer",
     model=Ollama(id="glm-5.1:cloud"),
     description="Designs well-structured Agno agents. Always verifies API from docs. Always uses Ollama models except for embedding.",
     instructions=SYSTEM_PROMPT,
@@ -121,20 +121,26 @@ agent_designer = Agent(
     search_knowledge=True,
     # ─── Tools ───────────────────────────────────────────────
     tools=[
-        AgentSpecTools(),                                      # Persist specs to Supabase (stateful — no cache)
-        DuckDuckGoTools(cache_results=True),                   # Web search — cache to avoid repeated API calls
-        FileTools(cache_results=True),                         # Read/write files — cache read results
-        LocalFileSystemTools(target_directory="./agents"),     # Browse agents dir — fast local ops, no cache needed
-        ReasoningTools(add_instructions=True),                 # Structured analysis — stateful, no cache
+        AgentSpecTools(),  # Persist specs to Supabase (stateful — no cache)
+        DuckDuckGoTools(
+            cache_results=True
+        ),  # Web search — cache to avoid repeated API calls
+        FileTools(cache_results=True),  # Read/write files — cache read results
+        LocalFileSystemTools(
+            target_directory="./agents"
+        ),  # Browse agents dir — fast local ops, no cache needed
+        ReasoningTools(
+            add_instructions=True
+        ),  # Structured analysis — stateful, no cache
     ],
     db=agent_designer_db,
     # ─── Session State: Smart Approval Tracking ────────────────
     session_state={
         "design_phase": "discover",
         "current_spec_name": None,
-        "spec_approved": {},           # {"spec-name": True/False}
+        "spec_approved": {},  # {"spec-name": True/False}
         "spec_changes_since_approval": {},  # {"spec-name": ["changed model", ...]}
-        "code_generated": {},          # {"spec-name": True/False}
+        "code_generated": {},  # {"spec-name": True/False}
     },
     add_session_state_to_context=True,
     enable_agentic_state=True,
