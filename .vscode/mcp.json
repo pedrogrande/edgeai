@@ -11,6 +11,15 @@
     "toolbox": {
       "type": "http",
       "url": "http://127.0.0.1:5001/mcp",
+    },
+    "zilliz-mcp-server": {
+      "url": "http://localhost:8002/mcp",
+      "type": "http",
+    },
+    "Railway": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@railway/mcp-server"]
     }
   }
 }

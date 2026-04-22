@@ -1,22 +1,6 @@
 # AgnoOS — Local Agent Runtime
 
-A local AI agent platform built on the [Agno](https://docs.agno.com) framework.  
-Run AI agents on your machine, manage them through [os.agno.com](https://os.agno.com), and design new agents with the built-in **Agent Designer**.
-
----
-
-## What's included
-
-| Component | What it does |
-|-----------|-------------|
-| **Agent Designer** | A conversational agent that helps you design, specify, and save new Agno agents |
-| **Agno Docs Database** | A local, queryable knowledge base of Agno API docs — used by the Agent Designer to look up correct APIs |
-| **AgentOS Runtime** | A FastAPI server that auto-discovers and serves all agents in the `agents/` folder |
-| **os.agno.com UI** | Web control plane for chatting with, monitoring, and managing your agents |
-
----
-
-## Quick start for Rifadh
+## Quick start 
 
 ### 1. Install Docker
 
@@ -31,16 +15,20 @@ Go  to a directory you will store this app eg. `cd ~/projects/`
 Clone the repo and `cd` into it:
 
 ```bash
-git clone https://github.com/pedrogrande/edgeai && cd agnoai
+git clone https://github.com/pedrogrande/edgeai && cd edgeai
 ```
 
-### 4. Run set up script
+You can open the project in VSCode or your preferred code editor.
+
+### 4. Run set up script and add `.env` file
 
 In the terminal run `bash setup.sh` and wait for it to complete (this installs dependencies, starts the local database and MCP Toolbox, and seeds the Agno docs knowledge base)
 
 ```bash
 bash setup.sh
 ```
+
+Save the `.env` file provided in the root of the project.
 
 ### 5. Start the agent server
 
@@ -58,8 +46,25 @@ Go to [os.agno.com](https://os.agno.com) and sign in
 	 - Endpoint URL: http://localhost:8000
 	 - OS Name: EdgeAI (or whatever you want)
 
-### 8. Chat with the "Agno Agent Designer" agent to design new agents!
+### 8. Chat with the "Agent Engineer" agent to design new agents!
+
 ___
+
+This platform is a local AI agent platform built on the [Agno](https://docs.agno.com) framework.  
+Run AI agents on your machine, manage them through [os.agno.com](https://os.agno.com), and design new agents with the built-in **Agent Designer**.
+
+---
+
+## What's included
+
+| Component | What it does |
+|-----------|-------------|
+| **Agent Designer** | A conversational agent that helps you design, specify, and save new Agno agents |
+| **Agno Docs Database** | A local, queryable knowledge base of Agno API docs — used by the Agent Designer to look up correct APIs |
+| **AgentOS Runtime** | A FastAPI server that auto-discovers and serves all agents in the `agents/` folder |
+| **os.agno.com UI** | Web control plane for chatting with, monitoring, and managing your agents |
+
+---
 
 ## Before you start
 

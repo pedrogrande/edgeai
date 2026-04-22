@@ -1,41 +1,41 @@
 """
-Business Strategy Advisor Agent (v2)
-=====================================
+Business Strategy Advisor Agent v2
+===================================
 
-A conversational agent that helps users develop business strategy through
-collaborative dialogue. It saves strategic artifacts as markdown files with
-YAML front matter to `artifacts/strategy/` for the Document Manager Agent
-to ingest into its knowledge base.
+A collaborative strategy advisor that helps users develop strategic clarity
+through dialogue — not a consultant who delivers answers, but a thinking
+partner who surfaces assumptions, offers multiple options, and frames
+strategies as testable hypotheses.
 
-Key changes from v1:
-- Storage: PostgresDb (shared platform DB) instead of SqliteDb
-- Vector DB: PgVector (shared platform DB) instead of LanceDb
-- Artifact saving: StrategyArtifactTools (markdown files with front matter)
-  instead of bare function → Knowledge.insert()
-- Learning knowledge: Dedicated PgVector table instead of shared LanceDb
-- Removed artifact Knowledge base (Document Manager handles KB ingestion)
-- Embedder: Explicit OpenAIEmbedder(id="text-embedding-3-small")
+Key upgrades from v1:
+- PostgresDb storage (shared platform DB instead of local SQLite)
+- PgVector for learning vectors (shared platform DB instead of LanceDb)
+- StrategyArtifactTools Toolkit (saves files with front matter instead of
+  inserting directly into a knowledge base — Document Manager handles KB)
+- Dedicated PgVector table for learning data (strategy_learning)
+- Removed agent-owned artifact knowledge base (artifacts are now files)
+- Session state tracking (current_strategic_question, decisions, etc.)
 
 Key Agno features used:
-- ReasoningTools for step-by-step strategic analysis
+- ReasoningTools for deep structured analysis
 - Agentic Memory (user context + preferences across sessions)
 - Entity Memory (companies, competitors, market entities — shared globally)
 - Learned Knowledge (strategic insights transferable across users — propose mode)
 - PgVector for learning vector storage
 - DuckDuckGo search (market research)
 - FileTools (read/write local strategy documents)
-- StrategyArtifactTools (save/list/read strategy artifact files)
-- HITL confirmation before saving artifacts
+- StrategyArtifactTools (save/list/read artifact markdown files)
 
 Setup:
-1. Install dependencies:  uv pip install -U "agno[all]" ddgs psycopg[binary] pgvector
-2. Start PostgreSQL:      docker compose up -d edgeai-postgres
-3. Install Ollama:        https://ollama.com/install
-4. Pull the model:        ollama pull glm-5.1:cloud
-5. Set API keys:          export OLLAMA_API_KEY=your_key
-                          export OPENAI_API_KEY=your_key
-6. Run standalone:        python agents/strategy_advisor.py
-7. Run via AgentOS:       python edgeai.py
+1. Install dependencies:  uv pip install -U "agno[all]" ddgs psycopg[binary] pgvector pyyaml ollama
+2. Ensure PostgreSQL with pgvector is running on localhost:5533
+3. Install Ollama:      https://ollama.com/install
+4. Pull the model:       ollama pull glm-5.1:cloud
+5. Set environment variables:
+   export OLLAMA_API_KEY=your_key_here
+   export OPENAI_API_KEY=your_key_here
+6. Run:                   python strategy_advisor.py
+   Or via AgentOS:       agno serve (auto-discovered from agents/ directory)
 """
 
 from pathlib import Path
@@ -57,32 +57,34 @@ from agno.tools.file import FileTools
 from agno.tools.reasoning import ReasoningTools
 from agno.vectordb.pgvector import PgVector
 
-# Import custom toolkit
 from tools.strategy_artifact_tools import StrategyArtifactTools
 
 # ---------------------------------------------------------------------------
-# Database — shared platform PostgreSQL instance
-# All storage (sessions, memory, learning) uses this one database.
+# Database — shared PostgreSQL instance (Docker: edgeai-postgres)
 # ---------------------------------------------------------------------------
-db_url = "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
-agent_db = PostgresDb(db_url=db_url)
+DB_URL = "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+agent_db = PostgresDb(db_url=DB_URL)
 
 # ---------------------------------------------------------------------------
-# Learning Knowledge Base — stores entity memory and learned knowledge vectors
-# Uses PgVector (shared platform DB) with OpenAI embedder.
-# This is separate from artifact storage — the Document Manager Agent handles
-# artifact knowledge base ingestion.
+# Learning Knowledge — PgVector for entity memory & learned knowledge vectors
+# Uses OpenAI embedder (consistent with platform standard)
+# Separate table from the shared agno_docs knowledge base
 # ---------------------------------------------------------------------------
-learning_kb = Knowledge(
+learning_vector_db = PgVector(
+    db_url=DB_URL,
+    table_name="strategy_learning",
+    embedder=OpenAIEmbedder(id="text-embedding-3-small"),
+)
+
+learning_knowledge = Knowledge(
     name="Strategy Learning",
-    description="Entity memory (companies, competitors) and learned strategic insights shared across all users",
-    vector_db=PgVector(
-        table_name="strategy_learning",
-        db_url=db_url,
-        embedder=OpenAIEmbedder(id="text-embedding-3-small"),
+    description=(
+        "Learned strategic insights, entity knowledge about companies and competitors, "
+        "and user preferences. This knowledge base grows over time as the agent learns "
+        "from conversations."
     ),
-    max_results=5,
-    contents_db=agent_db,  # Track metadata in same PostgreSQL DB
+    vector_db=learning_vector_db,
+    contents_db=agent_db,  # Track metadata in same PostgresDb
 )
 
 # ---------------------------------------------------------------------------
@@ -99,7 +101,7 @@ SYSTEM_INSTRUCTIONS = dedent(
        context, goals, and constraints through thoughtful questions.
     2. **Surface Assumptions**: Make implicit assumptions explicit. Ask "What leads you
        to believe that?" and "What would have to be true for this to work?"
-    3. **Offer Multiple Options**: Present 2-3 strategic alternatives rather than a single
+    3. **Offer Multiple Options**: Present 2–3 strategic alternatives rather than a single
        recommendation. Help the user weigh trade-offs.
     4. **Distinguish Analysis from Opinion**: Clearly label what is analysis (based on
        observable data) vs. opinion or speculation. Never present speculation as certainty.
@@ -133,11 +135,8 @@ SYSTEM_INSTRUCTIONS = dedent(
     1. **Propose**: Present the artifact and ask "Would you like me to save this for
        future reference?"
     2. **Wait**: Do NOT call save_artifact until the user explicitly says yes.
-    3. **Save**: Once confirmed, call the save_artifact tool with:
-       - A descriptive title (e.g., "SWOT Analysis: Acme Corp Q4 2025")
-       - The appropriate artifact_type: strategy, framework, analysis, template, or insight
-       - The full markdown content (structured, specific, actionable)
-       - Relevant tags (comma-separated)
+    3. **Save**: Once confirmed, call the save_artifact tool with a descriptive title,
+       the appropriate artifact_type, and the full content.
 
     ## Guardrails
 
@@ -146,7 +145,7 @@ SYSTEM_INSTRUCTIONS = dedent(
     - Never make financial projections without explicit disclaimers
     - If you're unsure about something, say so rather than guessing
     - Focus on the user's specific context — avoid generic advice without grounding
-"""
+    """
 )
 
 # ---------------------------------------------------------------------------
@@ -156,37 +155,32 @@ strategy_advisor = Agent(
     name="Strategy Advisor",
     model=Ollama(id="glm-5.1:cloud"),
     instructions=SYSTEM_INSTRUCTIONS,
-    # --- Storage (PostgresDb instead of SqliteDb) ---
+    # --- Storage (shared PostgreSQL) ---
     db=agent_db,
     # --- Tools ---
     tools=[
         ReasoningTools(add_instructions=True),
         DuckDuckGoTools(),
         FileTools(base_dir=Path("artifacts/strategy")),
-        StrategyArtifactTools(),
+        StrategyArtifactTools(),  # Custom toolkit for saving/listing/reading artifacts
     ],
-    # --- Learning Machine ---
-    # Agentic memory: user preferences across sessions (backed by PostgresDb)
+    # --- Learning ---
+    # Agentic memory: user preferences across sessions
     # Entity memory: companies, competitors, market entities (shared globally)
     # Learned knowledge: strategic insights transferable across users (propose mode
-    #   so the user confirms before saving)
+    #   so the user confirms before learning something new)
     learning=LearningMachine(
         entity_memory=EntityMemoryConfig(
             mode=LearningMode.AGENTIC,  # Agent actively manages entities
             namespace="global",  # Shared across all users
         ),
         learned_knowledge=LearnedKnowledgeConfig(
+            knowledge=learning_knowledge,  # Vector DB for learned insights
             mode=LearningMode.PROPOSE,  # Agent proposes, user confirms
             namespace="global",  # Insights available to all users
         ),
-        knowledge=learning_kb,  # Learned knowledge uses dedicated PgVector
     ),
     enable_agentic_memory=True,  # Agent manages user memories explicitly
-    # --- Knowledge (learning only — no artifact knowledge base) ---
-    # The agent uses search_knowledge to find previously learned entities/insights.
-    # Artifact knowledge base ingestion is handled by the Document Manager Agent.
-    knowledge=learning_kb,
-    search_knowledge=True,  # Gives agent a search_knowledge_base() tool
     # --- Session State ---
     # Tracks evolving strategy context within a conversation
     session_state={
@@ -209,9 +203,8 @@ strategy_advisor = Agent(
 # Run the Agent (standalone mode)
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    # Interactive conversation loop
     print("=" * 70)
-    print("  Strategy Advisor Agent (v2)")
+    print("  Strategy Advisor Agent v2")
     print("  Type your strategic questions, or 'exit' to quit.")
     print("=" * 70)
 

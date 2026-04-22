@@ -1,12 +1,12 @@
 ---
-agent_name: strategy-advisor-v2
+agent_name: Strategy Advisor v2
 cognitive_mode: assessor
 architecture: single
 status: approved
-created_date: 2025-06-17
+created_date: 2025-07-14
 ---
 
-# Strategy Advisor v2 — Agent Design Template
+# Agno Agent Design Template — Strategy Advisor v2
 
 ## Part 1: Purpose & People
 
@@ -31,6 +31,8 @@ created_date: 2025-06-17
 | **3.2** Should the agent learn and remember? | **Both** — User memory (agentic memory for individual preferences across sessions) + Organizational learning (entity memory for companies/competitors shared globally, learned knowledge for strategic insights shared globally). Artifact knowledge is NOT stored here — that's the Document Manager Agent's job. |
 | **3.3** Where should stored data live? | **PostgreSQL** — Shared `edgeai-postgres` instance (`postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai`). Sessions, user memory, entity memory, learned knowledge metadata, and learning vector data all use this one database. PgVector handles the vector storage for learning data. |
 
+**Why PostgreSQL?** The Strategy Advisor is part of the EdgeAI platform and already has a shared PostgreSQL instance with PgVector. Using one database for everything (sessions, memory, learning vectors) keeps the infrastructure simple — no separate SQLite files, no separate LanceDB directories, no extra services. The tradeoff is that PostgreSQL needs to be running for the agent to work, but since it's already required by the platform, there's no additional setup cost.
+
 ## Part 4: Tools & Actions
 
 ### 4.1 External Actions
@@ -45,6 +47,12 @@ created_date: 2025-06-17
 |---|---|
 | **4.2** Human approval before actions? | **Only for risky actions** — The `save_artifact` function in `StrategyArtifactTools` requires user confirmation (HITL). The agent proposes an artifact, waits for the user to say "yes," then saves. Web search and file reading happen freely. |
 
+**Why StrategyArtifactTools as a Toolkit?** The previous version had `save_artifact` as a bare function. Upgrading to a `Toolkit` class (like `AgentSpecTools`) gives us: (1) proper tool registration, (2) shared state (the base directory), (3) room to grow (list, read, search methods), and (4) consistent patterns with our other custom tools. The three methods are:
+
+- `save_artifact(title, artifact_type, content)` — Saves a markdown file with YAML front matter to `artifacts/strategy/`. HITL-gated.
+- `list_artifacts()` — Lists all `.md` files in `artifacts/strategy/`.
+- `read_artifact(filename)` — Reads a specific artifact file.
+
 ## Part 5: Intelligence & Behavior
 
 | Question | Your Answer |
@@ -58,17 +66,17 @@ created_date: 2025-06-17
 
 | Question | Your Answer |
 |---|---|
-| **6.1** How will users interact? | **Web chat** (via AgentOS) and **CLI** (standalone `python strategy_advisor.py`). |
-| **6.2** Model? | **Default — Ollama `glm-5.1:cloud`** (Recommended). |
-| **6.3** Multi-modal? | **Text only** for now. |
-| **6.4** Scheduled? | **No** — On-demand only. |
-| **6.5** Observability? | **Basic** — Console logs. |
+| **6.1** How will users interact? | **Web chat** (via AgentOS) and **CLI** (standalone `python strategy_advisor.py`). The agent is designed for both interactive chat and the `agno serve` deployment model. |
+| **6.2** Model? | **Default — Ollama `glm-5.1:cloud`** (Recommended). Cost-effective, private, no API keys needed. Can upgrade to cloud models later. |
+| **6.3** Multi-modal? | **Text only** for now. Strategy advising is primarily text-based. |
+| **6.4** Scheduled? | **No** — On-demand only. Strategy sessions are interactive and user-driven. |
+| **6.5** Observability? | **Basic** — Console logs. Sufficient for current stage. Can add Langfuse later if needed. |
 
 ## Part 7: Skills & Specialization
 
 | Question | Your Answer |
 |---|---|
-| **7.1** Domain expertise? | **Yes — Business strategy.** Porter's Five Forces, SWOT, Blue Ocean, Business Model Canvas, Value Proposition Canvas, Jobs-to-be-Done, OKRs, Ansoff Matrix, BCG Matrix, VRIO, Balanced Scorecard, Lean Startup. |
+| **7.1** Domain expertise? | **Yes — Business strategy.** Porter's Five Forces, SWOT, Blue Ocean, Business Model Canvas, Value Proposition Canvas, Jobs-to-be-Done, OKRs, Ansoff Matrix, BCG Matrix, VRIO, Balanced Scorecard, Lean Startup. The agent knows these frameworks but doesn't force them — uses them only when they genuinely clarify the question. |
 | **7.2** Role-play instructions? | "You are a collaborative strategy advisor — not a consultant who delivers answers, but a thinking partner who helps the user develop their own strategic clarity. Listen first, surface assumptions, offer multiple options, distinguish analysis from opinion, and frame every strategy as a hypothesis to test. Never present a strategy as proven. Always suggest how to validate assumptions. When the conversation produces a useful artifact, propose saving it and wait for explicit confirmation before calling save_artifact." |
 
 ## Part 8: Budget & Constraints
@@ -76,8 +84,10 @@ created_date: 2025-06-17
 | Question | Your Answer |
 |---|---|
 | **8.1** Cost? | **Minimize cost** — Ollama model, local vector DB, no cloud API calls for core functionality. |
-| **8.2** Latency? | **Conversational (a few seconds)** |
-| **8.3** Environment? | **AgentOS** — Runs as part of the EdgeAI platform. |
+| **8.2** Latency? | **Conversational (a few seconds)** — Strategy sessions aren't real-time; users expect thoughtful responses, not instant ones. |
+| **8.3** Environment? | **AgentOS** — Runs as part of the EdgeAI platform alongside other agents. Shares the `edgeai-postgres` Docker container. |
+
+---
 
 ## Technical Specification Summary
 
@@ -94,6 +104,8 @@ created_date: 2025-06-17
 | | `FileTools(base_dir=Path("artifacts/strategy"))` | `agno.tools.file.FileTools` |
 | | `StrategyArtifactTools()` | `tools.strategy_artifact_tools.StrategyArtifactTools` (custom) |
 
+---
+
 ## Key Design Changes from v1
 
 | What Changed | v1 (Current) | v2 (Upgraded) |
@@ -106,6 +118,8 @@ created_date: 2025-06-17
 | **LearningMachine** | Shared LanceDb for learning + artifacts | Dedicated PgVector for learning only; artifacts are files |
 | **Agent Memory** | `enable_agentic_memory=True` | Same, but backed by PostgresDb instead of SqliteDb |
 | **Embedder** | `OpenAIEmbedder()` (default id) | `OpenAIEmbedder(id="text-embedding-3-small")` (explicit, consistent with platform) |
+
+---
 
 ## Environment Variables Required
 
