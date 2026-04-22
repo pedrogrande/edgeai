@@ -38,6 +38,7 @@ Setup:
    Or via AgentOS:       agno serve (auto-discovered from agents/ directory)
 """
 
+import os
 from pathlib import Path
 from textwrap import dedent
 

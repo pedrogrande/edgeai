@@ -38,6 +38,7 @@ Setup:
 7. Run via AgentOS:       python edgeai.py
 """
 
+import os
 from pathlib import Path
 from textwrap import dedent
 
@@ -64,7 +65,10 @@ from tools.strategy_artifact_tools import StrategyArtifactTools
 # Database — shared platform PostgreSQL instance
 # All storage (sessions, memory, learning) uses this one database.
 # ---------------------------------------------------------------------------
-db_url = "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+_raw_db_url = os.environ.get(
+    "DATABASE_URL", "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+)
+db_url = _raw_db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 agent_db = PostgresDb(db_url=db_url)
 
 # ---------------------------------------------------------------------------
