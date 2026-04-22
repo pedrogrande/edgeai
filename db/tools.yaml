@@ -3,11 +3,11 @@
 sources:
   agno-docs-db:
     kind: postgres
-    host: postgres
-    port: 5432
-    database: edgeai
-    user: edgeai
-    password: edgeai
+    host: ${PGHOST}
+    port: ${PGPORT}
+    database: ${PGDATABASE}
+    user: ${PGUSER}
+    password: ${PGPASSWORD}
 
 tools:
   search-features:

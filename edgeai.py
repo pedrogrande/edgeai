@@ -32,8 +32,12 @@ from agno.tools.mcp import MCPTools
 from agno.vectordb.pgvector import PgVector
 from fastapi import FastAPI
 
-# Database connection
-db_url = "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+# Database connection — reads DATABASE_URL from environment (Railway injects this).
+# Normalise scheme: Railway provides postgresql://, Agno/SQLAlchemy requires postgresql+psycopg://
+_raw_db_url = os.environ.get(
+    "DATABASE_URL", "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+)
+db_url = _raw_db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
 # Create Postgres-backed memory store
 db = PostgresDb(db_url=db_url)

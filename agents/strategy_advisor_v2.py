@@ -60,9 +60,13 @@ from agno.vectordb.pgvector import PgVector
 from tools.strategy_artifact_tools import StrategyArtifactTools
 
 # ---------------------------------------------------------------------------
-# Database — shared PostgreSQL instance (Docker: edgeai-postgres)
+# Database — shared PostgreSQL instance.
+# DATABASE_URL is injected by Railway; normalise scheme for SQLAlchemy/Agno.
 # ---------------------------------------------------------------------------
-DB_URL = "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+_raw_db_url = os.environ.get(
+    "DATABASE_URL", "postgresql+psycopg://edgeai:edgeai@localhost:5533/edgeai"
+)
+DB_URL = _raw_db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 agent_db = PostgresDb(db_url=DB_URL)
 
 # ---------------------------------------------------------------------------
