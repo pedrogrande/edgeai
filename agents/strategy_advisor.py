@@ -157,7 +157,7 @@ SYSTEM_INSTRUCTIONS = dedent(
 # Create the Agent
 # ---------------------------------------------------------------------------
 strategy_advisor = Agent(
-    name="Strategy Advisor",
+    name="Strategy Advisor v1",
     model=Ollama(id="glm-5.1:cloud"),
     instructions=SYSTEM_INSTRUCTIONS,
     # --- Storage (PostgresDb instead of SqliteDb) ---
