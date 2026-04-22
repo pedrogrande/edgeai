@@ -7,6 +7,10 @@
     "agno-docs": {
       "type": "http",
       "url": "https://docs.agno.com/mcp"
+    },
+    "toolbox": {
+      "type": "http",
+      "url": "http://127.0.0.1:5001/mcp",
     }
   }
 }

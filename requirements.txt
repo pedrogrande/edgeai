@@ -9,6 +9,7 @@ uvicorn
 sqlalchemy
 psycopg[binary]
 pgvector
+lancedb
 
 # ── AI / Models ───────────────────────────────────────────────────────────────
 openai
@@ -23,3 +24,4 @@ ddgs
 
 # ── Utilities ────────────────────────────────────────────────────────────────
 python-dotenv
+pymilvus

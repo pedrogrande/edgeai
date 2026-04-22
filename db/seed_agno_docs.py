@@ -163,6 +163,7 @@ def seed(conn: psycopg.Connection) -> None:
                     """
                     INSERT INTO categories (slug, name, description, sort_order)
                     VALUES (%s, %s, %s, %s)
+                    ON CONFLICT (slug) DO UPDATE SET updated_at = NOW()
                     RETURNING id
                     """,
                     (slug, name, description, category_sort),
@@ -188,6 +189,7 @@ def seed(conn: psycopg.Connection) -> None:
                         """
                         INSERT INTO features (slug, name, description, category_id, feature_type, sort_order)
                         VALUES (%s, %s, %s, %s, 'core', %s)
+                        ON CONFLICT (slug) DO UPDATE SET updated_at = NOW()
                         RETURNING id
                         """,
                         (
@@ -227,6 +229,7 @@ def seed(conn: psycopg.Connection) -> None:
                     """
                     INSERT INTO features (slug, name, description, category_id, feature_type, is_experimental, sort_order)
                     VALUES (%s, %s, %s, %s, 'subfeature', %s, %s)
+                    ON CONFLICT (slug) DO UPDATE SET updated_at = NOW()
                     RETURNING id
                     """,
                     (
