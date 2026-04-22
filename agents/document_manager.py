@@ -18,6 +18,12 @@ Key Agno features used:
 - Agent memory — remembers processing state and history
 - Agentic Session State — tracks processing queue within conversations
 
+Note on tool caching: This agent's tools are primarily stateful (file
+processing, DB writes, knowledge base indexing) so cache_results is NOT
+enabled on most tools. FileTools reads are not cached either because
+the agent needs to see the latest file state (files may change between
+read and process steps within the same conversation).
+
 Cognitive mode: EXTRACTOR
 This agent gathers and processes files without judging their content. It
 validates structure, indexes content, and registers metadata. It never
@@ -533,6 +539,11 @@ document_manager = Agent(
     knowledge=knowledge,
     search_knowledge=True,
     # --- Tools ---
+    # No cache_results here — all tools are stateful or need fresh data:
+    #   FileTools: needs latest file state (files may change mid-conversation)
+    #   LocalFileSystemTools: fast local ops, no benefit from caching
+    #   ReasoningTools: stateful reasoning
+    #   Custom tools: scan/process/stats need fresh data every time
     tools=[
         # File operations scoped to the staging directory
         FileTools(base_dir=STAGING_BASE_DIR),

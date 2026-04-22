@@ -1,1 +1,1 @@
-web: uvicorn edgeai:app --host 0.0.0.0 --port $PORT --timeout-graceful-shutdown 600
+web: uvicorn edgeai:app --host 0.0.0.0 --port $PORT --timeout-graceful-shutdown 300

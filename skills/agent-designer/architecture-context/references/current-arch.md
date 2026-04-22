@@ -33,6 +33,7 @@
 | Supabase (PostgreSQL) | `psycopg` direct | `AgentSpecTools` | Stores completed agent specs |
 
 ---
+
 ## Knowledge Bases
 
 | Name | Vector DB | Embedder | Used by |
@@ -49,22 +50,6 @@
 
 ---
 
-## Skills
-
-Agent Designer uses Agno's Skills feature for progressive disclosure — keeping the system prompt thin while making detailed guidance available on demand.
-
-| Skill Group | Directory | Purpose | Size (approx.) |
-|-------------|-----------|---------|----------------|
-| design-process | `skills/agent-designer/design-process/` | 7-phase process with per-phase references | ~3.5 KB |
-| non-technical-explanations | `skills/agent-designer/non-technical-explanations/` | Plain-language analogies for technical choices | ~1.5 KB |
-| architecture-context | `skills/agent-designer/architecture-context/` | Current EdgeAI infrastructure reference | ~4 KB |
-| design-template | `skills/agent-designer/design-template/` | Full 8-part agent design template | ~3 KB |
-
-**Loading mechanism:** `Skills(loaders=[LocalSkills("skills/agent-designer")])`
-The agent sees skill summaries in its system prompt (~200 tokens), then loads full instructions via `get_skill_instructions()` and references via `get_skill_reference()`.
-
----
-
 ## Agents
 
 ### `agent_designer` (`agents/agent_designer.py`)
@@ -75,11 +60,10 @@ Meta-agent that designs Agno agents from user requirements.
 | Model | `Ollama(id="glm-5.1:cloud")` |
 | Storage | `SqliteDb` |
 | Knowledge | `Milvus` (Zilliz Cloud) |
-| Skills | 4 skill groups (design-process, non-technical-explanations, architecture-context, design-template) |
+| Skills | 4 skill groups: design-process, non-technical-explanations, architecture-context, design-template |
 | `search_knowledge` | `True` |
 | `update_memory_on_run` | `True` |
-| `compress_tool_results` | `True` |
-| `tool_call_limit` | `15` |
+| Tool caching | `cache_results=True` on DuckDuckGoTools, FileTools |
 
 **Design Process (7 phases):**
 
@@ -94,11 +78,10 @@ Meta-agent that designs Agno agents from user requirements.
 | 7 | PERSIST | Save spec to Supabase via AgentSpecTools |
 
 **Key behaviours:**
-- Technical choices explained in plain language with analogies for non-technical users
-- Completed Agent Design Template must be explicitly approved before code generation
-- Approved templates saved to `knowledge/agent-designer/agent-spec-templates/` as markdown with YAML front matter
+- Technical choices (storage, memory, model, etc.) are explained in plain language with analogies for non-technical users
+- The completed Agent Design Template must be explicitly approved before code generation
+- Approved templates are saved to `knowledge/agent-designer/agent-spec-templates/` as markdown with YAML front matter
 - Substantive content lives in skill files (progressive disclosure), not inlined in the system prompt
-- Tool result caching on deterministic/external tools to avoid redundant API calls
 
 **Tools:**
 
@@ -108,7 +91,7 @@ Meta-agent that designs Agno agents from user requirements.
 | `DuckDuckGoTools` | `agno.tools.duckduckgo` | Web search fallback | Yes |
 | `FileTools` | `agno.tools.file` | Read/write files | Yes |
 | `LocalFileSystemTools` | `agno.tools.local_file_system` | Browse `./agents` directory | No (fast local ops) |
-| `ReasoningTools` | `agno.tools.reasoning` | Structured analysis | No (stateful) |
+| `ReasoningTools` | `agno.tools.reasoning` | Structured analysis | No (reasoning is stateful) |
 
 ---
 
@@ -170,8 +153,8 @@ Automated document pipeline — processes, indexes, and archives artifact files.
 
 | Tool | Source | Purpose | Cached |
 |------|--------|---------|--------|
-| `FileTools` | `agno.tools.file` | Read/write files | No (needs latest state) |
-| `LocalFileSystemTools` | `agno.tools.local_file_system` | Browse directories | No (fast local ops) |
+| `FileTools` | `agno.tools.file` | Read/write files | No (stateful) |
+| `LocalFileSystemTools` | `agno.tools.local_file_system` | Browse directories | No (fast local) |
 | `ReasoningTools` | `agno.tools.reasoning` | Front matter validation | No |
 | `scan_staging_directory` | Custom function | Find unprocessed files | No (needs fresh data) |
 | `process_file` | Custom function | Core processing pipeline | No (stateful) |

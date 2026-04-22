@@ -15,6 +15,7 @@ Key upgrades from v1:
 - Dedicated PgVector table for learning data (strategy_learning)
 - Removed agent-owned artifact knowledge base (artifacts are now files)
 - Session state tracking (current_strategic_question, decisions, etc.)
+- Tool result caching on deterministic/external tools
 
 Key Agno features used:
 - ReasoningTools for deep structured analysis
@@ -22,8 +23,8 @@ Key Agno features used:
 - Entity Memory (companies, competitors, market entities — shared globally)
 - Learned Knowledge (strategic insights transferable across users — propose mode)
 - PgVector for learning vector storage
-- DuckDuckGo search (market research)
-- FileTools (read/write local strategy documents)
+- DuckDuckGo search (market research) — cached to avoid repeated API calls
+- FileTools (read/write local strategy documents) — cached for reads
 - StrategyArtifactTools (save/list/read artifact markdown files)
 
 Setup:
@@ -34,7 +35,7 @@ Setup:
 5. Set environment variables:
    export OLLAMA_API_KEY=your_key_here
    export OPENAI_API_KEY=your_key_here
-6. Run:                   python strategy_advisor.py
+6. Run:                   python strategy_advisor_v2.py
    Or via AgentOS:       agno serve (auto-discovered from agents/ directory)
 """
 
@@ -163,11 +164,16 @@ strategy_advisor = Agent(
     # --- Storage (shared PostgreSQL) ---
     db=agent_db,
     # --- Tools ---
+    # cache_results=True on external/deterministic tools to avoid redundant API calls
+    # and speed up repeated queries during a conversation
     tools=[
-        ReasoningTools(add_instructions=True),
-        DuckDuckGoTools(),
-        FileTools(base_dir=Path("artifacts/strategy")),
-        StrategyArtifactTools(),  # Custom toolkit for saving/listing/reading artifacts
+        ReasoningTools(add_instructions=True),   # Structured analysis — stateful, no cache
+        DuckDuckGoTools(cache_results=True),     # Market research — cache avoids repeat API calls
+        FileTools(
+            base_dir=Path("artifacts/strategy"),
+            cache_results=True,                  # File reads are deterministic — cache them
+        ),
+        StrategyArtifactTools(),                 # Stateful — save/list/read, no cache
     ],
     # --- Learning ---
     # Agentic memory: user preferences across sessions

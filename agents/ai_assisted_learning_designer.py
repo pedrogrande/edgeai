@@ -10,11 +10,11 @@ approval required before saving any file.
 Key Agno features used:
 - PgVector knowledge base — queries indexed artifacts via search_knowledge
   (populated by a separate document manager agent from saved files)
-- FileTools for reading/listing artifact files
+- FileTools for reading/listing artifact files — cached for deterministic reads
 - Custom save_artifact tool with HITL confirmation (requires_confirmation=True)
 - Custom update_artifact tool with HITL confirmation
 - ReasoningTools for deep analysis and improvement suggestions
-- DuckDuckGoTools for research when improving artifacts
+- DuckDuckGoTools for research when improving artifacts — cached
 - Agentic Memory (user context, preferences, working style across sessions)
 - Entity Memory (projects, artifact conventions)
 - Agentic Session State (evolving artifact context within a conversation)
@@ -571,17 +571,18 @@ ai_assisted_learning_designer = Agent(
     knowledge=knowledge,
     search_knowledge=True,
     # --- Tools ---
+    # cache_results=True on deterministic/external tools to avoid redundant API calls
     tools=[
-        # File browsing: read, list, search existing artifact files
-        FileTools(base_dir=ARTIFACT_BASE_DIR),
-        # Deep analysis and improvement suggestions
+        # File browsing: read, list, search existing artifact files — deterministic, cache
+        FileTools(base_dir=ARTIFACT_BASE_DIR, cache_results=True),
+        # Deep analysis and improvement suggestions — stateful, no cache
         ReasoningTools(add_instructions=True),
-        # Research for informed improvements
-        DuckDuckGoTools(),
-        # Custom artifact management tools
+        # Research for informed improvements — external API, cache
+        DuckDuckGoTools(cache_results=True),
+        # Custom artifact management tools — stateful (write files), no cache
         save_artifact,       # HITL-gated: requires user confirmation
         update_artifact,     # HITL-gated: requires user confirmation
-        list_artifacts,      # Browse existing artifacts by type/project
+        list_artifacts,      # Browse existing artifacts by type/project — fast local, no cache
     ],
     # --- Agentic Memory ---
     # Remembers user preferences, working style, project context across sessions
