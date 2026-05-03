@@ -1,0 +1,15 @@
+# ─── PHASE 1: OUTPUT-SERVICE EXAMPLE LINKS ───
+# Links O4 (Quasi-Smart Contract) to Phase 0 characteristics A2, A5, S1, S4
+# Full output-service mapping deferred — this seeds the documented example only
+
+match
+    $A2 isa target-characteristic, has characteristic-id "A2";
+    $A5 isa target-characteristic, has characteristic-id "A5";
+    $S1 isa target-characteristic, has characteristic-id "S1";
+    $S4 isa target-characteristic, has characteristic-id "S4";
+    $O4 isa design-output, has output-id "O4";
+insert
+    (serving-output: $O4, served-target: $A2) isa output-service;
+    (serving-output: $O4, served-target: $A5) isa output-service;
+    (serving-output: $O4, served-target: $S1) isa output-service;
+    (serving-output: $O4, served-target: $S4) isa output-service;

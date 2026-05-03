@@ -20,6 +20,10 @@
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@railway/mcp-server"]
+    },
+    "typedb": {
+      "type": "http",
+      "url": "http://localhost:8001/mcp"
     }
   }
 }

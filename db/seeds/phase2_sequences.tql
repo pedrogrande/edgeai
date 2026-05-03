@@ -1,0 +1,132 @@
+# ─── PHASE 2: BACKCASTING — Phase Sequence & Phase-Output Relations ───
+# TypeQL v3.10.1 compatible
+#
+# 9 phase-sequence relations (P0→P1→...→P9)
+# 28 phase-produces-output relations (which phase produces which output)
+#
+# Note: Using phase-id for match (e.g. has phase-id "P0") since it's @key.
+# Note: Using phase-produced-output role name (not produced-output) to avoid
+#       ambiguity with subtask-produces:produced-output.
+
+# ─── PHASE SEQUENCE: P0→P1→P2→...→P9 ───
+
+insert
+$p0 isa cawdp-phase, has phase-id "P0";
+$p1 isa cawdp-phase, has phase-id "P1";
+(predecessor-phase: $p0, successor-phase: $p1) isa phase-sequence;
+
+insert
+$p1 isa cawdp-phase, has phase-id "P1";
+$p2 isa cawdp-phase, has phase-id "P2";
+(predecessor-phase: $p1, successor-phase: $p2) isa phase-sequence;
+
+insert
+$p2 isa cawdp-phase, has phase-id "P2";
+$p3 isa cawdp-phase, has phase-id "P3";
+(predecessor-phase: $p2, successor-phase: $p3) isa phase-sequence;
+
+insert
+$p3 isa cawdp-phase, has phase-id "P3";
+$p4 isa cawdp-phase, has phase-id "P4";
+(predecessor-phase: $p3, successor-phase: $p4) isa phase-sequence;
+
+insert
+$p4 isa cawdp-phase, has phase-id "P4";
+$p5 isa cawdp-phase, has phase-id "P5";
+(predecessor-phase: $p4, successor-phase: $p5) isa phase-sequence;
+
+insert
+$p5 isa cawdp-phase, has phase-id "P5";
+$p6 isa cawdp-phase, has phase-id "P6";
+(predecessor-phase: $p5, successor-phase: $p6) isa phase-sequence;
+
+insert
+$p6 isa cawdp-phase, has phase-id "P6";
+$p7 isa cawdp-phase, has phase-id "P7";
+(predecessor-phase: $p6, successor-phase: $p7) isa phase-sequence;
+
+insert
+$p7 isa cawdp-phase, has phase-id "P7";
+$p8 isa cawdp-phase, has phase-id "P8";
+(predecessor-phase: $p7, successor-phase: $p8) isa phase-sequence;
+
+insert
+$p8 isa cawdp-phase, has phase-id "P8";
+$p9 isa cawdp-phase, has phase-id "P9";
+(predecessor-phase: $p8, successor-phase: $p9) isa phase-sequence;
+
+# ─── PHASE-PRODUCES-OUTPUT RELATIONS ───
+# Which phase produces which design-output
+
+# P0 produces: O1, O2, O3, O4
+insert
+$p0 isa cawdp-phase, has phase-id "P0";
+$o1 isa design-output, has output-id "O1";
+(producing-phase: $p0, phase-produced-output: $o1) isa phase-produces-output;
+$o2 isa design-output, has output-id "O2";
+(producing-phase: $p0, phase-produced-output: $o2) isa phase-produces-output;
+$o3 isa design-output, has output-id "O3";
+(producing-phase: $p0, phase-produced-output: $o3) isa phase-produces-output;
+$o4 isa design-output, has output-id "O4";
+(producing-phase: $p0, phase-produced-output: $o4) isa phase-produces-output;
+
+# P1 produces: O5-O28
+insert
+$p1 isa cawdp-phase, has phase-id "P1";
+$o5 isa design-output, has output-id "O5";
+(producing-phase: $p1, phase-produced-output: $o5) isa phase-produces-output;
+$o6 isa design-output, has output-id "O6";
+(producing-phase: $p1, phase-produced-output: $o6) isa phase-produces-output;
+$o7 isa design-output, has output-id "O7";
+(producing-phase: $p1, phase-produced-output: $o7) isa phase-produces-output;
+$o8 isa design-output, has output-id "O8";
+(producing-phase: $p1, phase-produced-output: $o8) isa phase-produces-output;
+$o9 isa design-output, has output-id "O9";
+(producing-phase: $p1, phase-produced-output: $o9) isa phase-produces-output;
+$o10 isa design-output, has output-id "O10";
+(producing-phase: $p1, phase-produced-output: $o10) isa phase-produces-output;
+$o11 isa design-output, has output-id "O11";
+(producing-phase: $p1, phase-produced-output: $o11) isa phase-produces-output;
+$o12 isa design-output, has output-id "O12";
+(producing-phase: $p1, phase-produced-output: $o12) isa phase-produces-output;
+
+insert
+$p1 isa cawdp-phase, has phase-id "P1";
+$o13 isa design-output, has output-id "O13";
+(producing-phase: $p1, phase-produced-output: $o13) isa phase-produces-output;
+$o14 isa design-output, has output-id "O14";
+(producing-phase: $p1, phase-produced-output: $o14) isa phase-produces-output;
+$o15 isa design-output, has output-id "O15";
+(producing-phase: $p1, phase-produced-output: $o15) isa phase-produces-output;
+$o16 isa design-output, has output-id "O16";
+(producing-phase: $p1, phase-produced-output: $o16) isa phase-produces-output;
+$o17 isa design-output, has output-id "O17";
+(producing-phase: $p1, phase-produced-output: $o17) isa phase-produces-output;
+$o18 isa design-output, has output-id "O18";
+(producing-phase: $p1, phase-produced-output: $o18) isa phase-produces-output;
+$o19 isa design-output, has output-id "O19";
+(producing-phase: $p1, phase-produced-output: $o19) isa phase-produces-output;
+
+insert
+$p1 isa cawdp-phase, has phase-id "P1";
+$o20 isa design-output, has output-id "O20";
+(producing-phase: $p1, phase-produced-output: $o20) isa phase-produces-output;
+$o21 isa design-output, has output-id "O21";
+(producing-phase: $p1, phase-produced-output: $o21) isa phase-produces-output;
+$o22 isa design-output, has output-id "O22";
+(producing-phase: $p1, phase-produced-output: $o22) isa phase-produces-output;
+$o23 isa design-output, has output-id "O23";
+(producing-phase: $p1, phase-produced-output: $o23) isa phase-produces-output;
+$o24 isa design-output, has output-id "O24";
+(producing-phase: $p1, phase-produced-output: $o24) isa phase-produces-output;
+$o25 isa design-output, has output-id "O25";
+(producing-phase: $p1, phase-produced-output: $o25) isa phase-produces-output;
+$o26 isa design-output, has output-id "O26";
+(producing-phase: $p1, phase-produced-output: $o26) isa phase-produces-output;
+
+insert
+$p1 isa cawdp-phase, has phase-id "P1";
+$o27 isa design-output, has output-id "O27";
+(producing-phase: $p1, phase-produced-output: $o27) isa phase-produces-output;
+$o28 isa design-output, has output-id "O28";
+(producing-phase: $p1, phase-produced-output: $o28) isa phase-produces-output;

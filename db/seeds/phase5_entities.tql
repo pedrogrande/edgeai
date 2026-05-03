@@ -1,0 +1,451 @@
+# ─── PHASE 5: EVENT STORMING SEED — ENTITIES ──
+# Inserts 16 domain-events (E1-E16), 14 failure-events (F1-F14),
+# 14 recovery-paths (R-F1 through R-F14), 10 system-triggers (ST1-ST10)
+#
+# Role attribute rules (same as Phase 4): omit attributes when no value
+# - domain-event: event-condition omitted when no additional condition
+# - failure-event: failure-cascade omitted when no downstream cascade
+# - recovery-path: recovery-description omitted when type+actor are self-explanatory
+
+insert
+
+# ── DOMAIN EVENTS: E1-E16 ──────────────────────────────────────────────────────
+
+$E1 isa domain-event,
+    has event-id "E1",
+    has event-name "session_started",
+    has event-type "trigger",
+    has event-description "Human opens Design Studio and begins",
+    has event-source "human",
+    has event-payload-schema "{user_id, session_id, timestamp}";
+
+$E2 isa domain-event,
+    has event-id "E2",
+    has event-name "purpose_articulated",
+    has event-type "milestone",
+    has event-description "Human articulates the agent purpose and anti-goals",
+    has event-source "human",
+    has event-payload-schema "{purpose_statement, anti_goals, principal_declared}",
+    has event-condition "Purpose field non-empty + anti_goals >= 1";
+
+$E3 isa domain-event,
+    has event-id "E3",
+    has event-name "authority_class_selected",
+    has event-type "milestone",
+    has event-description "Human selects authority class from 5-class taxonomy",
+    has event-source "human",
+    has event-payload-schema "{class: extractor|measurer|assessor|generator|aggregator}",
+    has event-condition "Class matches 5-class taxonomy definition";
+
+$E4 isa domain-event,
+    has event-id "E4",
+    has event-name "scope_boundary_drawn",
+    has event-type "milestone",
+    has event-description "Human draws inside/outside scope boundary with escalation triggers",
+    has event-source "human",
+    has event-payload-schema "{inside_scope[], outside_scope[], escalation_triggers[]}",
+    has event-condition "inside >= 1 AND outside >= 1 AND escalation >= 1";
+
+$E5 isa domain-event,
+    has event-id "E5",
+    has event-name "job_description_approved",
+    has event-type "milestone",
+    has event-description "Human approves job description after Agno dev implementability gate",
+    has event-source "human",
+    has event-payload-schema "{job_desc_id, authority_boundary, input_schema, output_schema}",
+    has event-condition "Agno dev can implement gate passed";
+
+$E6 isa domain-event,
+    has event-id "E6",
+    has event-name "contract_architecture_approved",
+    has event-type "milestone",
+    has event-description "Human approves contract architecture with enforcement regime and revert granularity",
+    has event-source "human",
+    has event-payload-schema "{contract_id, enforcement_regime, revert_granularity, guard_count}",
+    has event-condition "Authority class validated at T1.2; guards testable";
+
+$E7 isa domain-event,
+    has event-id "E7",
+    has event-name "relational_profile_approved",
+    has event-type "milestone",
+    has event-description "Human approves relational profile with explicit personality-purpose link",
+    has event-source "human",
+    has event-payload-schema "{profile_id, tone, personality_purpose_link}",
+    has event-condition "Personality-purpose link explicit";
+
+$E8 isa domain-event,
+    has event-id "E8",
+    has event-name "template_cascade_complete",
+    has event-type "milestone",
+    has event-description "Agent completes all 8 contract template specialisations with consistency check",
+    has event-source "agent",
+    has event-payload-schema "{template_ids[], consistency_check: pass}",
+    has event-condition "Cross-template consistency check passed";
+
+$E9 isa domain-event,
+    has event-id "E9",
+    has event-name "templates_validated",
+    has event-type "milestone",
+    has event-description "All templates validated in isolation and combination; quality gates pass",
+    has event-source "collaborative",
+    has event-payload-schema "{validation_results[], edge_case_count}",
+    has event-condition "Quality gate assertions all pass";
+
+$E10 isa domain-event,
+    has event-id "E10",
+    has event-name "trust_ledger_designed",
+    has event-type "milestone",
+    has event-description "Agent designs trust ledger schema with 3-axis queryability",
+    has event-source "agent",
+    has event-payload-schema "{ledger_schema, query_dimensions[]}",
+    has event-condition "3-axis queryability test passed";
+
+$E11 isa domain-event,
+    has event-id "E11",
+    has event-name "operational_env_specified",
+    has event-type "milestone",
+    has event-description "Collaborative team specifies tools, context budget, KB scope, memory policy",
+    has event-source "collaborative",
+    has event-payload-schema "{tools[], context_budget_kb, kb_scope, memory_policy}",
+    has event-condition "Scope containment check passed";
+
+$E12 isa domain-event,
+    has event-id "E12",
+    has event-name "autonomy_plan_approved",
+    has event-type "milestone",
+    has event-description "Human approves autonomy plan with quantitative thresholds and demotion triggers",
+    has event-source "human",
+    has event-payload-schema "{levels[], thresholds[], demotion_triggers[]}",
+    has event-condition "Quantitative thresholds defined";
+
+$E13 isa domain-event,
+    has event-id "E13",
+    has event-name "code_generation_complete",
+    has event-type "milestone",
+    has event-description "Agent generates Agno code and test suite; schema_registry validation passed",
+    has event-source "agent",
+    has event-payload-schema "{agent_code, test_code, coverage_pct}",
+    has event-condition "Schema_registry validation passed";
+
+$E14 isa domain-event,
+    has event-id "E14",
+    has event-name "integration_test_run",
+    has event-type "trigger",
+    has event-description "System runs integration test suite after code generation",
+    has event-source "system",
+    has event-payload-schema "{test_results[], failures[]}";
+
+$E15 isa domain-event,
+    has event-id "E15",
+    has event-name "integration_passed",
+    has event-type "milestone",
+    has event-description "Integration validation passes with human sign-off on edge cases",
+    has event-source "collaborative",
+    has event-payload-schema "{sign_off: bool, edge_case_resolutions[]}",
+    has event-condition "Human sign-off on edge cases";
+
+$E16 isa domain-event,
+    has event-id "E16",
+    has event-name "agent_design_complete",
+    has event-type "milestone",
+    has event-description "All 28 outputs exist and quality gates passed; agent design pipeline complete",
+    has event-source "system",
+    has event-payload-schema "{all_outputs[], artefact_graph_complete: bool}",
+    has event-condition "All 28 outputs exist + quality gates passed";
+
+# ── FAILURE EVENTS: F1-F14 ─────────────────────────────────────────────────────
+
+$F1 isa failure-event,
+    has event-id "F1",
+    has event-name "purpose_unclear",
+    has event-description "Human cannot articulate purpose; T1.1 stalls",
+    has event-source "human",
+    has failure-severity "critical",
+    has failure-cascade "Blocks all downstream subtasks",
+    has failure-detection-method "T1.1 timeout or repeated empty purpose field";
+
+$F2 isa failure-event,
+    has event-id "F2",
+    has event-name "purpose_conflict",
+    has event-description "T1.1 produces more than one purpose; authority class ambiguous",
+    has event-source "human",
+    has failure-severity "critical",
+    has failure-cascade "Authority class cannot be determined; contracts ambiguous",
+    has failure-detection-method "Multiple purpose statements detected";
+
+$F3 isa failure-event,
+    has event-id "F3",
+    has event-name "authority_class_mismatch",
+    has event-description "T1.2 class does not match job description evidence; KR9 cascade",
+    has event-source "human",
+    has failure-severity "critical",
+    has failure-cascade "Wrong contract → wrong code → wrong agent",
+    has failure-detection-method "5-class taxonomy stress test fails";
+
+$F4 isa failure-event,
+    has event-id "F4",
+    has event-name "scope_bloat",
+    has event-description "T1.3 inside_scope too large; agent tries to do too much",
+    has event-source "human",
+    has failure-severity "high",
+    has failure-cascade "Agent exceeds authority; contract enforcement fails",
+    has failure-detection-method "inside_scope item count exceeds threshold";
+
+$F5 isa failure-event,
+    has event-id "F5",
+    has event-name "scope_void",
+    has event-description "T1.3 outside_scope captures everything; agent cannot do anything meaningful",
+    has event-source "human",
+    has failure-severity "high",
+    has failure-cascade "Agent has no operational domain",
+    has failure-detection-method "inside_scope empty or trivial";
+
+$F6 isa failure-event,
+    has event-id "F6",
+    has event-name "contract_untestable",
+    has event-description "T1.5 guard cannot be verified programmatically; enforcement is decorative",
+    has event-source "agent",
+    has failure-severity "high",
+    has failure-cascade "Contract enforcement is unverified; downstream code may violate contract",
+    has failure-detection-method "Guard lacks system-checkable assertion";
+
+$F7 isa failure-event,
+    has event-id "F7",
+    has event-name "template_inconsistency",
+    has event-description "T2.1 cross-template consistency check fails; downstream code inconsistent",
+    has event-source "agent",
+    has failure-severity "medium",
+    has failure-cascade "Generated code from inconsistent templates produces conflicts",
+    has failure-detection-method "Cross-template consistency check fails";
+
+$F8 isa failure-event,
+    has event-id "F8",
+    has event-name "personality_purpose_mismatch",
+    has event-description "T3.1 tone conflicts with authority class; user distrust",
+    has event-source "human",
+    has failure-severity "medium",
+    has failure-cascade "User distrusts agent personality; adoption failure",
+    has failure-detection-method "Personality-purpose link check fails";
+
+$F9 isa failure-event,
+    has event-id "F9",
+    has event-name "schema_validation_failure",
+    has event-description "T5.1 output does not match schema_registry; generated code will not run",
+    has event-source "agent",
+    has failure-severity "high",
+    has failure-cascade "Generated agent code fails at runtime",
+    has failure-detection-method "Schema_registry validation fails";
+
+$F10 isa failure-event,
+    has event-id "F10",
+    has event-name "integration_test_failure",
+    has event-description "E14 integration test produces failures; agent does not work end-to-end",
+    has event-source "system",
+    has failure-severity "critical",
+    has failure-cascade "Agent cannot be deployed; must rollback to code generation",
+    has failure-detection-method "Integration test suite reports failures";
+
+$F11 isa failure-event,
+    has event-id "F11",
+    has event-name "context_budget_exceeded",
+    has event-description "T8.2 protocol produces context exceeding budget; hallucination risk",
+    has event-source "agent",
+    has failure-severity "high",
+    has failure-cascade "Hallucination risk; cost overrun; unreliable outputs",
+    has failure-detection-method "Context size exceeds budget_kb ceiling";
+
+$F12 isa failure-event,
+    has event-id "F12",
+    has event-name "stale_spec_detected",
+    has event-description "Specification aging trigger fires; agent operates on outdated design",
+    has event-source "system",
+    has failure-severity "medium",
+    has failure-detection-method "now - assessedAt > refresh_cadence_days";
+
+$F13 isa failure-event,
+    has event-id "F13",
+    has event-name "memory_governance_breach",
+    has event-description "T8.4 retention policy violated; silent assumption accumulation",
+    has event-source "system",
+    has failure-severity "high",
+    has failure-detection-method "Memory entry exceeds max_age without review";
+
+$F14 isa failure-event,
+    has event-id "F14",
+    has event-name "boundary_drift_detected",
+    has event-description "Pattern of overrides in trust ledger; agent exceeding authority",
+    has event-source "system",
+    has failure-severity "high",
+    has failure-detection-method "Override rate exceeds threshold in trust ledger";
+
+# ── RECOVERY PATHS: R-F1 through R-F14 ──────────────────────────────────────────
+
+$R1 isa recovery-path,
+    has recovery-id "R-F1",
+    has recovery-type "retry",
+    has recovery-actor "agent",
+    has recovery-max-attempts 3,
+    has recovery-description "Vision Mirror reflects tensions back; suggests what-if scenarios";
+
+$R2 isa recovery-path,
+    has recovery-id "R-F2",
+    has recovery-type "rebranch",
+    has recovery-actor "human",
+    has recovery-max-attempts 1,
+    has recovery-description "Split into N agents, one per purpose";
+
+$R3 isa recovery-path,
+    has recovery-id "R-F3",
+    has recovery-type "rollback",
+    has recovery-actor "collaborative",
+    has recovery-max-attempts 2,
+    has recovery-description "Rollback to T1.2; re-validate with 5-class definitions + stress test";
+
+$R4 isa recovery-path,
+    has recovery-id "R-F4",
+    has recovery-type "rebranch",
+    has recovery-actor "human",
+    has recovery-max-attempts 1,
+    has recovery-description "Extract sub-domain into separate agent design";
+
+$R5 isa recovery-path,
+    has recovery-id "R-F5",
+    has recovery-type "escalate",
+    has recovery-actor "human",
+    has recovery-max-attempts 1,
+    has recovery-description "Question whether agent is needed at all";
+
+$R6 isa recovery-path,
+    has recovery-id "R-F6",
+    has recovery-type "rollback",
+    has recovery-actor "collaborative",
+    has recovery-max-attempts 2,
+    has recovery-description "Rollback to T1.5; redesign guard as system-checkable assertion";
+
+$R7 isa recovery-path,
+    has recovery-id "R-F7",
+    has recovery-type "retry",
+    has recovery-actor "agent",
+    has recovery-max-attempts 3,
+    has recovery-description "Retry T2.1 with consistency constraint enforced";
+
+$R8 isa recovery-path,
+    has recovery-id "R-F8",
+    has recovery-type "rollback",
+    has recovery-actor "collaborative",
+    has recovery-max-attempts 2,
+    has recovery-description "Rollback to T3.1; re-link personality to purpose";
+
+$R9 isa recovery-path,
+    has recovery-id "R-F9",
+    has recovery-type "retry",
+    has recovery-actor "agent",
+    has recovery-max-attempts 3,
+    has recovery-description "Retry T5.1 with schema constraint";
+
+$R10 isa recovery-path,
+    has recovery-id "R-F10",
+    has recovery-type "rollback",
+    has recovery-actor "collaborative",
+    has recovery-max-attempts 3,
+    has recovery-description "Rollback to T5.1; diagnose failure path, fix, regenerate";
+
+$R11 isa recovery-path,
+    has recovery-id "R-F11",
+    has recovery-type "halt",
+    has recovery-actor "agent",
+    has recovery-max-attempts 2,
+    has recovery-description "Halt + rollback context; redesign with lower ceiling";
+
+$R12 isa recovery-path,
+    has recovery-id "R-F12",
+    has recovery-type "escalate",
+    has recovery-actor "system",
+    has recovery-max-attempts 1,
+    has recovery-description "Escalate to human; schedule refresh per O16";
+
+$R13 isa recovery-path,
+    has recovery-id "R-F13",
+    has recovery-type "halt",
+    has recovery-actor "system",
+    has recovery-max-attempts 1,
+    has recovery-description "Halt + purge to policy; flag to human";
+
+$R14 isa recovery-path,
+    has recovery-id "R-F14",
+    has recovery-type "escalate",
+    has recovery-actor "system",
+    has recovery-max-attempts 1,
+    has recovery-description "Escalate to human; review autonomy level";
+
+# ── SYSTEM TRIGGERS: ST1-ST10 ───────────────────────────────────────────────────
+
+$ST1 isa system-trigger,
+    has sys-trigger-id "ST1",
+    has sys-trigger-name "authority_class_gate",
+    has sys-trigger-condition "E3 fires but class not in taxonomy",
+    has sys-trigger-action "Block pipeline; cannot proceed to T1.3",
+    has sys-trigger-enforcement "preventive";
+
+$ST2 isa system-trigger,
+    has sys-trigger-id "ST2",
+    has sys-trigger-name "scope_completeness_gate",
+    has sys-trigger-condition "E4 fires but outside_scope empty",
+    has sys-trigger-action "Block pipeline; no scope without exclusion",
+    has sys-trigger-enforcement "preventive";
+
+$ST3 isa system-trigger,
+    has sys-trigger-id "ST3",
+    has sys-trigger-name "contract_testability_gate",
+    has sys-trigger-condition "E6 fires but any guard lacks assertion",
+    has sys-trigger-action "Block pipeline; decorative enforcement rejected",
+    has sys-trigger-enforcement "preventive";
+
+$ST4 isa system-trigger,
+    has sys-trigger-id "ST4",
+    has sys-trigger-name "template_consistency_gate",
+    has sys-trigger-condition "E8 fires but cross-check fails",
+    has sys-trigger-action "Block + retry T2.1 with constraint",
+    has sys-trigger-enforcement "preventive";
+
+$ST5 isa system-trigger,
+    has sys-trigger-id "ST5",
+    has sys-trigger-name "schema_compliance_gate",
+    has sys-trigger-condition "E13 fires but output fails schema_registry",
+    has sys-trigger-action "Block + retry T5.1 with schema",
+    has sys-trigger-enforcement "preventive";
+
+$ST6 isa system-trigger,
+    has sys-trigger-id "ST6",
+    has sys-trigger-name "integration_gate",
+    has sys-trigger-condition "E15 fires but any edge case unresolved",
+    has sys-trigger-action "Block deployment; human must resolve",
+    has sys-trigger-enforcement "preventive";
+
+$ST7 isa system-trigger,
+    has sys-trigger-id "ST7",
+    has sys-trigger-name "context_budget_hard_ceiling",
+    has sys-trigger-condition "Context protocol output > budget_kb",
+    has sys-trigger-action "Halt + truncate to budget",
+    has sys-trigger-enforcement "preventive";
+
+$ST8 isa system-trigger,
+    has sys-trigger-id "ST8",
+    has sys-trigger-name "memory_retention_enforcement",
+    has sys-trigger-condition "Memory entry exceeds max_age",
+    has sys-trigger-action "Purge + log event",
+    has sys-trigger-enforcement "corrective";
+
+$ST9 isa system-trigger,
+    has sys-trigger-id "ST9",
+    has sys-trigger-name "spec_aging_trigger",
+    has sys-trigger-condition "now - assessedAt > refresh_cadence_days",
+    has sys-trigger-action "Flag to human review queue",
+    has sys-trigger-enforcement "detective";
+
+$ST10 isa system-trigger,
+    has sys-trigger-id "ST10",
+    has sys-trigger-name "boundary_drift_detector",
+    has sys-trigger-condition "Override rate > threshold in trust ledger",
+    has sys-trigger-action "Flag for autonomy review",
+    has sys-trigger-enforcement "detective";

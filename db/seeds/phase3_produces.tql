@@ -1,0 +1,99 @@
+# ─── PHASE 3: SUBTASK-PRODUCES LINKS ───
+# Links subtasks to the design-output entities they produce
+# Requires Phase 1 seed (design-output entities) and Phase 3 seed (subtask entities) to be applied first
+#
+# Notes:
+# - T1.1 and T1.2 both produce O1 (joint contribution)
+# - T2.1 produces O5-O12 (Template Cascade generates all 8 contracts)
+# - T2.2, T5.3 produce quality gates (not output entities) — excluded
+# - T6.3 is continuous — produces O21 ongoing
+
+match
+    $T1_1 isa subtask, has subtask-id "T1.1";
+    $T1_2 isa subtask, has subtask-id "T1.2";
+    $T1_3 isa subtask, has subtask-id "T1.3";
+    $T1_4 isa subtask, has subtask-id "T1.4";
+    $T1_5 isa subtask, has subtask-id "T1.5";
+    $T2_1 isa subtask, has subtask-id "T2.1";
+    $T3_1 isa subtask, has subtask-id "T3.1";
+    $T3_2 isa subtask, has subtask-id "T3.2";
+    $T4_1 isa subtask, has subtask-id "T4.1";
+    $T4_2 isa subtask, has subtask-id "T4.2";
+    $T5_1 isa subtask, has subtask-id "T5.1";
+    $T5_2 isa subtask, has subtask-id "T5.2";
+    $T6_1 isa subtask, has subtask-id "T6.1";
+    $T6_2 isa subtask, has subtask-id "T6.2";
+    $T6_3 isa subtask, has subtask-id "T6.3";
+    $T7_1 isa subtask, has subtask-id "T7.1";
+    $T7_2 isa subtask, has subtask-id "T7.2";
+    $T8_1 isa subtask, has subtask-id "T8.1";
+    $T8_2 isa subtask, has subtask-id "T8.2";
+    $T8_3 isa subtask, has subtask-id "T8.3";
+    $T8_4 isa subtask, has subtask-id "T8.4";
+    $T8_5 isa subtask, has subtask-id "T8.5";
+    $O1 isa design-output, has output-id "O1";
+    $O2 isa design-output, has output-id "O2";
+    $O3 isa design-output, has output-id "O3";
+    $O4 isa design-output, has output-id "O4";
+    $O5 isa design-output, has output-id "O5";
+    $O6 isa design-output, has output-id "O6";
+    $O7 isa design-output, has output-id "O7";
+    $O8 isa design-output, has output-id "O8";
+    $O9 isa design-output, has output-id "O9";
+    $O10 isa design-output, has output-id "O10";
+    $O11 isa design-output, has output-id "O11";
+    $O12 isa design-output, has output-id "O12";
+    $O13 isa design-output, has output-id "O13";
+    $O14 isa design-output, has output-id "O14";
+    $O15 isa design-output, has output-id "O15";
+    $O16 isa design-output, has output-id "O16";
+    $O17 isa design-output, has output-id "O17";
+    $O18 isa design-output, has output-id "O18";
+    $O19 isa design-output, has output-id "O19";
+    $O20 isa design-output, has output-id "O20";
+    $O21 isa design-output, has output-id "O21";
+    $O22 isa design-output, has output-id "O22";
+    $O23 isa design-output, has output-id "O23";
+    $O24 isa design-output, has output-id "O24";
+    $O25 isa design-output, has output-id "O25";
+    $O26 isa design-output, has output-id "O26";
+    $O27 isa design-output, has output-id "O27";
+    $O28 isa design-output, has output-id "O28";
+insert
+    # G1: Identity
+    (producing-subtask: $T1_1, produced-output: $O1) isa subtask-produces;
+    (producing-subtask: $T1_2, produced-output: $O1) isa subtask-produces;
+    (producing-subtask: $T1_3, produced-output: $O2) isa subtask-produces;
+    (producing-subtask: $T1_4, produced-output: $O3) isa subtask-produces;
+    (producing-subtask: $T1_5, produced-output: $O4) isa subtask-produces;
+    # G2: Contracts — T2.1 Template Cascade produces all 8 contracts
+    (producing-subtask: $T2_1, produced-output: $O5) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O6) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O7) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O8) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O9) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O10) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O11) isa subtask-produces;
+    (producing-subtask: $T2_1, produced-output: $O12) isa subtask-produces;
+    # G3: Behaviour
+    (producing-subtask: $T3_1, produced-output: $O13) isa subtask-produces;
+    (producing-subtask: $T3_2, produced-output: $O14) isa subtask-produces;
+    # G4: Verification
+    (producing-subtask: $T4_1, produced-output: $O15) isa subtask-produces;
+    (producing-subtask: $T4_2, produced-output: $O16) isa subtask-produces;
+    # G5: Implementation
+    (producing-subtask: $T5_1, produced-output: $O17) isa subtask-produces;
+    (producing-subtask: $T5_2, produced-output: $O18) isa subtask-produces;
+    # G6: Human Artefacts
+    (producing-subtask: $T6_1, produced-output: $O19) isa subtask-produces;
+    (producing-subtask: $T6_2, produced-output: $O20) isa subtask-produces;
+    (producing-subtask: $T6_3, produced-output: $O21) isa subtask-produces;
+    # G7: Ecosystem
+    (producing-subtask: $T7_1, produced-output: $O22) isa subtask-produces;
+    (producing-subtask: $T7_2, produced-output: $O23) isa subtask-produces;
+    # G8: Operational Environment
+    (producing-subtask: $T8_1, produced-output: $O24) isa subtask-produces;
+    (producing-subtask: $T8_2, produced-output: $O25) isa subtask-produces;
+    (producing-subtask: $T8_3, produced-output: $O26) isa subtask-produces;
+    (producing-subtask: $T8_4, produced-output: $O27) isa subtask-produces;
+    (producing-subtask: $T8_5, produced-output: $O28) isa subtask-produces;

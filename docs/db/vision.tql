@@ -1,0 +1,56 @@
+# ─── PHASE 0: TARGET STATE VISION ───
+
+# The design project itself — one per agent being designed
+define
+
+agent-design-project sub entity,
+    owns project-name,
+    owns project-description,
+    owns created-at,
+    owns status,
+    plays project-owner,
+    plays project-dimension,
+    plays project-target;
+
+# Four dimensions from Phase 0
+target-dimension sub entity,
+    owns dimension-name,          # "Agent", "Specification", "Human", "Ecosystem"
+    owns dimension-description,
+    plays dimension-of-project,
+    plays dimension-has-target;
+
+# Each characteristic in Phase 0
+target-characteristic sub entity,
+    owns characteristic-id,        # e.g., "A1", "S3", "H4"
+    owns characteristic-name,     # e.g., "Boundary-Locked", "Typed Throughout", "Enriching"
+    owns characteristic-statement,# One sentence defining the target state
+    owns testable-criterion,      # How to verify it's been achieved
+    plays target-of-dimension,
+    plays target-served-by-phase,
+    plays target-served-by-output;
+
+# Links: which CAWDP phase primarily serves which target
+phase-service sub relation,
+    relates serving-phase,         # e.g., "Phase 4: Agent Design"
+    relates served-target,
+    owns service-strength;        # "primary" | "contributing"
+
+# Links: which output (from Phase 1) serves which target
+output-service sub relation,
+    relates serving-output,       # e.g., "O4: Quasi-Smart Contract"
+    relates served-target,
+    owns service-strength;
+
+# ─── ROLE PLAYERS ───
+
+project-owner sub attribute, value string;
+project-description sub attribute, value string;
+created-at sub attribute, value datetime;
+status sub attribute, value string;
+dimension-name sub attribute, value string;
+dimension-description sub attribute, value string;
+characteristic-id sub attribute, value string;
+characteristic-name sub attribute, value string;
+characteristic-statement sub attribute, value string;
+testable-criterion sub attribute, value string;
+service-strength sub attribute, value string;

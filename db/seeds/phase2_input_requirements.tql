@@ -1,0 +1,428 @@
+# ─── PHASE 2: BACKCASTING — Input Requirement Seed Data ───
+# TypeQL v3.10.1 compatible
+#
+# Three types of IR seeded:
+# A) External inputs for Phase 0 (human judgment, system provision)
+# B) Complete backcasting chain: O28 → ... → O1
+# C) Representative internal IRs for key outputs
+#
+# IR types: internal, external-human, external-system, external-domain, iterative
+# IR criticality: blocking, enhancing, validating
+# IR satisfaction-mode: direct, transformed, referenced, accumulated
+#
+# Convention: ir-derived-from-dependency = true means materialised from output-dependency
+#             ir-derived-from-dependency = false means identified through backcasting analysis
+#
+# IMPORTANT: Uses subtask-requires-req (Phase 3 relation) instead of ir-consumed-by-subtask
+# (which was redundant). Roles: requiring-subtask, required-input.
+#
+# NOTE: input-req-id is included alongside ir-id because Phase 3's schema declares
+# input-req-id as @key with @card(1..1), requiring it on every input-requirement entity.
+
+# ── A) EXTERNAL INPUTS FOR PHASE 0 ──
+# Phase 0 (Purpose & Vision) has no pipeline-internal dependencies.
+# Its inputs come from human judgment and domain knowledge.
+
+insert
+$ir001 isa input-requirement,
+    has ir-id "IR-EXT-001",
+    has input-req-id "IR-EXT-001",
+    has ir-type "external-human",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Principal's vision for what the agent is FOR — the human intent that drives the entire pipeline",
+    has ir-source-phase 0,
+    has ir-derived-from-dependency false;
+
+insert
+$ir002 isa input-requirement,
+    has ir-id "IR-EXT-002",
+    has input-req-id "IR-EXT-002",
+    has ir-type "external-human",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Principal's declaration of whose interests the agent serves",
+    has ir-source-phase 0,
+    has ir-derived-from-dependency false;
+
+insert
+$ir003 isa input-requirement,
+    has ir-id "IR-EXT-003",
+    has input-req-id "IR-EXT-003",
+    has ir-type "external-domain",
+    has ir-criticality "enhancing",
+    has ir-satisfaction-mode "referenced",
+    has ir-description "Domain knowledge about the agent's operating context — industry, regulations, stakeholder landscape",
+    has ir-source-phase 0,
+    has ir-derived-from-dependency false;
+
+insert
+$ir004 isa input-requirement,
+    has ir-id "IR-EXT-004",
+    has input-req-id "IR-EXT-004",
+    has ir-type "external-system",
+    has ir-criticality "enhancing",
+    has ir-satisfaction-mode "referenced",
+    has ir-description "Agno framework capabilities and constraints — what the runtime can and cannot do",
+    has ir-source-phase 0,
+    has ir-derived-from-dependency false;
+
+# ── B) COMPLETE BACKCASTING CHAIN: O28 → ... → O1 ──
+# O28's direct dependencies materialised as input requirements.
+
+insert
+$ir028_1 isa input-requirement,
+    has ir-id "IR-028-001",
+    has input-req-id "IR-028-001",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Deployment specification needed to operationalise the manual",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_2 isa input-requirement,
+    has ir-id "IR-028-002",
+    has input-req-id "IR-028-002",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Agent coalition structure needed for operations section",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_3 isa input-requirement,
+    has ir-id "IR-028-003",
+    has input-req-id "IR-028-003",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Integration contracts needed for deployment procedures",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_4 isa input-requirement,
+    has ir-id "IR-028-004",
+    has input-req-id "IR-028-004",
+    has ir-type "internal",
+    has ir-criticality "enhancing",
+    has ir-satisfaction-mode "referenced",
+    has ir-description "Health monitoring metrics included in operational dashboard section",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_5 isa input-requirement,
+    has ir-id "IR-028-005",
+    has input-req-id "IR-028-005",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Cognitive load budget determines human interaction patterns in the manual",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_6 isa input-requirement,
+    has ir-id "IR-028-006",
+    has input-req-id "IR-028-006",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Override procedures are core content of the operations manual",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_7 isa input-requirement,
+    has ir-id "IR-028-007",
+    has input-req-id "IR-028-007",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Interface specification determines how humans interact with the system",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir028_8 isa input-requirement,
+    has ir-id "IR-028-008",
+    has input-req-id "IR-028-008",
+    has ir-type "internal",
+    has ir-criticality "enhancing",
+    has ir-satisfaction-mode "referenced",
+    has ir-description "Enrichment assessment informs the human empowerment section of the manual",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+# ── Root output IRs (what O4, O5 need from earlier phases) ──
+
+insert
+$ir_O4_root isa input-requirement,
+    has ir-id "IR-004-ROOT",
+    has input-req-id "IR-004-ROOT",
+    has ir-type "external-human",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Principal's definition of what is explicitly OUT of scope — the boundary between in-scope and out-of-scope must come from human judgment",
+    has ir-source-phase 0,
+    has ir-derived-from-dependency false;
+
+insert
+$ir_O5_dep_O4 isa input-requirement,
+    has ir-id "IR-005-001",
+    has input-req-id "IR-005-001",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Task contracts must respect scope boundaries — O4 defines what tasks the agent should and should not handle",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir_O5_dep_O2 isa input-requirement,
+    has ir-id "IR-005-002",
+    has input-req-id "IR-005-002",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "direct",
+    has ir-description "Every task contract must trace back to the agent's stated purpose",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+# ── C) REPRESENTATIVE INTERNAL IRs ──
+
+insert
+$ir_O13_dep_O5 isa input-requirement,
+    has ir-id "IR-013-001",
+    has input-req-id "IR-013-001",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Verification protocols must verify against task contract specifications — you can't verify what isn't specified",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir_O16_dep_O5 isa input-requirement,
+    has ir-id "IR-016-001",
+    has input-req-id "IR-016-001",
+    has ir-type "internal",
+    has ir-criticality "blocking",
+    has ir-satisfaction-mode "transformed",
+    has ir-description "Task contract schemas are transformed into Agno agent configuration — the contract IS the specification for implementation",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+insert
+$ir_O16_dep_O14 isa input-requirement,
+    has ir-id "IR-016-002",
+    has input-req-id "IR-016-002",
+    has ir-type "internal",
+    has ir-criticality "enhancing",
+    has ir-satisfaction-mode "referenced",
+    has ir-description "Epistemic metadata schema informs agent configuration for confidence/provenance fields in outputs",
+    has ir-source-phase 2,
+    has ir-derived-from-dependency true;
+
+# ═══════════════════════════════════════════════════════════════
+# ── RELATIONS: ir-required-by-output ──
+# ═══════════════════════════════════════════════════════════════
+# Roles: (requiring-output: design-output, required-ir: input-requirement)
+
+# External inputs required by Phase 0 outputs
+insert
+$ir001_q isa input-requirement, has ir-id "IR-EXT-001";
+$o1_q isa design-output, has output-id "O1";
+(requiring-output: $o1_q, required-ir: $ir001_q) isa ir-required-by-output;
+
+insert
+$ir002_q isa input-requirement, has ir-id "IR-EXT-002";
+$o3_q isa design-output, has output-id "O3";
+(requiring-output: $o3_q, required-ir: $ir002_q) isa ir-required-by-output;
+
+insert
+$ir003_q isa input-requirement, has ir-id "IR-EXT-003";
+$o1b_q isa design-output, has output-id "O1";
+(requiring-output: $o1b_q, required-ir: $ir003_q) isa ir-required-by-output;
+
+insert
+$ir004_q isa input-requirement, has ir-id "IR-EXT-004";
+$o16_q isa design-output, has output-id "O16";
+(requiring-output: $o16_q, required-ir: $ir004_q) isa ir-required-by-output;
+
+# Root IRs
+insert
+$ir4root_q isa input-requirement, has ir-id "IR-004-ROOT";
+$o4_q isa design-output, has output-id "O4";
+(requiring-output: $o4_q, required-ir: $ir4root_q) isa ir-required-by-output;
+
+insert
+$ir5_1_q isa input-requirement, has ir-id "IR-005-001";
+$o5_q isa design-output, has output-id "O5";
+(requiring-output: $o5_q, required-ir: $ir5_1_q) isa ir-required-by-output;
+
+insert
+$ir5_2_q isa input-requirement, has ir-id "IR-005-002";
+$o5b_q isa design-output, has output-id "O5";
+(requiring-output: $o5b_q, required-ir: $ir5_2_q) isa ir-required-by-output;
+
+# Representative IRs
+insert
+$ir13_1_q isa input-requirement, has ir-id "IR-013-001";
+$o13_q isa design-output, has output-id "O13";
+(requiring-output: $o13_q, required-ir: $ir13_1_q) isa ir-required-by-output;
+
+insert
+$ir16_1_q isa input-requirement, has ir-id "IR-016-001";
+$o16c_q isa design-output, has output-id "O16";
+(requiring-output: $o16c_q, required-ir: $ir16_1_q) isa ir-required-by-output;
+
+insert
+$ir16_2_q isa input-requirement, has ir-id "IR-016-002";
+$o16d_q isa design-output, has output-id "O16";
+(requiring-output: $o16d_q, required-ir: $ir16_2_q) isa ir-required-by-output;
+
+# O28 backcasting chain — all 8 IRs required by O28
+insert
+$ir028_1_q isa input-requirement, has ir-id "IR-028-001";
+$o28_q1 isa design-output, has output-id "O28";
+(requiring-output: $o28_q1, required-ir: $ir028_1_q) isa ir-required-by-output;
+
+insert
+$ir028_2_q isa input-requirement, has ir-id "IR-028-002";
+$o28_q2 isa design-output, has output-id "O28";
+(requiring-output: $o28_q2, required-ir: $ir028_2_q) isa ir-required-by-output;
+
+insert
+$ir028_3_q isa input-requirement, has ir-id "IR-028-003";
+$o28_q3 isa design-output, has output-id "O28";
+(requiring-output: $o28_q3, required-ir: $ir028_3_q) isa ir-required-by-output;
+
+insert
+$ir028_4_q isa input-requirement, has ir-id "IR-028-004";
+$o28_q4 isa design-output, has output-id "O28";
+(requiring-output: $o28_q4, required-ir: $ir028_4_q) isa ir-required-by-output;
+
+insert
+$ir028_5_q isa input-requirement, has ir-id "IR-028-005";
+$o28_q5 isa design-output, has output-id "O28";
+(requiring-output: $o28_q5, required-ir: $ir028_5_q) isa ir-required-by-output;
+
+insert
+$ir028_6_q isa input-requirement, has ir-id "IR-028-006";
+$o28_q6 isa design-output, has output-id "O28";
+(requiring-output: $o28_q6, required-ir: $ir028_6_q) isa ir-required-by-output;
+
+insert
+$ir028_7_q isa input-requirement, has ir-id "IR-028-007";
+$o28_q7 isa design-output, has output-id "O28";
+(requiring-output: $o28_q7, required-ir: $ir028_7_q) isa ir-required-by-output;
+
+insert
+$ir028_8_q isa input-requirement, has ir-id "IR-028-008";
+$o28_q8 isa design-output, has output-id "O28";
+(requiring-output: $o28_q8, required-ir: $ir028_8_q) isa ir-required-by-output;
+
+# ═══════════════════════════════════════════════════════════════
+# ── RELATIONS: ir-satisfied-by-output ──
+# ═══════════════════════════════════════════════════════════════
+# Roles: (satisfied-ir: input-requirement, satisfying-output: design-output)
+# External IRs have NO satisfied-by relation (they come from outside the pipeline).
+
+# Root IRs
+insert
+$ir5_1_s isa input-requirement, has ir-id "IR-005-001";
+$o4_s1 isa design-output, has output-id "O4";
+(satisfied-ir: $ir5_1_s, satisfying-output: $o4_s1) isa ir-satisfied-by-output;
+
+insert
+$ir5_2_s isa input-requirement, has ir-id "IR-005-002";
+$o2_s1 isa design-output, has output-id "O2";
+(satisfied-ir: $ir5_2_s, satisfying-output: $o2_s1) isa ir-satisfied-by-output;
+
+# Representative IRs
+insert
+$ir13_1_s isa input-requirement, has ir-id "IR-013-001";
+$o5_s1 isa design-output, has output-id "O5";
+(satisfied-ir: $ir13_1_s, satisfying-output: $o5_s1) isa ir-satisfied-by-output;
+
+insert
+$ir16_1_s isa input-requirement, has ir-id "IR-016-001";
+$o5_s2 isa design-output, has output-id "O5";
+(satisfied-ir: $ir16_1_s, satisfying-output: $o5_s2) isa ir-satisfied-by-output;
+
+insert
+$ir16_2_s isa input-requirement, has ir-id "IR-016-002";
+$o14_s1 isa design-output, has output-id "O14";
+(satisfied-ir: $ir16_2_s, satisfying-output: $o14_s1) isa ir-satisfied-by-output;
+
+# O28 backcasting chain — each IR satisfied by a specific earlier output
+insert
+$ir028_1_s isa input-requirement, has ir-id "IR-028-001";
+$o27_s isa design-output, has output-id "O27";
+(satisfied-ir: $ir028_1_s, satisfying-output: $o27_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_2_s isa input-requirement, has ir-id "IR-028-002";
+$o24_s isa design-output, has output-id "O24";
+(satisfied-ir: $ir028_2_s, satisfying-output: $o24_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_3_s isa input-requirement, has ir-id "IR-028-003";
+$o25_s isa design-output, has output-id "O25";
+(satisfied-ir: $ir028_3_s, satisfying-output: $o25_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_4_s isa input-requirement, has ir-id "IR-028-004";
+$o26_s isa design-output, has output-id "O26";
+(satisfied-ir: $ir028_4_s, satisfying-output: $o26_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_5_s isa input-requirement, has ir-id "IR-028-005";
+$o20_s isa design-output, has output-id "O20";
+(satisfied-ir: $ir028_5_s, satisfying-output: $o20_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_6_s isa input-requirement, has ir-id "IR-028-006";
+$o21_s isa design-output, has output-id "O21";
+(satisfied-ir: $ir028_6_s, satisfying-output: $o21_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_7_s isa input-requirement, has ir-id "IR-028-007";
+$o22_s isa design-output, has output-id "O22";
+(satisfied-ir: $ir028_7_s, satisfying-output: $o22_s) isa ir-satisfied-by-output;
+
+insert
+$ir028_8_s isa input-requirement, has ir-id "IR-028-008";
+$o23_s isa design-output, has output-id "O23";
+(satisfied-ir: $ir028_8_s, satisfying-output: $o23_s) isa ir-satisfied-by-output;
+
+# ═══════════════════════════════════════════════════════════════
+# ── RELATIONS: subtask-requires-req ──
+# ═══════════════════════════════════════════════════════════════
+# Roles: (requiring-subtask: subtask, required-input: input-requirement)
+# O28 is produced by T8.5 (Storage Specification), not S12 as in the design doc.
+# All 8 O28 IRs are consumed by T8.5.
+
+insert
+$ir028_1_r isa input-requirement, has ir-id "IR-028-001";
+$ir028_2_r isa input-requirement, has ir-id "IR-028-002";
+$ir028_3_r isa input-requirement, has ir-id "IR-028-003";
+$ir028_4_r isa input-requirement, has ir-id "IR-028-004";
+$ir028_5_r isa input-requirement, has ir-id "IR-028-005";
+$ir028_6_r isa input-requirement, has ir-id "IR-028-006";
+$ir028_7_r isa input-requirement, has ir-id "IR-028-007";
+$ir028_8_r isa input-requirement, has ir-id "IR-028-008";
+$s12_r isa subtask, has subtask-id "T8.5";
+(requiring-subtask: $s12_r, required-input: $ir028_1_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_2_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_3_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_4_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_5_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_6_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_7_r) isa subtask-requires-req;
+(requiring-subtask: $s12_r, required-input: $ir028_8_r) isa subtask-requires-req;

@@ -1,0 +1,130 @@
+# ─── PHASE 2: BACKCASTING ───
+# TypeQL Schema for TypeDB v3 — additive define on Phase 0+1+3
+#
+# Extends cawdp-phase stub (Phase 0) and input-requirement stub (Phase 3).
+# Adds phase sequencing, phase-output production links, and input-requirement
+# metadata with backcasting relations.
+#
+# Corrections vs design doc (phase-2b-backcasting.md):
+#   1. Attribute syntax: `phase-id owns string @key` → `attribute phase-id, value string;` + `owns phase-id @key`
+#      (design doc used v2 syntax for ALL attribute declarations — fixed to v3)
+#   2. `produced-output` role name conflict: already used in `subtask-produces` relation.
+#      Renamed to `phase-produced-output` in `phase-produces-output` to avoid ambiguity.
+#   3. `ir-consumed-by-subtask` relation is REDUNDANT: `subtask-requires-req` already exists
+#      from Phase 3 with roles `requiring-subtask` and `required-input`. Reusing it instead.
+#      input-requirement already plays `subtask-requires-req:required-input`.
+#   4. `phase-name` attribute already exists (Phase 0) — NOT redeclared here.
+#   5. `input-req-id` attribute already exists (Phase 3) — NOT redeclared here.
+#      New attribute `ir-id` added as @key for input-requirement (distinct from input-req-id stub).
+#   6. `cawdp-phase` already has `phase-name @key` — adding `phase-id @key` as primary key.
+#      phase-name remains owned but no longer @key (additive define can add owns but cannot
+#      remove @key; however, TypeDB v3 allows multiple @key attributes).
+#   7. `design-output` already plays 5 roles from Phase 1+3 — adding 3 more (additive, fine).
+#   8. `subtask` already plays `subtask-requires-req:requiring-subtask` from Phase 3 —
+#      no new plays needed for subtask (reusing existing relation).
+#   9. `ir-derived-from-dependency` as `value boolean` — confirmed working in TypeDB v3
+#      (same pattern as `stage-parallel` in Phase 6).
+#  10. `ir-source-phase` as `value integer` (phase number 0-9).
+
+# =============================================================================
+# PASS 1: NEW ATTRIBUTES ONLY
+# =============================================================================
+
+define
+
+# ── cawdp-phase attributes (extending Phase 0 stub) ──
+
+attribute phase-id, value string;
+attribute phase-number, value integer;
+attribute phase-name-short, value string;
+attribute cognitive-mode, value string;
+attribute phase-description, value string;
+attribute phase-quality-gate, value string;
+attribute phase-iteration-type, value string;
+
+# ── input-requirement attributes (extending Phase 3 stub) ──
+# Note: input-req-id already exists from Phase 3; adding ir-id as the @key identifier
+# to maintain consistency with the design doc's IR-XXX naming convention.
+
+attribute ir-id, value string;
+attribute ir-type, value string;
+attribute ir-criticality, value string;
+attribute ir-satisfaction-mode, value string;
+attribute ir-description, value string;
+attribute ir-source-phase, value integer;
+attribute ir-derived-from-dependency, value boolean;
+
+# =============================================================================
+# PASS 2: ENTITY EXTENSIONS, NEW RELATIONS, PLAYS
+# =============================================================================
+
+define
+
+# ── EXTEND EXISTING ENTITIES ──
+
+# cawdp-phase: extending Phase 0 stub (owns phase-name @key)
+# Adding phase-id as @key, plus rich metadata for backcasting
+cawdp-phase,
+    owns phase-id @key,
+    owns phase-number,
+    owns phase-name-short,
+    owns cognitive-mode,
+    owns phase-description,
+    owns phase-quality-gate @card(0..),
+    owns phase-iteration-type,
+    plays phase-sequence:predecessor-phase,
+    plays phase-sequence:successor-phase,
+    plays phase-produces-output:producing-phase;
+
+# input-requirement: extending Phase 3 stub (owns input-req-id @key)
+# Adding ir-id as @key and rich metadata for backcasting
+# Note: ir-id is the primary identifier (IR-EXT-001, IR-028-001, etc.)
+# input-req-id from Phase 3 stub remains but is superseded by ir-id
+input-requirement,
+    owns ir-id @key,
+    owns ir-type,
+    owns ir-criticality,
+    owns ir-satisfaction-mode,
+    owns ir-description,
+    owns ir-source-phase,
+    owns ir-derived-from-dependency,
+    plays ir-required-by-output:required-ir,
+    plays ir-satisfied-by-output:satisfied-ir;
+
+# design-output: adding plays for Phase 2 relations (additive)
+design-output,
+    plays phase-produces-output:phase-produced-output,
+    plays ir-required-by-output:requiring-output,
+    plays ir-satisfied-by-output:satisfying-output;
+
+# ── NEW RELATION TYPES ──
+
+# Phase sequence: linear progression P0→P1→P2→...→P9
+# Also supports iterative feedback loops (specified by phase-iteration-type)
+relation phase-sequence,
+    relates predecessor-phase,
+    relates successor-phase;
+
+# Which phase produces which design-output
+# Note: role name `phase-produced-output` (not `produced-output`) to avoid
+# ambiguity with `subtask-produces:produced-output` already in the schema
+relation phase-produces-output,
+    relates producing-phase,
+    relates phase-produced-output;
+
+# IR required by an output (backward trace: "To produce O5, you need IR-X")
+relation ir-required-by-output,
+    relates requiring-output,
+    relates required-ir;
+
+# IR satisfied by an output (forward trace: "IR-X is satisfied by O3")
+relation ir-satisfied-by-output,
+    relates satisfied-ir,
+    relates satisfying-output;
+
+# Note: ir-consumed-by-subtask from the design doc is NOT created here.
+# The existing `subtask-requires-req` relation from Phase 3 already serves
+# this purpose with roles `requiring-subtask` and `required-input`.
+# Seed data will use `subtask-requires-req` to link IRs to subtasks.
+# input-requirement already plays `subtask-requires-req:required-input` from Phase 3.
+# subtask already plays `subtask-requires-req:requiring-subtask` from Phase 3.

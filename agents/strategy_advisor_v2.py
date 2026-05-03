@@ -75,6 +75,9 @@ agent_db = PostgresDb(db_url=DB_URL)
 # Learning Knowledge — PgVector for entity memory & learned knowledge vectors
 # Uses OpenAI embedder (consistent with platform standard)
 # Separate table from the shared agno_docs knowledge base
+# Note: No MarkdownChunking needed here — learned insights are short text
+# entries inserted by the LearningMachine, not full markdown documents.
+# MarkdownChunking is used by the document manager for artifact indexing.
 # ---------------------------------------------------------------------------
 learning_vector_db = PgVector(
     db_url=DB_URL,
@@ -167,13 +170,17 @@ strategy_advisor = Agent(
     # cache_results=True on external/deterministic tools to avoid redundant API calls
     # and speed up repeated queries during a conversation
     tools=[
-        ReasoningTools(add_instructions=True),   # Structured analysis — stateful, no cache
-        DuckDuckGoTools(cache_results=True),     # Market research — cache avoids repeat API calls
+        ReasoningTools(
+            add_instructions=True
+        ),  # Structured analysis — stateful, no cache
+        DuckDuckGoTools(
+            cache_results=True
+        ),  # Market research — cache avoids repeat API calls
         FileTools(
             base_dir=Path("artifacts/strategy"),
-            cache_results=True,                  # File reads are deterministic — cache them
+            cache_results=True,  # File reads are deterministic — cache them
         ),
-        StrategyArtifactTools(),                 # Stateful — save/list/read, no cache
+        StrategyArtifactTools(),  # Stateful — save/list/read, no cache
     ],
     # --- Learning ---
     # Agentic memory: user preferences across sessions

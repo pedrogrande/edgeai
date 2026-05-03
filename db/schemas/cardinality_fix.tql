@@ -1,0 +1,88 @@
+# ─── CARDINALITY FIX: Multi-value attributes ───
+# TypeQL Schema for TypeDB v3 — additive define
+#
+# Default `owns` cardinality is @card(0..1) — single value only.
+# For attributes that can have multiple values per entity, we must
+# explicitly declare @card(0..) to prevent silent data truncation.
+#
+# This is P12 (Cardinality Truncation) from the corrections doc:
+# TypeDB silently drops attribute values beyond the first when
+# @card(0..1) is in effect. This is the second silent data loss
+# pattern alongside P11 (match-insert failure).
+#
+# 29 attributes across 6 phases need @card(0..):
+# - 16 high-confidence (clearly multi-value)
+# - 13 medium-confidence (likely multi-value)
+#
+# Applied as a single additive define call.
+
+define
+
+# ── PHASE 0: target-characteristic ──
+target-characteristic,
+    owns testable-criterion @card(0..);
+
+# ── PHASE 1: design-output ──
+design-output,
+    owns quality-gate @card(0..),
+    owns schema-registry-ref @card(0..);
+
+# ── PHASE 2: cawdp-phase ──
+cawdp-phase,
+    owns phase-quality-gate @card(0..);
+
+# ── PHASE 3: subtask ──
+subtask,
+    owns actor-hint @card(0..);
+
+# ── PHASE 4: allocation, decision-authority ──
+allocation,
+    owns human-role @card(0..),
+    owns agent-role @card(0..),
+    owns system-role @card(0..);
+
+decision-authority,
+    owns da-trigger @card(0..),
+    owns da-escalation @card(0..);
+
+# ── PHASE 5: domain-event, failure-event, system-trigger ──
+domain-event,
+    owns event-condition @card(0..);
+
+failure-event,
+    owns failure-cascade @card(0..),
+    owns failure-detection-method @card(0..);
+
+system-trigger,
+    owns sys-trigger-action @card(0..);
+
+# ── PHASE 6: pipeline-stage, orchestration-config, orchestration-decision,
+#             fmea-entry, template-type, composition-config, fallback-tier ──
+pipeline-stage,
+    owns stage-gate-ref @card(0..);
+
+orchestration-config,
+    owns oc-orchestration-pattern @card(0..);
+
+orchestration-decision,
+    owns od-reason @card(0..),
+    owns od-alternatives @card(0..);
+
+fmea-entry,
+    owns fmea-subtask-ref @card(0..),
+    owns fmea-failure-ref @card(0..),
+    owns fmea-event-ref @card(0..),
+    owns fmea-effect @card(0..),
+    owns fmea-mitigation @card(0..),
+    owns fmea-mitigation-type @card(0..);
+
+template-type,
+    owns tt-schema-ref @card(0..);
+
+composition-config,
+    owns cc-steps @card(0..),
+    owns cc-step-choices @card(0..);
+
+fallback-tier,
+    owns ft-trigger @card(0..),
+    owns ft-action @card(0..);

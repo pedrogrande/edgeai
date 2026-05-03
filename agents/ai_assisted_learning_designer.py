@@ -133,6 +133,8 @@ for dir_name in TYPE_TO_DIR.values():
 agent_db = SqliteDb(db_file="data/ai_assisted_learning_designer.db")
 
 # PgVector knowledge base — populated by the document manager agent
+# using MarkdownChunking (split_on_headings=2) for semantic coherence.
+# Each chunk is a complete H1/H2 section, not an arbitrary fragment.
 # This agent queries it via search_knowledge; it does NOT load files itself
 _pgvector_db_url = os.environ.get(
     "PGVECTOR_DB_URL",
@@ -187,6 +189,7 @@ def _build_artifact_content(
 # ---------------------------------------------------------------------------
 # Custom Tools
 # ---------------------------------------------------------------------------
+
 
 @tool(requires_confirmation=True)
 def save_artifact(
@@ -326,9 +329,7 @@ def update_artifact(
     new_status = (
         status.strip().lower() if status else existing_meta.get("status", "draft")
     )
-    new_project = (
-        project.strip() if project else existing_meta.get("project", "")
-    )
+    new_project = project.strip() if project else existing_meta.get("project", "")
     new_tags = (
         [t.strip() for t in tags.split(",") if t.strip()]
         if tags
@@ -580,16 +581,16 @@ ai_assisted_learning_designer = Agent(
         # Research for informed improvements — external API, cache
         DuckDuckGoTools(cache_results=True),
         # Custom artifact management tools — stateful (write files), no cache
-        save_artifact,       # HITL-gated: requires user confirmation
-        update_artifact,     # HITL-gated: requires user confirmation
-        list_artifacts,      # Browse existing artifacts by type/project — fast local, no cache
+        save_artifact,  # HITL-gated: requires user confirmation
+        update_artifact,  # HITL-gated: requires user confirmation
+        list_artifacts,  # Browse existing artifacts by type/project — fast local, no cache
     ],
     # --- Agentic Memory ---
     # Remembers user preferences, working style, project context across sessions
     learning=LearningMachine(
         entity_memory=EntityMemoryConfig(
-            mode=LearningMode.AGENTIC,    # Agent actively manages entities
-            namespace="global",            # Shared project knowledge
+            mode=LearningMode.AGENTIC,  # Agent actively manages entities
+            namespace="global",  # Shared project knowledge
         ),
     ),
     enable_agentic_memory=True,  # User preferences across sessions
@@ -599,13 +600,13 @@ ai_assisted_learning_designer = Agent(
     session_state={
         "current_project": None,
         "current_artifact_types": [],
-        "draft_artifacts": [],            # Artifacts being developed this session
-        "recently_viewed": [],            # Artifact references read this session
-        "improvements_proposed": [],      # Pending improvement suggestions
-        "exploration_threads": [],        # Open ideation/exploration threads
+        "draft_artifacts": [],  # Artifacts being developed this session
+        "recently_viewed": [],  # Artifact references read this session
+        "improvements_proposed": [],  # Pending improvement suggestions
+        "exploration_threads": [],  # Open ideation/exploration threads
     },
     add_session_state_to_context=True,
-    enable_agentic_state=True,     # Agent can update state based on context
+    enable_agentic_state=True,  # Agent can update state based on context
     # --- Context settings ---
     add_datetime_to_context=True,
     add_history_to_context=True,

@@ -1,0 +1,225 @@
+# ─── PHASE 0 SEED DATA ───
+# 4 target-dimension entities + 26 target-characteristic entities
+# + 26 dimension-characteristic-membership relations
+
+insert
+
+# ─── DIMENSIONS ───
+
+$dim-agent isa target-dimension,
+    has dimension-name "Agent",
+    has dimension-description "Characteristics of the agent itself";
+
+$dim-spec isa target-dimension,
+    has dimension-name "Specification",
+    has dimension-description "Characteristics of how the agent is specified";
+
+$dim-human isa target-dimension,
+    has dimension-name "Human",
+    has dimension-description "Characteristics of the human experience of the design process";
+
+$dim-eco isa target-dimension,
+    has dimension-name "Ecosystem",
+    has dimension-description "Characteristics of the broader ecosystem of agents and knowledge";
+
+# ─── AGENT CHARACTERISTICS ───
+
+$A1 isa target-characteristic,
+    has characteristic-id "A1",
+    has characteristic-name "Purpose-Faithful",
+    has characteristic-statement "Achieves mission within designed scope, every time",
+    has testable-criterion "Self-reports performance against specification";
+
+$A2 isa target-characteristic,
+    has characteristic-id "A2",
+    has characteristic-name "Boundary-Locked",
+    has characteristic-statement "Authority boundaries enforced at contract membrane",
+    has testable-criterion "Every boundary passes speed-limiter test";
+
+$A3 isa target-characteristic,
+    has characteristic-id "A3",
+    has characteristic-name "Epistemically Honest",
+    has characteristic-statement "Carries epistemic metadata on every output",
+    has testable-criterion "Every output includes confidence, provenance, assumptions";
+
+$A4 isa target-characteristic,
+    has characteristic-id "A4",
+    has characteristic-name "Identity-Preserving",
+    has characteristic-statement "Purpose, principal, authority survive every session",
+    has testable-criterion "Agent recreatable from TypeDB graph alone";
+
+$A5 isa target-characteristic,
+    has characteristic-id "A5",
+    has characteristic-name "Cost-Predictable",
+    has characteristic-statement "Cost per invocation/task/pipeline known and bounded",
+    has testable-criterion "Overruns trigger contract halt, not warning";
+
+$A6 isa target-characteristic,
+    has characteristic-id "A6",
+    has characteristic-name "Composable",
+    has characteristic-statement "Authority boundaries legible to other actors",
+    has testable-criterion "Other agents can query scope without reading prompt";
+
+$A7 isa target-characteristic,
+    has characteristic-id "A7",
+    has characteristic-name "Relationally Intelligent",
+    has characteristic-statement "Collaborative agents build rapport serving purpose",
+    has testable-criterion "Personality-purpose link justifies every tone parameter";
+
+# ─── SPECIFICATION CHARACTERISTICS ───
+
+$S1 isa target-characteristic,
+    has characteristic-id "S1",
+    has characteristic-name "Contract-Native",
+    has characteristic-statement "Every subtask produces quasi-smart contract",
+    has testable-criterion "Spec and enforcement are one artifact";
+
+$S2 isa target-characteristic,
+    has characteristic-id "S2",
+    has characteristic-name "Graph-Native",
+    has characteristic-statement "All artefacts in TypeDB, only code as files",
+    has testable-criterion "Query graph to get any artefact; doc is not source of truth";
+
+$S3 isa target-characteristic,
+    has characteristic-id "S3",
+    has characteristic-name "Typed Throughout",
+    has characteristic-statement "Type collision resolved at every layer",
+    has testable-criterion "No undifferentiated prose blobs anywhere";
+
+$S4 isa target-characteristic,
+    has characteristic-id "S4",
+    has characteristic-name "Template-Complete",
+    has characteristic-statement "All 8 template contracts filled and validated",
+    has testable-criterion "Each template passes its own validation";
+
+$S5 isa target-characteristic,
+    has characteristic-id "S5",
+    has characteristic-name "Design-to-Code Traceable",
+    has characteristic-statement "Every code element traces to design decision",
+    has testable-criterion "Every line has provenance chain back to phase artefact";
+
+$S6 isa target-characteristic,
+    has characteristic-id "S6",
+    has characteristic-name "Dual-Parseable",
+    has characteristic-statement "Specs work for agents, humans, and code generation",
+    has testable-criterion "Same spec serves three audiences without translation";
+
+$S7 isa target-characteristic,
+    has characteristic-id "S7",
+    has characteristic-name "Semantic by Name",
+    has characteristic-statement "Name encodes role, authority class, domain",
+    has testable-criterion "Stranger reads name and knows what it does";
+
+# ─── HUMAN CHARACTERISTICS ───
+
+$H1 isa target-characteristic,
+    has characteristic-id "H1",
+    has characteristic-name "Guided Not Blank",
+    has characteristic-statement "Never a blank page, every step has context",
+    has testable-criterion "Vision Mirror reflects user words at Phase 0";
+
+$H2 isa target-characteristic,
+    has characteristic-id "H2",
+    has characteristic-name "Discovery-Driven",
+    has characteristic-statement "Process surfaces what human did not know they needed",
+    has testable-criterion "At least 3 decisions that user says I would not have thought of that";
+
+$H3 isa target-characteristic,
+    has characteristic-id "H3",
+    has characteristic-name "Ownership-Producing",
+    has characteristic-statement "Human can explain agent in 5 min using boundary map",
+    has testable-criterion "Boundary map exists and is non-technical-readable";
+
+$H4 isa target-characteristic,
+    has characteristic-id "H4",
+    has characteristic-name "Enriching",
+    has characteristic-statement "Human is more capable after design than before",
+    has testable-criterion "System Empowerment Index shows Amplifying or Liberating";
+
+$H5 isa target-characteristic,
+    has characteristic-id "H5",
+    has characteristic-name "Recoverable",
+    has characteristic-statement "Every decision revisable without starting over",
+    has testable-criterion "Graph supports targeted modification, not rebuild";
+
+$H6 isa target-characteristic,
+    has characteristic-id "H6",
+    has characteristic-name "Rapport-Aware",
+    has characteristic-statement "Collaborative agents capture human communication prefs",
+    has testable-criterion "Relational profile exists for collaborative agents";
+
+# ─── ECOSYSTEM CHARACTERISTICS ───
+
+$E1 isa target-characteristic,
+    has characteristic-id "E1",
+    has characteristic-name "Compound-Knowledge",
+    has characteristic-statement "Every design feeds artefact graph",
+    has testable-criterion "Meta-agent queryable on patterns from prior designs";
+
+$E2 isa target-characteristic,
+    has characteristic-id "E2",
+    has characteristic-name "Pattern-Crystallising",
+    has characteristic-statement "Similar agents take 1/Nth design time",
+    has testable-criterion "Template library grows from practice";
+
+$E3 isa target-characteristic,
+    has characteristic-id "E3",
+    has characteristic-name "Trust-Measured",
+    has characteristic-statement "Class-level trust scores with statistical backing",
+    has testable-criterion "Measurer-class: 96.2% pass rate, N=1247";
+
+$E4 isa target-characteristic,
+    has characteristic-id "E4",
+    has characteristic-name "Specification-Portable",
+    has characteristic-statement "Design transferable across orgs/LLMs",
+    has testable-criterion "Same job description deploys anywhere";
+
+$E5 isa target-characteristic,
+    has characteristic-id "E5",
+    has characteristic-name "Curriculum-Producing",
+    has characteristic-statement "Every design is a teachable artifact",
+    has testable-criterion "Curriculum module draft produced per design";
+
+$E6 isa target-characteristic,
+    has characteristic-id "E6",
+    has characteristic-name "Self-Improving",
+    has characteristic-statement "Process improves with every agent",
+    has testable-criterion "Meta-agent captures improvement signals automatically";
+
+# ─── DIMENSION MEMBERSHIPS (Agent) ───
+
+(owning-dimension: $dim-agent, owned-characteristic: $A1) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A2) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A3) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A4) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A5) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A6) isa dimension-characteristic-membership;
+(owning-dimension: $dim-agent, owned-characteristic: $A7) isa dimension-characteristic-membership;
+
+# ─── DIMENSION MEMBERSHIPS (Specification) ───
+
+(owning-dimension: $dim-spec, owned-characteristic: $S1) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S2) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S3) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S4) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S5) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S6) isa dimension-characteristic-membership;
+(owning-dimension: $dim-spec, owned-characteristic: $S7) isa dimension-characteristic-membership;
+
+# ─── DIMENSION MEMBERSHIPS (Human) ───
+
+(owning-dimension: $dim-human, owned-characteristic: $H1) isa dimension-characteristic-membership;
+(owning-dimension: $dim-human, owned-characteristic: $H2) isa dimension-characteristic-membership;
+(owning-dimension: $dim-human, owned-characteristic: $H3) isa dimension-characteristic-membership;
+(owning-dimension: $dim-human, owned-characteristic: $H4) isa dimension-characteristic-membership;
+(owning-dimension: $dim-human, owned-characteristic: $H5) isa dimension-characteristic-membership;
+(owning-dimension: $dim-human, owned-characteristic: $H6) isa dimension-characteristic-membership;
+
+# ─── DIMENSION MEMBERSHIPS (Ecosystem) ───
+
+(owning-dimension: $dim-eco, owned-characteristic: $E1) isa dimension-characteristic-membership;
+(owning-dimension: $dim-eco, owned-characteristic: $E2) isa dimension-characteristic-membership;
+(owning-dimension: $dim-eco, owned-characteristic: $E3) isa dimension-characteristic-membership;
+(owning-dimension: $dim-eco, owned-characteristic: $E4) isa dimension-characteristic-membership;
+(owning-dimension: $dim-eco, owned-characteristic: $E5) isa dimension-characteristic-membership;
+(owning-dimension: $dim-eco, owned-characteristic: $E6) isa dimension-characteristic-membership;

@@ -1,0 +1,681 @@
+# ─── PHASE 6: SYSTEM ARCHITECTURE SEED — ENTITIES ──
+# Inserts 9 pipeline-stages, 1 orchestration-config, 5 orchestration-decisions,
+# 14 FMEA entries, 7 template-types, 12 template-instances,
+# 1 composition-config, 18 fallback-tiers
+#
+# Total: 67 entities
+#
+# String ref convention (consistent with Phase 4 allocation.subtask-ref):
+#   - fmea-subtask-ref, fmea-failure-ref, fmea-event-ref → string IDs (not TypeDB relations)
+#   - ti-template-type-ref, ti-subtask-ref → string IDs
+#   - stage-entry-event, stage-exit-event, stage-gate-ref → string IDs
+#
+# Omit empty attributes (Phase 4 decision): never store "" — absence is queryable
+
+insert
+
+# ════════════════════════════════════════════════════════════════════════════════
+# PIPELINE STAGES: S1-S9
+# ════════════════════════════════════════════════════════════════════════════════
+
+$S1 isa pipeline-stage,
+    has stage-id "S1",
+    has stage-name "Purpose",
+    has stage-description "Define agent purpose, anti-goals, and authority class",
+    has stage-ordinal 1,
+    has stage-gate-ref "G1",
+    has stage-entry-event "E1",
+    has stage-exit-event "E3",
+    has stage-parallel false;
+
+$S2 isa pipeline-stage,
+    has stage-id "S2",
+    has stage-name "Scope",
+    has stage-description "Draw inside/outside scope boundary and audit tools",
+    has stage-ordinal 2,
+    has stage-gate-ref "G2",
+    has stage-entry-event "E3",
+    has stage-exit-event "E4",
+    has stage-parallel true;
+
+$S3 isa pipeline-stage,
+    has stage-id "S3",
+    has stage-name "Specification",
+    has stage-description "Draft job description, contract architecture, and relational profile",
+    has stage-ordinal 3,
+    has stage-gate-ref "G3",
+    has stage-entry-event "E4",
+    has stage-exit-event "E6",
+    has stage-parallel true;
+
+$S4 isa pipeline-stage,
+    has stage-id "S4",
+    has stage-name "Templating",
+    has stage-description "Generate 8 contract template specialisations with consistency check",
+    has stage-ordinal 4,
+    has stage-gate-ref "G4",
+    has stage-entry-event "E6",
+    has stage-exit-event "E8",
+    has stage-parallel true;
+
+$S5 isa pipeline-stage,
+    has stage-id "S5",
+    has stage-name "Validation",
+    has stage-description "Validate templates in isolation and combination; quality gates pass",
+    has stage-ordinal 5,
+    has stage-gate-ref "G5",
+    has stage-entry-event "E8",
+    has stage-exit-event "E9",
+    has stage-parallel true;
+
+$S6 isa pipeline-stage,
+    has stage-id "S6",
+    has stage-name "Generation",
+    has stage-description "Generate Agno code, test suite, and artefact views",
+    has stage-ordinal 6,
+    has stage-gate-ref "G6",
+    has stage-entry-event "E9",
+    has stage-exit-event "E13",
+    has stage-parallel true;
+
+$S7 isa pipeline-stage,
+    has stage-id "S7",
+    has stage-name "Integration",
+    has stage-description "Integration validation, pattern identification, and curriculum drafting",
+    has stage-ordinal 7,
+    has stage-gate-ref "G7",
+    has stage-entry-event "E13",
+    has stage-exit-event "E15",
+    has stage-parallel true;
+
+$S8 isa pipeline-stage,
+    has stage-id "S8",
+    has stage-name "Completion",
+    has stage-description "Assemble final artefact graph and verify all 28 outputs",
+    has stage-ordinal 8,
+    has stage-gate-ref "G8",
+    has stage-entry-event "E15",
+    has stage-exit-event "E16",
+    has stage-parallel false;
+
+$S9 isa pipeline-stage,
+    has stage-id "S9",
+    has stage-name "Monitoring",
+    has stage-description "Continuous specification aging, memory governance, and boundary drift monitoring",
+    has stage-ordinal 9,
+    has stage-gate-ref "G9",
+    has stage-entry-event "E16",
+    has stage-exit-event "Ongoing",
+    has stage-parallel false;
+
+# ════════════════════════════════════════════════════════════════════════════════
+# ORCHESTRATION CONFIG: OC1
+# ════════════════════════════════════════════════════════════════════════════════
+
+$OC1 isa orchestration-config,
+    has oc-id "OC1",
+    has oc-composition-type "workflow",
+    has oc-orchestration-pattern "sequential_with_conditional_parallelism",
+    has oc-session-model "persistent_session_linked",
+    has oc-state-sharing "session_state_plus_typedb",
+    has oc-fallback-tier-limit 3;
+
+# ════════════════════════════════════════════════════════════════════════════════
+# ORCHESTRATION DECISIONS: OD1-OD5
+# ════════════════════════════════════════════════════════════════════════════════
+
+$OD1 isa orchestration-decision,
+    has od-id "OD1",
+    has od-question "Composition type?",
+    has od-chosen "Workflow",
+    has od-reason "Stages are sequential and gated; subtasks within stages can parallelise; state flows forward through defined outputs",
+    has od-alternatives "Team (no persistent roles — agents specialise per subtask, not per stage); Single agent (too many subtasks for one context window)";
+
+$OD2 isa orchestration-decision,
+    has od-id "OD2",
+    has od-question "Orchestration pattern?",
+    has od-chosen "Sequential with conditional parallelism",
+    has od-reason "Stages run sequentially (gate dependencies); subtasks within stages parallelise where Phase 4 dependencies allow",
+    has od-alternatives "Pure sequential (wastes parallelism opportunity); Event-driven (over-engineered for 9 stages)";
+
+$OD3 isa orchestration-decision,
+    has od-id "OD3",
+    has od-question "Session model?",
+    has od-chosen "Persistent, session-linked",
+    has od-reason "Agent design spans hours/days; artefact graph must persist between sessions; user returns to continue where they left off",
+    has od-alternatives "Ephemeral (loses context); Single-session (unrealistic for non-trivial agents)";
+
+$OD4 isa orchestration-decision,
+    has od-id "OD4",
+    has od-question "State sharing?",
+    has od-chosen "Session state + shared TypeDB",
+    has od-reason "Session state for orchestration metadata (current stage, active subtasks); TypeDB for artefact graph (the real state); session metadata holds fragment IDs, TypeDB holds fragments",
+    has od-alternatives "Session state only (can't query artefact graph); Event stream only (no direct query)";
+
+$OD5 isa orchestration-decision,
+    has od-id "OD5",
+    has od-question "Fallback depth?",
+    has od-chosen "3 tiers max",
+    has od-reason "Tier 1 (retry), Tier 2 (restricted retry), Tier 3 (escalate human). Tier 4 (halt) is emergency only. Prevents infinite fallback loops",
+    has od-alternatives "Unlimited (dangerous); 1 tier only (too aggressive)";
+
+# ════════════════════════════════════════════════════════════════════════════════
+# FMEA ENTRIES: FE1-FE14
+# ════════════════════════════════════════════════════════════════════════════════
+
+$FE1 isa fmea-entry,
+    has fmea-id "FE1",
+    has fmea-subtask-ref "T1.1",
+    has fmea-failure-ref "F1",
+    has fmea-event-ref "E1",
+    has fmea-effect "Blocks all downstream; user abandons",
+    has fmea-severity 8,
+    has fmea-occurrence 6,
+    has fmea-detection 4,
+    has fmea-rpn 192,
+    has fmea-mitigation "Vision Mirror reflects back; what if you had an agent that… prompts",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 48;
+
+$FE2 isa fmea-entry,
+    has fmea-id "FE2",
+    has fmea-subtask-ref "T1.1",
+    has fmea-failure-ref "F2",
+    has fmea-event-ref "E2",
+    has fmea-effect "Authority class ambiguous; contract covers wrong scope",
+    has fmea-severity 9,
+    has fmea-occurrence 4,
+    has fmea-detection 5,
+    has fmea-rpn 180,
+    has fmea-mitigation "Anti-goals field enforced; single-purpose check at G1",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 36;
+
+$FE3 isa fmea-entry,
+    has fmea-id "FE3",
+    has fmea-subtask-ref "T1.2",
+    has fmea-failure-ref "F3",
+    has fmea-event-ref "E3",
+    has fmea-effect "KR9 cascade: wrong class → wrong contract → wrong code → wrong agent",
+    has fmea-severity 10,
+    has fmea-occurrence 3,
+    has fmea-detection 2,
+    has fmea-rpn 60,
+    has fmea-mitigation "ST1 system gate + 5-class taxonomy check at G1",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 15;
+
+$FE4 isa fmea-entry,
+    has fmea-id "FE4",
+    has fmea-subtask-ref "T1.3",
+    has fmea-failure-ref "F4",
+    has fmea-event-ref "E4",
+    has fmea-effect "Agent tries to do too much; hallucination surface expands",
+    has fmea-severity 7,
+    has fmea-occurrence 5,
+    has fmea-detection 3,
+    has fmea-rpn 105,
+    has fmea-mitigation "Outside_scope mandatory at G2; stress test each inside item",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 35;
+
+$FE5 isa fmea-entry,
+    has fmea-id "FE5",
+    has fmea-subtask-ref "T1.3",
+    has fmea-failure-ref "F5",
+    has fmea-event-ref "E4",
+    has fmea-effect "Agent can't do anything meaningful",
+    has fmea-severity 8,
+    has fmea-occurrence 2,
+    has fmea-detection 4,
+    has fmea-rpn 64,
+    has fmea-mitigation "G2 requires inside_scope ≥ 1; escalate if scope too narrow",
+    has fmea-mitigation-type "detective",
+    has fmea-residual-rpn 16;
+
+$FE6 isa fmea-entry,
+    has fmea-id "FE6",
+    has fmea-subtask-ref "T1.5",
+    has fmea-failure-ref "F6",
+    has fmea-event-ref "E6",
+    has fmea-effect "Enforcement is decorative; guard exists but can't verify",
+    has fmea-severity 9,
+    has fmea-occurrence 3,
+    has fmea-detection 3,
+    has fmea-rpn 81,
+    has fmea-mitigation "ST3 system gate: every guard must have assertion_schema",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 18;
+
+$FE7 isa fmea-entry,
+    has fmea-id "FE7",
+    has fmea-subtask-ref "T2.1",
+    has fmea-failure-ref "F7",
+    has fmea-event-ref "E8",
+    has fmea-effect "Downstream code conflicts between templates",
+    has fmea-severity 6,
+    has fmea-occurrence 4,
+    has fmea-detection 2,
+    has fmea-rpn 48,
+    has fmea-mitigation "Cross-template consistency check at G4",
+    has fmea-mitigation-type "detective",
+    has fmea-residual-rpn 12;
+
+$FE8 isa fmea-entry,
+    has fmea-id "FE8",
+    has fmea-subtask-ref "T3.1",
+    has fmea-failure-ref "F8",
+    has fmea-event-ref "E7",
+    has fmea-effect "User distrusts agent tone; e.g., Genial Assessor",
+    has fmea-severity 5,
+    has fmea-occurrence 5,
+    has fmea-detection 5,
+    has fmea-rpn 125,
+    has fmea-mitigation "Personality-purpose link mandatory at G3",
+    has fmea-mitigation-type "detective",
+    has fmea-residual-rpn 25;
+
+$FE9 isa fmea-entry,
+    has fmea-id "FE9",
+    has fmea-subtask-ref "T5.1",
+    has fmea-failure-ref "F9",
+    has fmea-event-ref "E13",
+    has fmea-effect "Generated code won't run",
+    has fmea-severity 7,
+    has fmea-occurrence 3,
+    has fmea-detection 1,
+    has fmea-rpn 21,
+    has fmea-mitigation "ST5 system gate: schema_registry validation",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 7;
+
+$FE10 isa fmea-entry,
+    has fmea-id "FE10",
+    has fmea-subtask-ref "T5.3",
+    has fmea-failure-ref "F10",
+    has fmea-event-ref "E15",
+    has fmea-effect "Agent doesn't work end-to-end",
+    has fmea-severity 8,
+    has fmea-occurrence 3,
+    has fmea-detection 2,
+    has fmea-rpn 48,
+    has fmea-mitigation "FMEA-driven test design covers edge cases",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 16;
+
+$FE11 isa fmea-entry,
+    has fmea-id "FE11",
+    has fmea-subtask-ref "T8.2",
+    has fmea-failure-ref "F11",
+    has fmea-event-ref "E11",
+    has fmea-effect "Hallucination risk; cost overrun",
+    has fmea-severity 8,
+    has fmea-occurrence 4,
+    has fmea-detection 2,
+    has fmea-rpn 64,
+    has fmea-mitigation "ST7 hard ceiling enforced by system",
+    has fmea-mitigation-type "preventive",
+    has fmea-residual-rpn 16;
+
+$FE12 isa fmea-entry,
+    has fmea-id "FE12",
+    has fmea-subtask-ref "—",
+    has fmea-failure-ref "F12",
+    has fmea-event-ref "E16",
+    has fmea-effect "Agent operates on outdated design",
+    has fmea-severity 6,
+    has fmea-occurrence 7,
+    has fmea-detection 3,
+    has fmea-rpn 126,
+    has fmea-mitigation "ST9 aging trigger + human review queue",
+    has fmea-mitigation-type "detective",
+    has fmea-residual-rpn 42;
+
+$FE13 isa fmea-entry,
+    has fmea-id "FE13",
+    has fmea-subtask-ref "—",
+    has fmea-failure-ref "F13",
+    has fmea-event-ref "E16",
+    has fmea-effect "Silent assumption accumulation",
+    has fmea-severity 8,
+    has fmea-occurrence 3,
+    has fmea-detection 2,
+    has fmea-rpn 48,
+    has fmea-mitigation "ST8 retention enforcement + purge",
+    has fmea-mitigation-type "corrective",
+    has fmea-residual-rpn 12;
+
+$FE14 isa fmea-entry,
+    has fmea-id "FE14",
+    has fmea-subtask-ref "—",
+    has fmea-failure-ref "F14",
+    has fmea-event-ref "E16",
+    has fmea-effect "Agent exceeding authority",
+    has fmea-severity 7,
+    has fmea-occurrence 5,
+    has fmea-detection 3,
+    has fmea-rpn 105,
+    has fmea-mitigation "ST10 override rate monitor + autonomy review",
+    has fmea-mitigation-type "detective",
+    has fmea-residual-rpn 35;
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TEMPLATE TYPES: 7 types (5 instantiated now, 2 deferred to Phase 8)
+# ════════════════════════════════════════════════════════════════════════════════
+
+$TT_Input isa template-type,
+    has tt-id "TT-Input",
+    has tt-name "Input",
+    has tt-description "Standardised input schema for a subtask",
+    has tt-usage-count 3;
+
+$TT_Output isa template-type,
+    has tt-id "TT-Output",
+    has tt-name "Output",
+    has tt-description "Standardised output schema (the 28 design outputs)",
+    has tt-usage-count 5;
+
+$TT_Handoff isa template-type,
+    has tt-id "TT-Handoff",
+    has tt-name "Handoff",
+    has tt-description "Interface contract between subtasks or stages",
+    has tt-usage-count 2;
+
+$TT_Verification isa template-type,
+    has tt-id "TT-Verification",
+    has tt-name "Verification",
+    has tt-description "Quality gate assertion template",
+    has tt-usage-count 9;
+
+$TT_Decision isa template-type,
+    has tt-id "TT-Decision",
+    has tt-name "Decision",
+    has tt-description "Decision capture template with why field",
+    has tt-usage-count 10;
+
+$TT_Feedback isa template-type,
+    has tt-id "TT-Feedback",
+    has tt-name "Feedback",
+    has tt-description "User feedback capture for progressive autonomy",
+    has tt-usage-count 0;
+
+$TT_Escalation isa template-type,
+    has tt-id "TT-Escalation",
+    has tt-name "Escalation",
+    has tt-description "Escalation protocol template",
+    has tt-usage-count 0;
+
+# ════════════════════════════════════════════════════════════════════════════════
+# TEMPLATE INSTANCES: TI-01 through TI-12
+# ════════════════════════════════════════════════════════════════════════════════
+
+$TI_01 isa template-instance,
+    has ti-id "TI-01",
+    has ti-template-type-ref "TT-Input",
+    has ti-subtask-ref "T1.1",
+    has ti-specialisation "Purpose Input — human articulates purpose and anti-goals",
+    has ti-schema "{purpose_statement: string, anti_goals: string[], principal_declared: bool}";
+
+$TI_02 isa template-instance,
+    has ti-id "TI-02",
+    has ti-template-type-ref "TT-Input",
+    has ti-subtask-ref "T1.3",
+    has ti-specialisation "Scope Input — human draws inside/outside boundary",
+    has ti-schema "{inside_scope: string[], outside_scope: string[], escalation_triggers: string[]}";
+
+$TI_03 isa template-instance,
+    has ti-id "TI-03",
+    has ti-template-type-ref "TT-Input",
+    has ti-subtask-ref "T1.2",
+    has ti-specialisation "Authority Class Input — human selects from 5-class taxonomy",
+    has ti-schema "{authority_class: extractor|measurer|assessor|generator|aggregator, evidence: string}";
+
+$TI_04 isa template-instance,
+    has ti-id "TI-04",
+    has ti-template-type-ref "TT-Output",
+    has ti-subtask-ref "T1.1",
+    has ti-specialisation "Agent Identity Card (O1) — purpose, anti-goals, authority class",
+    has ti-schema "{purpose: string, anti_goals: string[], authority_class: string, principal: string}";
+
+$TI_05 isa template-instance,
+    has ti-id "TI-05",
+    has ti-template-type-ref "TT-Output",
+    has ti-subtask-ref "T1.4",
+    has ti-specialisation "Job Description (O3) — implementable by Agno dev",
+    has ti-schema "{job_desc: string, authority_boundary: string, input_schema: string, output_schema: string}";
+
+$TI_06 isa template-instance,
+    has ti-id "TI-06",
+    has ti-template-type-ref "TT-Output",
+    has ti-subtask-ref "T1.5",
+    has ti-specialisation "Contract Schema (O5) — enforcement regime and guards",
+    has ti-schema "{contract_id: string, enforcement_regime: string, guards: guard[], revert_granularity: string}";
+
+$TI_07 isa template-instance,
+    has ti-id "TI-07",
+    has ti-template-type-ref "TT-Output",
+    has ti-subtask-ref "T6.1",
+    has ti-specialisation "Boundary Map View (O19) — 5-minute readable boundary map",
+    has ti-schema "{boundary_map: string, inside_scope: string[], outside_scope: string[], escalation_paths: string[]}";
+
+$TI_08 isa template-instance,
+    has ti-id "TI-08",
+    has ti-template-type-ref "TT-Output",
+    has ti-subtask-ref "T6.2",
+    has ti-specialisation "Ops Manual View (O20) — insurer-readable operations manual",
+    has ti-schema "{ops_manual: string, decision_log: decision[], override_procedures: string[], monitoring_schedule: string}";
+
+$TI_09 isa template-instance,
+    has ti-id "TI-09",
+    has ti-template-type-ref "TT-Handoff",
+    has ti-subtask-ref "—",
+    has ti-specialisation "Stage Handoff — purpose → scope transition",
+    has ti-schema "{from_stage: string, to_stage: string, artefact_ids: string[], gate_assertions: string[], pending_decisions: string[]}";
+
+$TI_10 isa template-instance,
+    has ti-id "TI-10",
+    has ti-template-type-ref "TT-Handoff",
+    has ti-subtask-ref "T1.4",
+    has ti-specialisation "Subtask Handoff — job desc → contract",
+    has ti-schema "{from_subtask: string, to_subtask: string, output_ref: string, input_requirements: string[], quality_check: string}";
+
+$TI_11 isa template-instance,
+    has ti-id "TI-11",
+    has ti-template-type-ref "TT-Verification",
+    has ti-subtask-ref "—",
+    has ti-specialisation "Gate Assertion — parameterised per gate G1-G9",
+    has ti-schema "{gate_id: string, assertions: assertion[], required_pass_count: int, actual_pass_count: int}";
+
+$TI_12 isa template-instance,
+    has ti-id "TI-12",
+    has ti-template-type-ref "TT-Decision",
+    has ti-subtask-ref "—",
+    has ti-specialisation "Decision Record — decision, options, chosen, reasoning, authority",
+    has ti-schema "{decision_id: string, question: string, options: string[], chosen: string, reasoning: string, authority: string}";
+
+# ════════════════════════════════════════════════════════════════════════════════
+# COMPOSITION CONFIG: CC1
+# ════════════════════════════════════════════════════════════════════════════════
+
+$CC1 isa composition-config,
+    has cc-id "CC1",
+    has cc-type "workflow",
+    has cc-justification "Stages are sequential and gated; subtasks within stages can parallelise; state flows forward through defined outputs",
+    has cc-agno-mapping "Agno Workflow with step_choices for conditional routing and Session for persistence",
+    has cc-steps "[{stage: S1, name: Purpose, subtasks: [T1.1, T1.2], gate: G1}, {stage: S2, name: Scope, subtasks: [T1.3, T8.1], gate: G2, parallel: true}, {stage: S3, name: Specification, subtasks: [T1.4, T1.5, T3.1], gate: G3, parallel: true}, {stage: S4, name: Templating, subtasks: [T2.1, T4.2, T8.2], gate: G4, parallel: true}, {stage: S5, name: Validation, subtasks: [T2.2, T3.2, T4.1, T8.3, T8.4], gate: G5, parallel: true}, {stage: S6, name: Generation, subtasks: [T5.1, T5.2, T6.1, T6.2, T6.3, T8.5], gate: G6, parallel: true}, {stage: S7, name: Integration, subtasks: [T5.3, T7.1, T7.2], gate: G7, parallel: true}, {stage: S8, name: Completion, subtasks: [], gate: G8}, {stage: S9, name: Monitoring, subtasks: [], gate: G9}]",
+    has cc-step-choices "{S2: {parallel: [T1.3, T8.1]}, S3: {after_E5: [T3.1]}, S4: {parallel: [T2.1, T4.2, T8.2]}, S5: {parallel: [T2.2, T3.2, T4.1, T8.3, T8.4]}, S6: {sequential: [T5.1, T5.2], parallel: [T6.1, T6.2, T6.3, T8.5]}, S7: {sequential_first: [T5.3], then_parallel: [T7.1, T7.2]}}",
+    has cc-session-config "{storage: PostgresDb, table: agent_design_sessions, session_model: persistent_session_linked, state_sharing: session_state_plus_typedb}";
+
+# ════════════════════════════════════════════════════════════════════════════════
+# FALLBACK TIERS: 18 entries (4 Tier 1 + 4 Tier 2 + 6 Tier 3 + 4 Tier 4)
+# ════════════════════════════════════════════════════════════════════════════════
+
+# ── Tier 1: Retry Same Agent (Same Inputs + Constraint) ──
+
+$FT1_1 isa fallback-tier,
+    has ft-id "FT-T1.1",
+    has ft-tier 1,
+    has ft-name "retry_same_agent",
+    has ft-trigger "Purpose unclear after first attempt",
+    has ft-action "Add reflection prompt, what if you had an agent that…",
+    has ft-max-attempts 3,
+    has ft-preserve-state "true";
+
+$FT1_2 isa fallback-tier,
+    has ft-id "FT-T2.1",
+    has ft-tier 1,
+    has ft-name "retry_same_agent",
+    has ft-trigger "Template inconsistency detected",
+    has ft-action "Add cross-template consistency constraint",
+    has ft-max-attempts 3,
+    has ft-preserve-state "true";
+
+$FT1_3 isa fallback-tier,
+    has ft-id "FT-T5.1",
+    has ft-tier 1,
+    has ft-name "retry_same_agent",
+    has ft-trigger "Schema validation failure",
+    has ft-action "Add schema_registry schema as strict constraint",
+    has ft-max-attempts 3,
+    has ft-preserve-state "true";
+
+$FT1_4 isa fallback-tier,
+    has ft-id "FT-T5.2",
+    has ft-tier 1,
+    has ft-name "retry_same_agent",
+    has ft-trigger "Test coverage below 80%",
+    has ft-action "Add FMEA failure scenarios as required test cases",
+    has ft-max-attempts 3,
+    has ft-preserve-state "true";
+
+# ── Tier 2: Retry Restricted (Reduced Scope + Stricter Guard) ──
+
+$FT2_1 isa fallback-tier,
+    has ft-id "FT-T1.2",
+    has ft-tier 2,
+    has ft-name "retry_restricted",
+    has ft-trigger "Class still ambiguous after Tier 1",
+    has ft-action "Restrict to 2 most likely classes; human picks",
+    has ft-max-attempts 2,
+    has ft-preserve-state "true";
+
+$FT2_2 isa fallback-tier,
+    has ft-id "FT-T2.2",
+    has ft-tier 2,
+    has ft-name "retry_restricted",
+    has ft-trigger "Validation ambiguous after Tier 1",
+    has ft-action "Restrict to structural checks only; defer semantic",
+    has ft-max-attempts 2,
+    has ft-preserve-state "true";
+
+$FT2_3 isa fallback-tier,
+    has ft-id "FT-T5.3",
+    has ft-tier 2,
+    has ft-name "retry_restricted",
+    has ft-trigger "Integration failure after Tier 1",
+    has ft-action "Restrict to critical path only; defer edge cases",
+    has ft-max-attempts 2,
+    has ft-preserve-state "true";
+
+$FT2_4 isa fallback-tier,
+    has ft-id "FT-T8.2",
+    has ft-tier 2,
+    has ft-name "retry_restricted",
+    has ft-trigger "Context budget exceeded after Tier 1",
+    has ft-action "Reduce budget by 30%; simplify protocol",
+    has ft-max-attempts 2,
+    has ft-preserve-state "true";
+
+# ── Tier 3: Escalate Human ──
+
+$FT3_1 isa fallback-tier,
+    has ft-id "FT-T1.1-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Purpose still unclear after 3 Tier 1 attempts",
+    has ft-action "Human decides whether to continue, reframe, or abandon",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+$FT3_2 isa fallback-tier,
+    has ft-id "FT-T1.3-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Scope void — is agent needed?",
+    has ft-action "Human decides whether agent is the right solution",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+$FT3_3 isa fallback-tier,
+    has ft-id "FT-T1.5-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Contract regime disagreement",
+    has ft-action "Human decides enforcement regime (declare/detect/prevent)",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+$FT3_4 isa fallback-tier,
+    has ft-id "FT-T3.1-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Personality can't be resolved",
+    has ft-action "Human overrides personality-purpose link with explicit decision",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+$FT3_5 isa fallback-tier,
+    has ft-id "FT-T5.3-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Critical path still failing after Tier 2",
+    has ft-action "Human decides whether to redesign or halt",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+$FT3_6 isa fallback-tier,
+    has ft-id "FT-T8.4-H",
+    has ft-tier 3,
+    has ft-name "escalate_human",
+    has ft-trigger "Memory policy deadlock",
+    has ft-action "Human sets retention policy manually",
+    has ft-max-attempts 1,
+    has ft-preserve-state "true";
+
+# ── Tier 4: Halt (system-level, no subtask links) ──
+
+$FT4_1 isa fallback-tier,
+    has ft-id "FT-HALT-1",
+    has ft-tier 4,
+    has ft-name "halt",
+    has ft-trigger "Tier 3 human says halt",
+    has ft-action "Stop pipeline. Preserve artefact graph. Log halt event.",
+    has ft-max-attempts 0,
+    has ft-preserve-state "true";
+
+$FT4_2 isa fallback-tier,
+    has ft-id "FT-HALT-2",
+    has ft-tier 4,
+    has ft-name "halt",
+    has ft-trigger "Memory governance breach (F13)",
+    has ft-action "Halt + purge to policy",
+    has ft-max-attempts 0,
+    has ft-preserve-state "true";
+
+$FT4_3 isa fallback-tier,
+    has ft-id "FT-HALT-3",
+    has ft-tier 4,
+    has ft-name "halt",
+    has ft-trigger "Context budget hard ceiling exceeded on 2nd Tier 1 attempt",
+    has ft-action "Halt + flag for redesign",
+    has ft-max-attempts 0,
+    has ft-preserve-state "true";
+
+$FT4_4 isa fallback-tier,
+    has ft-id "FT-HALT-4",
+    has ft-tier 4,
+    has ft-name "halt",
+    has ft-trigger "Any 3 Tier 3 escalations in same stage",
+    has ft-action "System halts stage. Suggests design may need restructuring.",
+    has ft-max-attempts 0,
+    has ft-preserve-state "true";

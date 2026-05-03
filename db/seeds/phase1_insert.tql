@@ -1,0 +1,412 @@
+# ─── PHASE 1 SEED DATA ───
+# 8 output-group entities + 28 design-output entities
+# + 28 output-group-membership relations + 85 output-dependency relations
+
+insert
+
+# ─── OUTPUT GROUPS ───
+
+$G1 isa output-group, has group-id "G1", has group-name "Identity", has group-description "Who This Agent Is";
+$G2 isa output-group, has group-id "G2", has group-name "Contracts", has group-description "The Operating Constitution";
+$G3 isa output-group, has group-id "G3", has group-name "Behaviour", has group-description "How It Interacts";
+$G4 isa output-group, has group-id "G4", has group-name "Verification", has group-description "How We Know";
+$G5 isa output-group, has group-id "G5", has group-name "Implementation", has group-description "The Running Agent";
+$G6 isa output-group, has group-id "G6", has group-name "Human Artefacts", has group-description "Human-readable artefacts";
+$G7 isa output-group, has group-id "G7", has group-name "Ecosystem", has group-description "What Compounds";
+$G8 isa output-group, has group-id "G8", has group-name "Operational Environment", has group-description "How It Actually Works";
+
+# ─── G1: IDENTITY ───
+
+$O1 isa design-output,
+    has output-id "O1",
+    has output-name "Purpose Statement",
+    has output-purpose "Mission, principal, authority class",
+    has prism-type "intention",
+    has storage-location "TypeDB",
+    has quality-gate "Stranger knows what it does, does not do, and for whom";
+
+$O2 isa design-output,
+    has output-id "O2",
+    has output-name "Boundary Map",
+    has output-purpose "Inside/outside scope, escalations, human-only",
+    has prism-type "intention+governance",
+    has storage-location "TypeDB",
+    has quality-gate "Non-technical readable in 5 min; every outside_scope has escalation";
+
+$O3 isa design-output,
+    has output-id "O3",
+    has output-name "Agent Job Description",
+    has output-purpose "Complete specification of role, capabilities, constraints",
+    has prism-type "entity",
+    has schema-registry-ref "schema_registry",
+    has storage-location "TypeDB",
+    has quality-gate "Agno developer can implement from this alone";
+
+$O4 isa design-output,
+    has output-id "O4",
+    has output-name "Quasi-Smart Contract",
+    has output-purpose "Enforcement membrane — all 8 primitives",
+    has prism-type "entity",
+    has schema-registry-ref "schema_registry",
+    has storage-location "TypeDB",
+    has quality-gate "Every guard testable; budget halts structurally; revert granularity defined";
+
+# ─── G2: CONTRACTS ───
+
+$O5 isa design-output,
+    has output-id "O5",
+    has output-name "Input Contract",
+    has output-purpose "Validates every input",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Rejects invalid input structurally";
+
+$O6 isa design-output,
+    has output-id "O6",
+    has output-name "Output Contract",
+    has output-purpose "Validates every output and injects epistemic metadata",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Injects epistemic metadata; authority class checked";
+
+$O7 isa design-output,
+    has output-id "O7",
+    has output-name "Handoff Contract",
+    has output-purpose "Governs data transfer between actors",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Receiving input contract matches sending output";
+
+$O8 isa design-output,
+    has output-id "O8",
+    has output-name "Verification Contract",
+    has output-purpose "Defines how outputs are verified",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Verification level specified; independent verifier defined";
+
+$O9 isa design-output,
+    has output-id "O9",
+    has output-name "Decision Contract",
+    has output-purpose "Governs decisions affecting humans",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Human-only decision types listed; escalation threshold defined";
+
+$O10 isa design-output,
+    has output-id "O10",
+    has output-name "Feedback Contract",
+    has output-purpose "Governs human to agent feedback",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Feedback types taxonomy; specification aging trigger defined";
+
+$O11 isa design-output,
+    has output-id "O11",
+    has output-name "Escalation Contract",
+    has output-purpose "Governs when and how agent escalates",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Trigger conditions specific; timeout before default defined";
+
+$O12 isa design-output,
+    has output-id "O12",
+    has output-name "Report Contract",
+    has output-purpose "Governs periodic and on-demand reporting",
+    has prism-type "entity",
+    has storage-location "TypeDB",
+    has quality-gate "Report type, audience, and frequency defined";
+
+# ─── G3: BEHAVIOUR ───
+
+$O13 isa design-output,
+    has output-id "O13",
+    has output-name "Relational Profile",
+    has output-purpose "Communication style, rapport approach",
+    has prism-type "intention",
+    has storage-location "TypeDB",
+    has quality-gate "Tone matches authority class; personality-purpose link present; dependency guard";
+
+$O14 isa design-output,
+    has output-id "O14",
+    has output-name "Progressive Autonomy Plan",
+    has output-purpose "4-level autonomy progression with metrics",
+    has prism-type "intention+governance",
+    has storage-location "TypeDB",
+    has quality-gate "Promotion requires quantitative evidence; autonomous has demotion triggers";
+
+# ─── G4: VERIFICATION ───
+
+$O15 isa design-output,
+    has output-id "O15",
+    has output-name "Trust Ledger Schema",
+    has output-purpose "Records verification events, overrides, escalations",
+    has prism-type "event+governance",
+    has storage-location "TypeDB",
+    has quality-gate "Queryable by time, class, and agent; 3-level audit trail";
+
+$O16 isa design-output,
+    has output-id "O16",
+    has output-name "Specification Aging Schedule",
+    has output-purpose "When and how specifications are reviewed",
+    has prism-type "intention+temporal",
+    has storage-location "TypeDB",
+    has quality-gate "Every component has cadence; staleness queryable";
+
+# ─── G5: IMPLEMENTATION ───
+
+$O17 isa design-output,
+    has output-id "O17",
+    has output-name "Agno Agent Code",
+    has output-purpose "Running implementation",
+    has storage-location "code",
+    has quality-gate "Passes all 8 template validations; cost within budget; boundaries revert not warn";
+
+$O18 isa design-output,
+    has output-id "O18",
+    has output-name "Agno Agent Tests",
+    has output-purpose "Every design decision generates a test",
+    has storage-location "code",
+    has quality-gate "Every guard, escalation trigger, must_escalate, and contract template has tests";
+
+# ─── G6: HUMAN ARTEFACTS ───
+
+$O19 isa design-output,
+    has output-id "O19",
+    has output-name "One-Page Boundary Map",
+    has output-purpose "Printable human-readable boundary map",
+    has prism-type "derived view",
+    has storage-location "derived_view",
+    has quality-gate "Non-technical person reads in 5 min";
+
+$O20 isa design-output,
+    has output-id "O20",
+    has output-name "Agent Ops Manual Entry",
+    has output-purpose "Governance document for insurers and auditors",
+    has prism-type "derived view",
+    has storage-location "derived_view",
+    has quality-gate "PI insurer can assess risk from this doc";
+
+$O21 isa design-output,
+    has output-id "O21",
+    has output-name "Design Decision Log",
+    has output-purpose "Decision archaeology — why, alternatives, reasoning",
+    has prism-type "knowledge+epistemic",
+    has storage-location "TypeDB",
+    has quality-gate "Every major decision has entry; queryable why";
+
+# ─── G7: ECOSYSTEM ───
+
+$O22 isa design-output,
+    has output-id "O22",
+    has output-name "Pattern Contribution",
+    has output-purpose "Novel patterns captured for reuse",
+    has prism-type "knowledge+governance",
+    has storage-location "TypeDB",
+    has quality-gate "Genuinely novel; has validation evidence";
+
+$O23 isa design-output,
+    has output-id "O23",
+    has output-name "Curriculum Module Draft",
+    has output-purpose "Pedagogical value captured",
+    has prism-type "knowledge",
+    has storage-location "TypeDB",
+    has quality-gate "Teachable from this module; honest about mistakes";
+
+# ─── G8: OPERATIONAL ENVIRONMENT ───
+
+$O24 isa design-output,
+    has output-id "O24",
+    has output-name "Tool Specification",
+    has output-purpose "What agent can access and do; tools as boundary surface",
+    has prism-type "entity+governance",
+    has storage-location "TypeDB",
+    has quality-gate "Every tool maps to inside_scope; critical tools require human authority";
+
+$O25 isa design-output,
+    has output-id "O25",
+    has output-name "Context Specification",
+    has output-purpose "Budget-aware, relevance-scored context protocol",
+    has prism-type "knowledge+epistemic",
+    has storage-location "TypeDB",
+    has quality-gate "Budget bounded; excluded topics match outside_scope; no hallucination-priming";
+
+$O26 isa design-output,
+    has output-id "O26",
+    has output-name "Knowledge Base Specification",
+    has output-purpose "Curated, scoped, epistemically tagged domain expertise",
+    has prism-type "knowledge+epistemic+schema",
+    has storage-location "TypeDB",
+    has quality-gate "KB scope matches O1; excluded topics match O2; freshness requirements defined";
+
+$O27 isa design-output,
+    has output-id "O27",
+    has output-name "Memory Specification",
+    has output-purpose "What agent retains across sessions, with governance",
+    has prism-type "knowledge+governance+temporal",
+    has storage-location "TypeDB",
+    has quality-gate "Architecture matches authority class; human-deletable by default; dependency guard for collaborative";
+
+$O28 isa design-output,
+    has output-id "O28",
+    has output-name "Storage and Output Specification",
+    has output-purpose "Where outputs go; TypeDB for data, files for code only",
+    has prism-type "entity+governance+epistemic+temporal+schema",
+    has storage-location "TypeDB",
+    has quality-gate "Every output has schema_registry entry; derived views generated not stored; code has traceability links";
+
+# ─── OUTPUT GROUP MEMBERSHIPS ───
+
+(containing-group: $G1, grouped-output: $O1) isa output-group-membership;
+(containing-group: $G1, grouped-output: $O2) isa output-group-membership;
+(containing-group: $G1, grouped-output: $O3) isa output-group-membership;
+(containing-group: $G1, grouped-output: $O4) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O5) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O6) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O7) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O8) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O9) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O10) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O11) isa output-group-membership;
+(containing-group: $G2, grouped-output: $O12) isa output-group-membership;
+(containing-group: $G3, grouped-output: $O13) isa output-group-membership;
+(containing-group: $G3, grouped-output: $O14) isa output-group-membership;
+(containing-group: $G4, grouped-output: $O15) isa output-group-membership;
+(containing-group: $G4, grouped-output: $O16) isa output-group-membership;
+(containing-group: $G5, grouped-output: $O17) isa output-group-membership;
+(containing-group: $G5, grouped-output: $O18) isa output-group-membership;
+(containing-group: $G6, grouped-output: $O19) isa output-group-membership;
+(containing-group: $G6, grouped-output: $O20) isa output-group-membership;
+(containing-group: $G6, grouped-output: $O21) isa output-group-membership;
+(containing-group: $G7, grouped-output: $O22) isa output-group-membership;
+(containing-group: $G7, grouped-output: $O23) isa output-group-membership;
+(containing-group: $G8, grouped-output: $O24) isa output-group-membership;
+(containing-group: $G8, grouped-output: $O25) isa output-group-membership;
+(containing-group: $G8, grouped-output: $O26) isa output-group-membership;
+(containing-group: $G8, grouped-output: $O27) isa output-group-membership;
+(containing-group: $G8, grouped-output: $O28) isa output-group-membership;
+
+# ─── OUTPUT DEPENDENCIES (85 edges) ───
+
+# O2 chain
+(depending-output: $O2, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+
+# O3 chain
+(depending-output: $O3, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O3, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+
+# O4 chain
+(depending-output: $O4, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O4, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O4, required-output: $O3) isa output-dependency, has dependency-strength "hard";
+
+# G2 contracts — all depend on O4
+(depending-output: $O5, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O6, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O7, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O8, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O9, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O10, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O11, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O12, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+
+# O13 Relational Profile
+(depending-output: $O13, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O13, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+
+# O14 Progressive Autonomy Plan
+(depending-output: $O14, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O14, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+
+# O15 Trust Ledger Schema
+(depending-output: $O15, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O15, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+
+# O16 Specification Aging Schedule
+(depending-output: $O16, required-output: $O3) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O16, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+
+# O17 Agno Agent Code — depends on O3, O4, O5-O12, O13, O14
+(depending-output: $O17, required-output: $O3) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O5) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O6) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O7) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O9) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O10) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O11) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O12) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O13) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O17, required-output: $O14) isa output-dependency, has dependency-strength "hard";
+
+# O18 Agno Agent Tests — depends on O4, O5-O12
+(depending-output: $O18, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O5) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O6) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O7) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O9) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O10) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O11) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O18, required-output: $O12) isa output-dependency, has dependency-strength "hard";
+
+# O19 One-Page Boundary Map
+(depending-output: $O19, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+
+# O20 Agent Ops Manual — depends on O1-O16
+(depending-output: $O20, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O3) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O5) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O6) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O7) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O9) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O10) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O11) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O12) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O13) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O14) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O15) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O20, required-output: $O16) isa output-dependency, has dependency-strength "hard";
+
+# O22 Pattern Contribution
+(depending-output: $O22, required-output: $O15) isa output-dependency, has dependency-strength "hard";
+
+# O23 Curriculum Module
+(depending-output: $O23, required-output: $O21) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O23, required-output: $O22) isa output-dependency, has dependency-strength "hard";
+
+# O24 Tool Specification
+(depending-output: $O24, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O24, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+
+# O25 Context Specification
+(depending-output: $O25, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O25, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O25, required-output: $O24) isa output-dependency, has dependency-strength "hard";
+
+# O26 Knowledge Base Specification
+(depending-output: $O26, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O26, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O26, required-output: $O16) isa output-dependency, has dependency-strength "hard";
+
+# O27 Memory Specification
+(depending-output: $O27, required-output: $O1) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O27, required-output: $O2) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O27, required-output: $O13) isa output-dependency, has dependency-strength "hard";
+
+# O28 Storage and Output Specification
+(depending-output: $O28, required-output: $O3) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O4) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O5) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O6) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O7) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O8) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O9) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O10) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O11) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O12) isa output-dependency, has dependency-strength "hard";
+(depending-output: $O28, required-output: $O21) isa output-dependency, has dependency-strength "hard";

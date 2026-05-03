@@ -1,0 +1,55 @@
+# ─── PHASE 1: OUTPUT SPECIFICATION ───
+# TypeQL Schema for TypeDB v3 — additive define on Phase 0
+# Extends design-output stub; adds output-group, output-dependency
+
+define
+
+# ─── NEW ATTRIBUTES ───
+
+attribute group-id, value string;
+attribute group-name, value string;
+attribute group-description, value string;
+attribute output-id, value string;
+attribute output-purpose, value string;
+attribute prism-type, value string;
+attribute schema-registry-ref, value string;
+attribute quality-gate, value string;
+attribute storage-location, value string;
+attribute dependency-strength, value string;
+
+# ─── NEW ENTITIES ───
+
+entity output-group,
+    owns group-id @key,
+    owns group-name,
+    owns group-description;
+
+# Extend Phase 0 design-output stub (output-name @key stays)
+# output-id @key added as second unique identifier
+entity design-output,
+    owns output-id @key,
+    owns output-purpose,
+    owns prism-type,
+    owns schema-registry-ref @card(0..),
+    owns quality-gate @card(0..),
+    owns storage-location;
+
+# ─── NEW RELATIONS ───
+
+# Groups outputs — resolves missing relation in spec (was referenced via role names only)
+relation output-group-membership,
+    relates containing-group,
+    relates grouped-output;
+
+# Dependency chain — which outputs must exist before this one
+relation output-dependency,
+    relates depending-output,
+    relates required-output,
+    owns dependency-strength;
+
+# ─── ROLE PLAYERS ───
+
+output-group plays output-group-membership:containing-group;
+design-output plays output-group-membership:grouped-output;
+design-output plays output-dependency:depending-output;
+design-output plays output-dependency:required-output;

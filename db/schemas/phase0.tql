@@ -1,0 +1,81 @@
+# ─── PHASE 0: TARGET STATE VISION ───
+# TypeQL Schema for TypeDB v3
+# Defines the agent design knowledge graph for Phase 0
+
+define
+
+# ─── ATTRIBUTES ───
+
+attribute project-name, value string;
+attribute project-description, value string;
+attribute created-at, value datetime;
+attribute status, value string;
+
+attribute dimension-name, value string;
+attribute dimension-description, value string;
+
+attribute characteristic-id, value string;
+attribute characteristic-name, value string;
+attribute characteristic-statement, value string;
+attribute testable-criterion, value string;
+
+attribute service-strength, value string;
+attribute phase-name, value string;
+attribute output-name, value string;
+
+# ─── ENTITIES ───
+
+entity agent-design-project,
+    owns project-name,
+    owns project-description,
+    owns created-at,
+    owns status;
+
+entity target-dimension,
+    owns dimension-name,
+    owns dimension-description;
+
+entity target-characteristic,
+    owns characteristic-id @key,
+    owns characteristic-name,
+    owns characteristic-statement,
+    owns testable-criterion @card(0..);
+
+# cawdp-phase and design-output are stubs for Phase 1 — populated when outputs O1-O28 are scoped
+entity cawdp-phase,
+    owns phase-name @key;
+
+entity design-output,
+    owns output-name @key;
+
+# ─── RELATIONS ───
+
+relation project-dimension-membership,
+    relates owning-project,
+    relates owned-dimension;
+
+relation dimension-characteristic-membership,
+    relates owning-dimension,
+    relates owned-characteristic;
+
+# phase-service and output-service are defined now; data populated in Phase 1
+relation phase-service,
+    relates serving-phase,
+    relates served-target,
+    owns service-strength;
+
+relation output-service,
+    relates serving-output,
+    relates served-target,
+    owns service-strength;
+
+# ─── ROLE PLAYERS ───
+
+agent-design-project plays project-dimension-membership:owning-project;
+target-dimension plays project-dimension-membership:owned-dimension;
+target-dimension plays dimension-characteristic-membership:owning-dimension;
+target-characteristic plays dimension-characteristic-membership:owned-characteristic;
+target-characteristic plays phase-service:served-target;
+target-characteristic plays output-service:served-target;
+cawdp-phase plays phase-service:serving-phase;
+design-output plays output-service:serving-output;

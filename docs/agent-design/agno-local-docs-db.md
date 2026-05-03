@@ -9,6 +9,7 @@ Your requirements break down into three core problems:
 3. **Agent access** — Agents need to query this database via an MCP server, not raw markdown.
 
 Given your DAO's emphasis on immutable records and transparency, I'm recommending **PostgreSQL** with the **MCP Toolbox for Databases** as the MCP server layer. This gives you:
+
 - ACID transactions (immutability-friendly)
 - Full-text search via `tsvector`
 - Direct MCP exposure via Google's MCP Toolbox (no custom server code)

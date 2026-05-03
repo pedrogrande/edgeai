@@ -1,0 +1,68 @@
+# ─── PHASE 4: CAPABILITY ALLOCATION ───
+# Additive define — extends Phase 3 schema
+# Corrections vs source spec (phasse-4-capability-allocation.md):
+#   1. v2 → v3 syntax (entity/attribute keywords, no sub)
+#   2. value long → value integer (TypeDB v3.10.1 uses integer)
+#   3. Role name conflicts resolved:
+#      - subtask-has-allocation: role 'allocation' → 'allocation-record' (entity type clash)
+#      - subtask-has-authority: role 'decision-authority' → 'da-record' (entity type clash)
+#   4. @key added to alloc-id and da-id
+#   5. v2 plays stubs on entity declarations removed; replaced with plays relation:role at block end
+
+define
+
+attribute alloc-id, value string;
+attribute subtask-ref, value string;
+attribute judgment-demand, value integer;
+attribute pattern-capacity, value integer;
+attribute determinism-fit, value integer;
+attribute complementarity-gap, value integer;
+attribute primary-actor, value string;
+attribute allocation-mode, value string;
+attribute human-role, value string;
+attribute agent-role, value string;
+attribute system-role, value string;
+attribute reversibility, value string;
+attribute confidence-class, value string;
+attribute cr-class, value string;
+attribute da-id, value string;
+attribute da-description, value string;
+attribute da-authority, value string;
+attribute da-trigger, value string;
+attribute da-escalation, value string;
+
+entity allocation,
+    owns alloc-id @key,
+    owns subtask-ref,
+    owns judgment-demand,
+    owns pattern-capacity,
+    owns determinism-fit,
+    owns complementarity-gap,
+    owns primary-actor,
+    owns allocation-mode,
+    owns human-role @card(0..),
+    owns agent-role @card(0..),
+    owns system-role @card(0..),
+    owns reversibility,
+    owns confidence-class,
+    owns cr-class;
+
+entity decision-authority,
+    owns da-id @key,
+    owns da-description,
+    owns da-authority,
+    owns da-trigger @card(0..),
+    owns da-escalation @card(0..);
+
+relation subtask-has-allocation,
+    relates allocated-subtask,
+    relates allocation-record;
+
+relation subtask-has-authority,
+    relates authority-holding-subtask,
+    relates da-record;
+
+subtask plays subtask-has-allocation:allocated-subtask;
+allocation plays subtask-has-allocation:allocation-record;
+subtask plays subtask-has-authority:authority-holding-subtask;
+decision-authority plays subtask-has-authority:da-record;

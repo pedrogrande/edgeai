@@ -57,6 +57,9 @@ agent_designer_db = SqliteDb(
 )
 
 # ─── Knowledge Base (Agno docs) ──────────────────────────────
+# Seeded by db/seed_milvus.py using MarkdownChunking(split_on_headings=2).
+# Each chunk is a complete H1/H2 section from the Agno docs, preserving
+# semantic coherence. The agent queries via search_knowledge.
 vector_db = Milvus(
     collection="agno_docs",
     uri=os.environ["ZILLIZ_CLOUD_HOST"],
@@ -102,7 +105,7 @@ Before requesting approval, check session state:
 
 ## PROCESS
 
-Follow the 7-phase design process via your skills (design-process, design-template, non-technical-explanations, architecture-context). Load each phase's guidance when you reach it — not before.
+Follow the 9-phase design process via your skills (design-process, design-template, non-technical-explanations, architecture-context). Load each phase's guidance when you reach it — not before.
 """
 
 # ─── Agent ────────────────────────────────────────────────────

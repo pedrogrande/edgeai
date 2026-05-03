@@ -1,0 +1,535 @@
+# ─── PHASE 4: CAPABILITY ALLOCATION SEED ───
+# Inserts 24 allocation entities + 24 subtask-has-allocation relations
+# Then inserts 10 decision-authority entities + 10 subtask-has-authority relations
+#
+# Role attribute rules (per plan decision):
+#   - human-role, agent-role, system-role are OMITTED when the actor has no role
+#   - Never store "" — absence is the correct representation
+#   - Absence is queryable: match $a isa allocation, not { $a has system-role $sr; };
+#
+# Scores from complementarity matrix in spec.
+# complementarity-gap = judgment-demand - pattern-capacity (can be negative).
+
+match
+    $T1_1 isa subtask, has subtask-id "T1.1";
+    $T1_2 isa subtask, has subtask-id "T1.2";
+    $T1_3 isa subtask, has subtask-id "T1.3";
+    $T1_4 isa subtask, has subtask-id "T1.4";
+    $T1_5 isa subtask, has subtask-id "T1.5";
+    $T2_1 isa subtask, has subtask-id "T2.1";
+    $T2_2 isa subtask, has subtask-id "T2.2";
+    $T3_1 isa subtask, has subtask-id "T3.1";
+    $T3_2 isa subtask, has subtask-id "T3.2";
+    $T4_1 isa subtask, has subtask-id "T4.1";
+    $T4_2 isa subtask, has subtask-id "T4.2";
+    $T5_1 isa subtask, has subtask-id "T5.1";
+    $T5_2 isa subtask, has subtask-id "T5.2";
+    $T5_3 isa subtask, has subtask-id "T5.3";
+    $T6_1 isa subtask, has subtask-id "T6.1";
+    $T6_2 isa subtask, has subtask-id "T6.2";
+    $T6_3 isa subtask, has subtask-id "T6.3";
+    $T7_1 isa subtask, has subtask-id "T7.1";
+    $T7_2 isa subtask, has subtask-id "T7.2";
+    $T8_1 isa subtask, has subtask-id "T8.1";
+    $T8_2 isa subtask, has subtask-id "T8.2";
+    $T8_3 isa subtask, has subtask-id "T8.3";
+    $T8_4 isa subtask, has subtask-id "T8.4";
+    $T8_5 isa subtask, has subtask-id "T8.5";
+insert
+
+# ── SG1: Identity ──────────────────────────────────────────────────────────────
+
+$A1_1 isa allocation,
+    has alloc-id "ALLOC-T1.1",
+    has subtask-ref "T1.1",
+    has judgment-demand 9,
+    has pattern-capacity 2,
+    has determinism-fit 0,
+    has complementarity-gap 7,
+    has primary-actor "human",
+    has allocation-mode "human_primary",
+    has reversibility "low",
+    has confidence-class "low",
+    has cr-class "Low/Low",
+    has human-role "Articulates purpose, names anti-goals",
+    has agent-role "Reflects words back, surfaces tensions";
+(allocated-subtask: $T1_1, allocation-record: $A1_1) isa subtask-has-allocation;
+
+$A1_2 isa allocation,
+    has alloc-id "ALLOC-T1.2",
+    has subtask-ref "T1.2",
+    has judgment-demand 8,
+    has pattern-capacity 4,
+    has determinism-fit 2,
+    has complementarity-gap 4,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "low",
+    has confidence-class "medium",
+    has cr-class "Med/Low",
+    has human-role "Decides class from 5 options",
+    has agent-role "Presents taxonomy with evidence for each",
+    has system-role "Validates classification is complete";
+(allocated-subtask: $T1_2, allocation-record: $A1_2) isa subtask-has-allocation;
+
+$A1_3 isa allocation,
+    has alloc-id "ALLOC-T1.3",
+    has subtask-ref "T1.3",
+    has judgment-demand 9,
+    has pattern-capacity 3,
+    has determinism-fit 1,
+    has complementarity-gap 6,
+    has primary-actor "human",
+    has allocation-mode "human_primary",
+    has reversibility "medium",
+    has confidence-class "low",
+    has cr-class "Low/Med",
+    has human-role "Draws inside/outside line",
+    has agent-role "Surfaces edge cases, stress-tests boundaries";
+(allocated-subtask: $T1_3, allocation-record: $A1_3) isa subtask-has-allocation;
+
+$A1_4 isa allocation,
+    has alloc-id "ALLOC-T1.4",
+    has subtask-ref "T1.4",
+    has judgment-demand 4,
+    has pattern-capacity 8,
+    has determinism-fit 2,
+    has complementarity-gap -4,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "high",
+    has confidence-class "medium",
+    has cr-class "Med/High",
+    has human-role "Reviews, approves",
+    has agent-role "Drafts from O1-O3 + schema_registry",
+    has system-role "Validates schema compliance";
+(allocated-subtask: $T1_4, allocation-record: $A1_4) isa subtask-has-allocation;
+
+$A1_5 isa allocation,
+    has alloc-id "ALLOC-T1.5",
+    has subtask-ref "T1.5",
+    has judgment-demand 7,
+    has pattern-capacity 6,
+    has determinism-fit 4,
+    has complementarity-gap 1,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "low",
+    has confidence-class "medium",
+    has cr-class "Med/Low",
+    has human-role "Decides enforcement regime, revert granularity",
+    has agent-role "Drafts contract from job description + authority class",
+    has system-role "Validates guard testability";
+(allocated-subtask: $T1_5, allocation-record: $A1_5) isa subtask-has-allocation;
+
+# ── SG2: Contracts ─────────────────────────────────────────────────────────────
+
+$A2_1 isa allocation,
+    has alloc-id "ALLOC-T2.1",
+    has subtask-ref "T2.1",
+    has judgment-demand 2,
+    has pattern-capacity 9,
+    has determinism-fit 6,
+    has complementarity-gap -7,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Spot-checks 2-3 templates",
+    has agent-role "Generates all 8 from O4 specialisation",
+    has system-role "Validates cross-template consistency";
+(allocated-subtask: $T2_1, allocation-record: $A2_1) isa subtask-has-allocation;
+
+$A2_2 isa allocation,
+    has alloc-id "ALLOC-T2.2",
+    has subtask-ref "T2.2",
+    has judgment-demand 6,
+    has pattern-capacity 6,
+    has determinism-fit 4,
+    has complementarity-gap 0,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Judges edge cases, ambiguous validations",
+    has agent-role "Runs structural checks, reports pass/fail",
+    has system-role "Enforces quality gate assertion";
+(allocated-subtask: $T2_2, allocation-record: $A2_2) isa subtask-has-allocation;
+
+# ── SG3: Behaviour ─────────────────────────────────────────────────────────────
+
+$A3_1 isa allocation,
+    has alloc-id "ALLOC-T3.1",
+    has subtask-ref "T3.1",
+    has judgment-demand 8,
+    has pattern-capacity 4,
+    has determinism-fit 1,
+    has complementarity-gap 4,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "low",
+    has cr-class "Low/Med",
+    has human-role "Decides personality traits, tone",
+    has agent-role "Drafts profile, surfaces tone-purpose tensions";
+(allocated-subtask: $T3_1, allocation-record: $A3_1) isa subtask-has-allocation;
+
+$A3_2 isa allocation,
+    has alloc-id "ALLOC-T3.2",
+    has subtask-ref "T3.2",
+    has judgment-demand 7,
+    has pattern-capacity 6,
+    has determinism-fit 3,
+    has complementarity-gap 1,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "low",
+    has confidence-class "medium",
+    has cr-class "Med/Low",
+    has human-role "Sets promotion thresholds, demotion triggers",
+    has agent-role "Proposes quantitative metrics per level",
+    has system-role "Enforces threshold as guard";
+(allocated-subtask: $T3_2, allocation-record: $A3_2) isa subtask-has-allocation;
+
+# ── SG4: Verification ──────────────────────────────────────────────────────────
+
+$A4_1 isa allocation,
+    has alloc-id "ALLOC-T4.1",
+    has subtask-ref "T4.1",
+    has judgment-demand 3,
+    has pattern-capacity 8,
+    has determinism-fit 7,
+    has complementarity-gap -5,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Reviews query dimensions",
+    has agent-role "Designs schema, query patterns",
+    has system-role "Validates 3-axis queryability";
+(allocated-subtask: $T4_1, allocation-record: $A4_1) isa subtask-has-allocation;
+
+$A4_2 isa allocation,
+    has alloc-id "ALLOC-T4.2",
+    has subtask-ref "T4.2",
+    has judgment-demand 5,
+    has pattern-capacity 7,
+    has determinism-fit 4,
+    has complementarity-gap -2,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Sets cadence for human-judgment specs",
+    has agent-role "Proposes staleness scoring algorithm",
+    has system-role "Enforces calendar triggers as events";
+(allocated-subtask: $T4_2, allocation-record: $A4_2) isa subtask-has-allocation;
+
+# ── SG5: Implementation ────────────────────────────────────────────────────────
+
+$A5_1 isa allocation,
+    has alloc-id "ALLOC-T5.1",
+    has subtask-ref "T5.1",
+    has judgment-demand 2,
+    has pattern-capacity 9,
+    has determinism-fit 7,
+    has complementarity-gap -7,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Reviews generated code",
+    has agent-role "Generates Agno agent from O3+O4+O5-O12",
+    has system-role "Validates against schema_registry";
+(allocated-subtask: $T5_1, allocation-record: $A5_1) isa subtask-has-allocation;
+
+$A5_2 isa allocation,
+    has alloc-id "ALLOC-T5.2",
+    has subtask-ref "T5.2",
+    has judgment-demand 2,
+    has pattern-capacity 9,
+    has determinism-fit 7,
+    has complementarity-gap -7,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Reviews test coverage",
+    has agent-role "Generates tests from FMEA + contract templates",
+    has system-role "Validates test schemas";
+(allocated-subtask: $T5_2, allocation-record: $A5_2) isa subtask-has-allocation;
+
+$A5_3 isa allocation,
+    has alloc-id "ALLOC-T5.3",
+    has subtask-ref "T5.3",
+    has judgment-demand 7,
+    has pattern-capacity 5,
+    has determinism-fit 6,
+    has complementarity-gap 2,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "low",
+    has confidence-class "medium",
+    has cr-class "Med/Low",
+    has human-role "Judges pass/fail on edge cases, non-deterministic output",
+    has agent-role "Runs test suite, reports results",
+    has system-role "Enforces quality gate";
+(allocated-subtask: $T5_3, allocation-record: $A5_3) isa subtask-has-allocation;
+
+# ── SG6: Human Artefacts ───────────────────────────────────────────────────────
+
+$A6_1 isa allocation,
+    has alloc-id "ALLOC-T6.1",
+    has subtask-ref "T6.1",
+    has judgment-demand 1,
+    has pattern-capacity 2,
+    has determinism-fit 9,
+    has complementarity-gap -1,
+    has primary-actor "system",
+    has allocation-mode "system_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Spot-checks readability",
+    has system-role "Renders O2 to one-page view";
+(allocated-subtask: $T6_1, allocation-record: $A6_1) isa subtask-has-allocation;
+
+$A6_2 isa allocation,
+    has alloc-id "ALLOC-T6.2",
+    has subtask-ref "T6.2",
+    has judgment-demand 1,
+    has pattern-capacity 2,
+    has determinism-fit 9,
+    has complementarity-gap -1,
+    has primary-actor "system",
+    has allocation-mode "system_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has human-role "Spot-checks insurer readability",
+    has system-role "Renders O1-O16 to structured doc";
+(allocated-subtask: $T6_2, allocation-record: $A6_2) isa subtask-has-allocation;
+
+$A6_3 isa allocation,
+    has alloc-id "ALLOC-T6.3",
+    has subtask-ref "T6.3",
+    has judgment-demand 2,
+    has pattern-capacity 5,
+    has determinism-fit 8,
+    has complementarity-gap -3,
+    has primary-actor "system",
+    has allocation-mode "system_primary",
+    has reversibility "medium",
+    has confidence-class "high",
+    has cr-class "High/Med",
+    has agent-role "Classifies decision type",
+    has system-role "Captures, timestamps, stores in TypeDB";
+(allocated-subtask: $T6_3, allocation-record: $A6_3) isa subtask-has-allocation;
+
+# ── SG7: Ecosystem ─────────────────────────────────────────────────────────────
+
+$A7_1 isa allocation,
+    has alloc-id "ALLOC-T7.1",
+    has subtask-ref "T7.1",
+    has judgment-demand 4,
+    has pattern-capacity 8,
+    has determinism-fit 3,
+    has complementarity-gap -4,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Validates genuine novelty",
+    has agent-role "Scans design artefacts for repeatable patterns";
+(allocated-subtask: $T7_1, allocation-record: $A7_1) isa subtask-has-allocation;
+
+$A7_2 isa allocation,
+    has alloc-id "ALLOC-T7.2",
+    has subtask-ref "T7.2",
+    has judgment-demand 5,
+    has pattern-capacity 7,
+    has determinism-fit 2,
+    has complementarity-gap -2,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Judges teachability",
+    has agent-role "Drafts from decision log + patterns";
+(allocated-subtask: $T7_2, allocation-record: $A7_2) isa subtask-has-allocation;
+
+# ── SG8: Operational Environment ───────────────────────────────────────────────
+
+$A8_1 isa allocation,
+    has alloc-id "ALLOC-T8.1",
+    has subtask-ref "T8.1",
+    has judgment-demand 6,
+    has pattern-capacity 7,
+    has determinism-fit 4,
+    has complementarity-gap -1,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Judges tool-scope alignment",
+    has agent-role "Audits tool capabilities vs scope",
+    has system-role "Enforces information_boundary per tool";
+(allocated-subtask: $T8_1, allocation-record: $A8_1) isa subtask-has-allocation;
+
+$A8_2 isa allocation,
+    has alloc-id "ALLOC-T8.2",
+    has subtask-ref "T8.2",
+    has judgment-demand 3,
+    has pattern-capacity 8,
+    has determinism-fit 7,
+    has complementarity-gap -5,
+    has primary-actor "agent",
+    has allocation-mode "agent_primary",
+    has reversibility "medium",
+    has confidence-class "high",
+    has cr-class "High/Med",
+    has human-role "Reviews budget allocation",
+    has agent-role "Designs SELECT-ENRICH-CALIBRATE protocol",
+    has system-role "Enforces budget ceiling";
+(allocated-subtask: $T8_2, allocation-record: $A8_2) isa subtask-has-allocation;
+
+$A8_3 isa allocation,
+    has alloc-id "ALLOC-T8.3",
+    has subtask-ref "T8.3",
+    has judgment-demand 5,
+    has pattern-capacity 7,
+    has determinism-fit 4,
+    has complementarity-gap -2,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "medium",
+    has confidence-class "medium",
+    has cr-class "Med/Med",
+    has human-role "Judges KB scope match to agent scope",
+    has agent-role "Designs 12-characteristic KB schema",
+    has system-role "Validates scope containment";
+(allocated-subtask: $T8_3, allocation-record: $A8_3) isa subtask-has-allocation;
+
+$A8_4 isa allocation,
+    has alloc-id "ALLOC-T8.4",
+    has subtask-ref "T8.4",
+    has judgment-demand 6,
+    has pattern-capacity 6,
+    has determinism-fit 5,
+    has complementarity-gap 0,
+    has primary-actor "human",
+    has allocation-mode "collaborative",
+    has reversibility "low",
+    has confidence-class "medium",
+    has cr-class "Med/Low",
+    has human-role "Decides retention policy, human-deletable scope",
+    has agent-role "Proposes architecture matching authority class",
+    has system-role "Enforces max_entries, max_age";
+(allocated-subtask: $T8_4, allocation-record: $A8_4) isa subtask-has-allocation;
+
+$A8_5 isa allocation,
+    has alloc-id "ALLOC-T8.5",
+    has subtask-ref "T8.5",
+    has judgment-demand 1,
+    has pattern-capacity 4,
+    has determinism-fit 9,
+    has complementarity-gap -3,
+    has primary-actor "system",
+    has allocation-mode "system_primary",
+    has reversibility "high",
+    has confidence-class "high",
+    has cr-class "High/High",
+    has agent-role "Defines output schemas",
+    has system-role "Validates every output against schema_registry";
+(allocated-subtask: $T8_5, allocation-record: $A8_5) isa subtask-has-allocation;
+
+# ── Decision Authority Register ─────────────────────────────────────────────────
+
+$DA1 isa decision-authority,
+    has da-id "DA1",
+    has da-description "What is this agent's purpose?",
+    has da-authority "human_only",
+    has da-trigger "Start of Phase 0",
+    has da-escalation "Cannot proceed without answer";
+(authority-holding-subtask: $T1_1, da-record: $DA1) isa subtask-has-authority;
+
+$DA2 isa decision-authority,
+    has da-id "DA2",
+    has da-description "What authority class?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "After purpose stated",
+    has da-escalation "Wrong class → rebuild contracts";
+(authority-holding-subtask: $T1_2, da-record: $DA2) isa subtask-has-authority;
+
+$DA3 isa decision-authority,
+    has da-id "DA3",
+    has da-description "What's inside/outside scope?",
+    has da-authority "human_only",
+    has da-trigger "After authority class",
+    has da-escalation "Scope miss → wrong boundaries everywhere";
+(authority-holding-subtask: $T1_3, da-record: $DA3) isa subtask-has-authority;
+
+$DA4 isa decision-authority,
+    has da-id "DA4",
+    has da-description "What enforcement regime?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During contract architecture",
+    has da-escalation "Wrong regime → false enforcement";
+(authority-holding-subtask: $T1_5, da-record: $DA4) isa subtask-has-authority;
+
+$DA5 isa decision-authority,
+    has da-id "DA5",
+    has da-description "What revert granularity?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During contract architecture",
+    has da-escalation "Too coarse → over-rollback; too fine → leaky";
+(authority-holding-subtask: $T1_5, da-record: $DA5) isa subtask-has-authority;
+
+$DA6 isa decision-authority,
+    has da-id "DA6",
+    has da-description "What personality/tone?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During relational profile",
+    has da-escalation "Mismatch → user distrust";
+(authority-holding-subtask: $T3_1, da-record: $DA6) isa subtask-has-authority;
+
+$DA7 isa decision-authority,
+    has da-id "DA7",
+    has da-description "Autonomy promotion threshold?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During autonomy plan",
+    has da-escalation "Too low → premature autonomy";
+(authority-holding-subtask: $T3_2, da-record: $DA7) isa subtask-has-authority;
+
+$DA8 isa decision-authority,
+    has da-id "DA8",
+    has da-description "Integration pass/fail?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During integration validation",
+    has da-escalation "False pass → production failure";
+(authority-holding-subtask: $T5_3, da-record: $DA8) isa subtask-has-authority;
+
+$DA9 isa decision-authority,
+    has da-id "DA9",
+    has da-description "Memory retention policy?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During memory architecture",
+    has da-escalation "Too long → governance drift";
+(authority-holding-subtask: $T8_4, da-record: $DA9) isa subtask-has-authority;
+
+$DA10 isa decision-authority,
+    has da-id "DA10",
+    has da-description "KB scope containment?",
+    has da-authority "human_decides_agent_prepares",
+    has da-trigger "During KB specification",
+    has da-escalation "Scope leak → hallucination surface";
+(authority-holding-subtask: $T8_3, da-record: $DA10) isa subtask-has-authority;

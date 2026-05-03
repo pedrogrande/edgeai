@@ -94,8 +94,3 @@ Every element collapses into two questions per layer that must be answered befor
 | **8.1** What are your cost constraints? *Pick one: Minimize cost · Balanced · Performance first* | |
 | **8.2** What are your latency requirements? *Pick one: Real-time (sub-second) · Conversational (a few seconds) · Batch (minutes/hours acceptable)* | |
 | **8.3** What environment will this run in? *Pick one: Local machine · Docker container · Cloud server (AWS, GCP, Azure) · AgentOS · Don't know / Recommend for me* | |
-
-> **Why we ask:**
-> - **8.1** — Model choice and tool usage directly affect cost. We can also use **response models** (a cheaper model for final output) and **token caching** to reduce expenses.
-> - **8.2** — Affects model choice, streaming options, and whether we can use reasoning capabilities (which add latency for better quality).
-> - **8.3** — Determines database choices, local tool access (file system, shell), and deployment configuration.

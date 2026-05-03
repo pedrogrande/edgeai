@@ -1,0 +1,139 @@
+# ─── PHASE 2: BACKCASTING — Phase Entity Seed Data ───
+# TypeQL v3.10.1 compatible
+#
+# 10 CAWDP phases with cognitive modes, quality gates, and iteration types.
+# Phase 0 defined Purpose & Vision; Phase 1 defined Output Specification;
+# Phase 2 is Backcasting (TRACE); Phases 3-9 are the remaining pipeline stages.
+#
+# Note: cawdp-phase has TWO @key attributes: phase-id and phase-name.
+# We use phase-id (e.g. "P0") as the primary identifier for match queries.
+
+insert
+
+# Phase 0: Purpose & Vision
+$p0 isa cawdp-phase,
+    has phase-id "P0",
+    has phase-number 0,
+    has phase-name "Purpose & Vision",
+    has phase-name-short "P0-Purpose",
+    has cognitive-mode "IMAGINE",
+    has phase-description "What is this agent FOR? What does perfect look like?",
+    has phase-quality-gate "Fidelity: Do all 4 dimensions have characteristics? Enrichment: Does the vision expand creative freedom?",
+    has phase-iteration-type "revise-upon-refinement";
+
+insert
+
+# Phase 1: Output Specification
+$p1 isa cawdp-phase,
+    has phase-id "P1",
+    has phase-number 1,
+    has phase-name "Output Specification",
+    has phase-name-short "P1-Outputs",
+    has cognitive-mode "SPECIFY",
+    has phase-description "What artefacts MUST exist when we're done?",
+    has phase-quality-gate "Fidelity: Are all 28 outputs defined with schemas and dependencies? Enrichment: Does the output set enable creative freedom?",
+    has phase-iteration-type "revise-upon-new-discovery";
+
+insert
+
+# Phase 2: Backcasting
+$p2 isa cawdp-phase,
+    has phase-id "P2",
+    has phase-number 2,
+    has phase-name "Backcasting",
+    has phase-name-short "P2-Backcast",
+    has cognitive-mode "TRACE",
+    has phase-description "Working backward from outputs, tracing dependency chains and gaps.",
+    has phase-quality-gate "Fidelity: Can every output trace back to an origin? No orphan inputs? Enrichment: Does the backcast reveal hidden dependencies?",
+    has phase-iteration-type "revise-upon-gap-discovery";
+
+insert
+
+# Phase 3: Task Decomposition
+$p3 isa cawdp-phase,
+    has phase-id "P3",
+    has phase-number 3,
+    has phase-name "Task Decomposition",
+    has phase-name-short "P3-Decompose",
+    has cognitive-mode "DECOMPOSE",
+    has phase-description "Decompose work toward known outputs, not into a vacuum.",
+    has phase-quality-gate "Fidelity: Are all outputs accounted for? Are cognitive operation types assigned? Enrichment: Does decomposition preserve creative freedom?",
+    has phase-iteration-type "revise-upon-complexity";
+
+insert
+
+# Phase 4: Capability Allocation
+$p4 isa cawdp-phase,
+    has phase-id "P4",
+    has phase-number 4,
+    has phase-name "Capability Allocation",
+    has phase-name-short "P4-Allocate",
+    has cognitive-mode "ALLOCATE",
+    has phase-description "Assign Human/Agent/System via complementarity analysis.",
+    has phase-quality-gate "Fidelity: Are all 24 subtasks allocated? Complementarity gaps >= 6 = human-only? Enrichment: Does allocation expand human capability?",
+    has phase-iteration-type "revise-upon-capability-discovery";
+
+insert
+
+# Phase 5: Event Storming
+$p5 isa cawdp-phase,
+    has phase-id "P5",
+    has phase-number 5,
+    has phase-name "Event Storming",
+    has phase-name-short "P5-StressTest",
+    has cognitive-mode "STRESS-TEST",
+    has phase-description "Surface failure events, data flow gaps, trigger conditions.",
+    has phase-quality-gate "Fidelity: All critical failure events identified? Recovery paths defined? Enrichment: Does stress testing reveal opportunities?",
+    has phase-iteration-type "revise-upon-failure-discovery";
+
+insert
+
+# Phase 6: System Architecture
+$p6 isa cawdp-phase,
+    has phase-id "P6",
+    has phase-number 6,
+    has phase-name "System Architecture",
+    has phase-name-short "P6-Architect",
+    has cognitive-mode "ARCHITECT",
+    has phase-description "Pipeline architecture, orchestration, FMEA, templates.",
+    has phase-quality-gate "Fidelity: Pipeline stages, orchestration, templates defined? FMEA complete? Enrichment: Architecture enables future extension?",
+    has phase-iteration-type "revise-upon-architectural-discovery";
+
+insert
+
+# Phase 7: Agent Design
+$p7 isa cawdp-phase,
+    has phase-id "P7",
+    has phase-number 7,
+    has phase-name "Agent Design",
+    has phase-name-short "P7-Design",
+    has cognitive-mode "DESIGN",
+    has phase-description "5-class taxonomy, authority boundaries, job descriptions.",
+    has phase-quality-gate "Fidelity: All agents classified? Authority boundaries tied to failure modes? Enrichment: Agent design amplifies human capability?",
+    has phase-iteration-type "revise-upon-boundary-discovery";
+
+insert
+
+# Phase 8: Human Experience
+$p8 isa cawdp-phase,
+    has phase-id "P8",
+    has phase-number 8,
+    has phase-name "Human Experience",
+    has phase-name-short "P8-Empathize",
+    has cognitive-mode "EMPATHIZE",
+    has phase-description "Cognitive load budget, interface specification, override mechanisms.",
+    has phase-quality-gate "Fidelity: Cognitive load budgeted? Overrides specified? Enrichment: System Empowerment Index >= Enabling?",
+    has phase-iteration-type "revise-upon-human-discovery";
+
+insert
+
+# Phase 9: Validation & Iteration
+$p9 isa cawdp-phase,
+    has phase-id "P9",
+    has phase-number 9,
+    has phase-name "Validation & Iteration",
+    has phase-name-short "P9-Verify",
+    has cognitive-mode "VERIFY",
+    has phase-description "Prototype testing, progressive autonomy, health monitoring.",
+    has phase-quality-gate "Fidelity: All 6 hypotheses testable? Progressive autonomy levels defined? Enrichment: Iteration increases human capability?",
+    has phase-iteration-type "revise-upon-evidence";

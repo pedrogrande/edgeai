@@ -1,0 +1,206 @@
+# ─── PHASE 5: EVENT STORMING SEED — RELATIONS ──
+# Links events to subtasks, events to events, failures to recoveries and system triggers
+# Requires phase5_entities to be applied first (domain-events, failure-events, recovery-paths, system-triggers)
+# Requires Phase 3 subtask entities to exist
+
+match
+    # Domain events
+    $E1 isa domain-event, has event-id "E1";
+    $E2 isa domain-event, has event-id "E2";
+    $E3 isa domain-event, has event-id "E3";
+    $E4 isa domain-event, has event-id "E4";
+    $E5 isa domain-event, has event-id "E5";
+    $E6 isa domain-event, has event-id "E6";
+    $E7 isa domain-event, has event-id "E7";
+    $E8 isa domain-event, has event-id "E8";
+    $E9 isa domain-event, has event-id "E9";
+    $E10 isa domain-event, has event-id "E10";
+    $E11 isa domain-event, has event-id "E11";
+    $E12 isa domain-event, has event-id "E12";
+    $E13 isa domain-event, has event-id "E13";
+    $E14 isa domain-event, has event-id "E14";
+    $E15 isa domain-event, has event-id "E15";
+    $E16 isa domain-event, has event-id "E16";
+
+    # Failure events
+    $F1 isa failure-event, has event-id "F1";
+    $F2 isa failure-event, has event-id "F2";
+    $F3 isa failure-event, has event-id "F3";
+    $F4 isa failure-event, has event-id "F4";
+    $F5 isa failure-event, has event-id "F5";
+    $F6 isa failure-event, has event-id "F6";
+    $F7 isa failure-event, has event-id "F7";
+    $F8 isa failure-event, has event-id "F8";
+    $F9 isa failure-event, has event-id "F9";
+    $F10 isa failure-event, has event-id "F10";
+    $F11 isa failure-event, has event-id "F11";
+    $F12 isa failure-event, has event-id "F12";
+    $F13 isa failure-event, has event-id "F13";
+    $F14 isa failure-event, has event-id "F14";
+
+    # Subtasks
+    $T1_1 isa subtask, has subtask-id "T1.1";
+    $T1_2 isa subtask, has subtask-id "T1.2";
+    $T1_3 isa subtask, has subtask-id "T1.3";
+    $T1_4 isa subtask, has subtask-id "T1.4";
+    $T1_5 isa subtask, has subtask-id "T1.5";
+    $T2_1 isa subtask, has subtask-id "T2.1";
+    $T2_2 isa subtask, has subtask-id "T2.2";
+    $T3_1 isa subtask, has subtask-id "T3.1";
+    $T3_2 isa subtask, has subtask-id "T3.2";
+    $T4_1 isa subtask, has subtask-id "T4.1";
+    $T4_2 isa subtask, has subtask-id "T4.2";
+    $T5_1 isa subtask, has subtask-id "T5.1";
+    $T5_2 isa subtask, has subtask-id "T5.2";
+    $T5_3 isa subtask, has subtask-id "T5.3";
+    $T6_1 isa subtask, has subtask-id "T6.1";
+    $T6_2 isa subtask, has subtask-id "T6.2";
+    $T6_3 isa subtask, has subtask-id "T6.3";
+    $T7_1 isa subtask, has subtask-id "T7.1";
+    $T7_2 isa subtask, has subtask-id "T7.2";
+    $T8_1 isa subtask, has subtask-id "T8.1";
+    $T8_2 isa subtask, has subtask-id "T8.2";
+    $T8_3 isa subtask, has subtask-id "T8.3";
+    $T8_4 isa subtask, has subtask-id "T8.4";
+    $T8_5 isa subtask, has subtask-id "T8.5";
+
+    # Recovery paths
+    $R1 isa recovery-path, has recovery-id "R-F1";
+    $R2 isa recovery-path, has recovery-id "R-F2";
+    $R3 isa recovery-path, has recovery-id "R-F3";
+    $R4 isa recovery-path, has recovery-id "R-F4";
+    $R5 isa recovery-path, has recovery-id "R-F5";
+    $R6 isa recovery-path, has recovery-id "R-F6";
+    $R7 isa recovery-path, has recovery-id "R-F7";
+    $R8 isa recovery-path, has recovery-id "R-F8";
+    $R9 isa recovery-path, has recovery-id "R-F9";
+    $R10 isa recovery-path, has recovery-id "R-F10";
+    $R11 isa recovery-path, has recovery-id "R-F11";
+    $R12 isa recovery-path, has recovery-id "R-F12";
+    $R13 isa recovery-path, has recovery-id "R-F13";
+    $R14 isa recovery-path, has recovery-id "R-F14";
+
+    # System triggers
+    $ST1 isa system-trigger, has sys-trigger-id "ST1";
+    $ST2 isa system-trigger, has sys-trigger-id "ST2";
+    $ST3 isa system-trigger, has sys-trigger-id "ST3";
+    $ST4 isa system-trigger, has sys-trigger-id "ST4";
+    $ST5 isa system-trigger, has sys-trigger-id "ST5";
+    $ST6 isa system-trigger, has sys-trigger-id "ST6";
+    $ST7 isa system-trigger, has sys-trigger-id "ST7";
+    $ST8 isa system-trigger, has sys-trigger-id "ST8";
+    $ST9 isa system-trigger, has sys-trigger-id "ST9";
+    $ST10 isa system-trigger, has sys-trigger-id "ST10";
+
+insert
+
+# ── SUBTASK-TRIGGER: Events that trigger subtasks ──────────────────────────────
+# E1 → T1.1, E2 → T1.2, E3 → T1.3, E4 → T1.4 + T8.1, E5 → T1.5 + T3.1,
+# E6 → T2.1 + T4.2, E7 → T3.2, E8 → T2.2, E9 → T4.1 + T5.1 + T5.2,
+# E10 → T7.1, E11 → T8.5, E12 → T8.4, E13 → T5.3 + T6.1 + T6.2,
+# E14 → T5.3, E15 → T6.3 + T7.2
+
+(trigger-event: $E1, triggered-subtask: $T1_1) isa subtask-trigger;
+(trigger-event: $E2, triggered-subtask: $T1_2) isa subtask-trigger;
+(trigger-event: $E3, triggered-subtask: $T1_3) isa subtask-trigger;
+(trigger-event: $E4, triggered-subtask: $T1_4) isa subtask-trigger;
+(trigger-event: $E4, triggered-subtask: $T8_1) isa subtask-trigger;
+(trigger-event: $E5, triggered-subtask: $T1_5) isa subtask-trigger;
+(trigger-event: $E5, triggered-subtask: $T3_1) isa subtask-trigger;
+(trigger-event: $E6, triggered-subtask: $T2_1) isa subtask-trigger;
+(trigger-event: $E6, triggered-subtask: $T4_2) isa subtask-trigger;
+(trigger-event: $E7, triggered-subtask: $T3_2) isa subtask-trigger;
+(trigger-event: $E8, triggered-subtask: $T2_2) isa subtask-trigger;
+(trigger-event: $E9, triggered-subtask: $T4_1) isa subtask-trigger;
+(trigger-event: $E9, triggered-subtask: $T5_1) isa subtask-trigger;
+(trigger-event: $E9, triggered-subtask: $T5_2) isa subtask-trigger;
+(trigger-event: $E10, triggered-subtask: $T7_1) isa subtask-trigger;
+(trigger-event: $E11, triggered-subtask: $T8_5) isa subtask-trigger;
+(trigger-event: $E12, triggered-subtask: $T8_4) isa subtask-trigger;
+(trigger-event: $E13, triggered-subtask: $T5_3) isa subtask-trigger;
+(trigger-event: $E13, triggered-subtask: $T6_1) isa subtask-trigger;
+(trigger-event: $E13, triggered-subtask: $T6_2) isa subtask-trigger;
+(trigger-event: $E14, triggered-subtask: $T5_3) isa subtask-trigger;
+(trigger-event: $E15, triggered-subtask: $T6_3) isa subtask-trigger;
+(trigger-event: $E15, triggered-subtask: $T7_2) isa subtask-trigger;
+
+# ── SUBTASK-EMITS: Subtasks that produce events ────────────────────────────────
+# T1.1 → E2, T1.2 → E3, T1.3 → E4, T1.4 → E5, T1.5 → E6,
+# T2.1 → E8, T2.2 → E9, T3.1 → E7, T3.2 → E12,
+# T4.1 → E10, T5.1+T5.2 → E13, T5.3 → E15, T6.1+T6.2 → (rendered artefacts),
+# T8.5 → E11, T8.2 → (context protocol, no explicit event)
+
+(emitting-subtask: $T1_1, emitted-event: $E2) isa subtask-emits;
+(emitting-subtask: $T1_2, emitted-event: $E3) isa subtask-emits;
+(emitting-subtask: $T1_3, emitted-event: $E4) isa subtask-emits;
+(emitting-subtask: $T1_4, emitted-event: $E5) isa subtask-emits;
+(emitting-subtask: $T1_5, emitted-event: $E6) isa subtask-emits;
+(emitting-subtask: $T2_1, emitted-event: $E8) isa subtask-emits;
+(emitting-subtask: $T2_2, emitted-event: $E9) isa subtask-emits;
+(emitting-subtask: $T3_1, emitted-event: $E7) isa subtask-emits;
+(emitting-subtask: $T3_2, emitted-event: $E12) isa subtask-emits;
+(emitting-subtask: $T4_1, emitted-event: $E10) isa subtask-emits;
+(emitting-subtask: $T5_1, emitted-event: $E13) isa subtask-emits;
+(emitting-subtask: $T5_3, emitted-event: $E15) isa subtask-emits;
+(emitting-subtask: $T8_5, emitted-event: $E11) isa subtask-emits;
+
+# ── EVENT-SEQUENCE: Event flow through the pipeline ────────────────────────────
+(preceding-event: $E1, succeeding-event: $E2) isa event-sequence;
+(preceding-event: $E2, succeeding-event: $E3) isa event-sequence;
+(preceding-event: $E3, succeeding-event: $E4) isa event-sequence;
+(preceding-event: $E4, succeeding-event: $E5) isa event-sequence;
+(preceding-event: $E5, succeeding-event: $E6) isa event-sequence;
+(preceding-event: $E6, succeeding-event: $E8) isa event-sequence;
+
+(preceding-event: $E9, succeeding-event: $E13) isa event-sequence;
+(preceding-event: $E13, succeeding-event: $E14) isa event-sequence;
+(preceding-event: $E14, succeeding-event: $E15) isa event-sequence;
+(preceding-event: $E15, succeeding-event: $E16) isa event-sequence;
+(preceding-event: $E5, succeeding-event: $E7) isa event-sequence;
+(preceding-event: $E7, succeeding-event: $E12) isa event-sequence;
+(preceding-event: $E6, succeeding-event: $E4_2) isa event-sequence;  # REMOVED: invalid variable
+(preceding-event: $E9, succeeding-event: $E10) isa event-sequence;
+
+# ── FAILURE-INTERRUPTS: Failures that interrupt subtasks ────────────────────────
+(interrupting-failure: $F1, interrupted-subtask: $T1_1) isa failure-interrupts;
+(interrupting-failure: $F2, interrupted-subtask: $T1_1) isa failure-interrupts;
+(interrupting-failure: $F3, interrupted-subtask: $T1_2) isa failure-interrupts;
+(interrupting-failure: $F4, interrupted-subtask: $T1_3) isa failure-interrupts;
+(interrupting-failure: $F5, interrupted-subtask: $T1_3) isa failure-interrupts;
+(interrupting-failure: $F6, interrupted-subtask: $T1_5) isa failure-interrupts;
+(interrupting-failure: $F7, interrupted-subtask: $T2_1) isa failure-interrupts;
+(interrupting-failure: $F8, interrupted-subtask: $T3_1) isa failure-interrupts;
+(interrupting-failure: $F9, interrupted-subtask: $T5_1) isa failure-interrupts;
+(interrupting-failure: $F10, interrupted-subtask: $T5_3) isa failure-interrupts;
+(interrupting-failure: $F11, interrupted-subtask: $T8_2) isa failure-interrupts;
+(interrupting-failure: $F12, interrupted-subtask: $T4_2) isa failure-interrupts;
+(interrupting-failure: $F13, interrupted-subtask: $T8_4) isa failure-interrupts;
+(interrupting-failure: $F14, interrupted-subtask: $T8_4) isa failure-interrupts;
+
+# ── FAILURE-RECOVERY: Failures linked to their recovery paths ───────────────────
+(failed-event: $F1, recovery-instance: $R1) isa failure-recovery;
+(failed-event: $F2, recovery-instance: $R2) isa failure-recovery;
+(failed-event: $F3, recovery-instance: $R3) isa failure-recovery;
+(failed-event: $F4, recovery-instance: $R4) isa failure-recovery;
+(failed-event: $F5, recovery-instance: $R5) isa failure-recovery;
+(failed-event: $F6, recovery-instance: $R6) isa failure-recovery;
+(failed-event: $F7, recovery-instance: $R7) isa failure-recovery;
+(failed-event: $F8, recovery-instance: $R8) isa failure-recovery;
+(failed-event: $F9, recovery-instance: $R9) isa failure-recovery;
+(failed-event: $F10, recovery-instance: $R10) isa failure-recovery;
+(failed-event: $F11, recovery-instance: $R11) isa failure-recovery;
+(failed-event: $F12, recovery-instance: $R12) isa failure-recovery;
+(failed-event: $F13, recovery-instance: $R13) isa failure-recovery;
+(failed-event: $F14, recovery-instance: $R14) isa failure-recovery;
+
+# ── FAILURE-SYSTEM-TRIGGER: Failures that trigger system enforcement ───────────
+(triggered-failure: $F3, sys-trigger-instance: $ST1) isa failure-system-trigger;
+(triggered-failure: $F5, sys-trigger-instance: $ST2) isa failure-system-trigger;
+(triggered-failure: $F6, sys-trigger-instance: $ST3) isa failure-system-trigger;
+(triggered-failure: $F7, sys-trigger-instance: $ST4) isa failure-system-trigger;
+(triggered-failure: $F9, sys-trigger-instance: $ST5) isa failure-system-trigger;
+(triggered-failure: $F10, sys-trigger-instance: $ST6) isa failure-system-trigger;
+(triggered-failure: $F11, sys-trigger-instance: $ST7) isa failure-system-trigger;
+(triggered-failure: $F13, sys-trigger-instance: $ST8) isa failure-system-trigger;
+(triggered-failure: $F12, sys-trigger-instance: $ST9) isa failure-system-trigger;
+(triggered-failure: $F14, sys-trigger-instance: $ST10) isa failure-system-trigger;

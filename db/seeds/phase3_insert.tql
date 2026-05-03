@@ -1,0 +1,480 @@
+# ─── PHASE 3 SEED DATA ───
+# 8 subtask-group entities + 24 subtask entities + 24 failure-mode entities
+# + 24 subtask-group-membership + 60 subtask-dependency + 24 subtask-has-fm relations
+
+insert
+
+# ─── SUBTASK GROUPS ───
+
+$SG1 isa subtask-group, has subgroup-id "SG1", has subgroup-name "Identity";
+$SG2 isa subtask-group, has subgroup-id "SG2", has subgroup-name "Contracts";
+$SG3 isa subtask-group, has subgroup-id "SG3", has subgroup-name "Behaviour";
+$SG4 isa subtask-group, has subgroup-id "SG4", has subgroup-name "Verification";
+$SG5 isa subtask-group, has subgroup-id "SG5", has subgroup-name "Implementation";
+$SG6 isa subtask-group, has subgroup-id "SG6", has subgroup-name "Human Artefacts";
+$SG7 isa subtask-group, has subgroup-id "SG7", has subgroup-name "Ecosystem";
+$SG8 isa subtask-group, has subgroup-id "SG8", has subgroup-name "Operational Environment";
+
+# ─── SG1: IDENTITY SUBTASKS ───
+
+$T1_1 isa subtask,
+    has subtask-id "T1.1",
+    has subtask-name "Purpose Discovery",
+    has subtask-description "Elicit and clarify the core mission, principal, and authority class",
+    has cognitive-type "intuitive",
+    has actor-hint "human",
+    has subtask-order 1;
+
+$T1_2 isa subtask,
+    has subtask-id "T1.2",
+    has subtask-name "Authority Class Validation",
+    has subtask-description "Validate the authority class against the 5-class taxonomy",
+    has cognitive-type "evaluative",
+    has actor-hint "human",
+    has subtask-order 2;
+
+$T1_3 isa subtask,
+    has subtask-id "T1.3",
+    has subtask-name "Scope Boundary Workshop",
+    has subtask-description "Map inside and outside scope and escalation paths collaboratively",
+    has cognitive-type "intuitive+evaluative",
+    has actor-hint "collaborative",
+    has subtask-order 3;
+
+$T1_4 isa subtask,
+    has subtask-id "T1.4",
+    has subtask-name "Job Description Drafting",
+    has subtask-description "Draft the agent job description from O1 and O2",
+    has cognitive-type "generative",
+    has actor-hint "agent",
+    has subtask-order 4;
+
+$T1_5 isa subtask,
+    has subtask-id "T1.5",
+    has subtask-name "Contract Architecture",
+    has subtask-description "Design the quasi-smart contract enforcement membrane",
+    has cognitive-type "analytical+generative",
+    has actor-hint "collaborative",
+    has subtask-order 5;
+
+# ─── SG2: CONTRACTS SUBTASKS ───
+
+$T2_1 isa subtask,
+    has subtask-id "T2.1",
+    has subtask-name "Template Cascade",
+    has subtask-description "Specialise all 8 contract templates from the quasi-smart contract",
+    has cognitive-type "mechanical+generative",
+    has actor-hint "agent",
+    has subtask-order 1;
+
+$T2_2 isa subtask,
+    has subtask-id "T2.2",
+    has subtask-name "Template Validation",
+    has subtask-description "Validate all 8 contract templates in isolation and in combination",
+    has cognitive-type "evaluative",
+    has actor-hint "collaborative",
+    has subtask-order 2;
+
+# ─── SG3: BEHAVIOUR SUBTASKS ───
+
+$T3_1 isa subtask,
+    has subtask-id "T3.1",
+    has subtask-name "Relational Profile Design",
+    has subtask-description "Design communication style and rapport approach tied to authority class",
+    has cognitive-type "intuitive",
+    has actor-hint "human",
+    has subtask-order 1;
+
+$T3_2 isa subtask,
+    has subtask-id "T3.2",
+    has subtask-name "Autonomy Plan Design",
+    has subtask-description "Design 4-level autonomy progression with quantitative thresholds",
+    has cognitive-type "analytical+evaluative",
+    has actor-hint "collaborative",
+    has subtask-order 2;
+
+# ─── SG4: VERIFICATION SUBTASKS ───
+
+$T4_1 isa subtask,
+    has subtask-id "T4.1",
+    has subtask-name "Trust Ledger Design",
+    has subtask-description "Design the trust ledger schema with 3-axis queryability",
+    has cognitive-type "analytical",
+    has actor-hint "agent",
+    has subtask-order 1;
+
+$T4_2 isa subtask,
+    has subtask-id "T4.2",
+    has subtask-name "Aging Schedule Design",
+    has subtask-description "Design specification review cadences with event-based triggers",
+    has cognitive-type "evaluative+analytical",
+    has actor-hint "collaborative",
+    has subtask-order 2;
+
+# ─── SG5: IMPLEMENTATION SUBTASKS ───
+
+$T5_1 isa subtask,
+    has subtask-id "T5.1",
+    has subtask-name "Agent Code Generation",
+    has subtask-description "Generate Agno agent implementation from all prior design outputs",
+    has cognitive-type "generative",
+    has actor-hint "agent",
+    has subtask-order 1;
+
+$T5_2 isa subtask,
+    has subtask-id "T5.2",
+    has subtask-name "Test Suite Generation",
+    has subtask-description "Generate FMEA-driven tests for every design decision",
+    has cognitive-type "generative",
+    has actor-hint "agent",
+    has subtask-order 2;
+
+$T5_3 isa subtask,
+    has subtask-id "T5.3",
+    has subtask-name "Integration Validation",
+    has subtask-description "Validate agent in end-to-end pipeline — isolated pass is not enough",
+    has cognitive-type "evaluative",
+    has actor-hint "collaborative",
+    has subtask-order 3;
+
+# ─── SG6: HUMAN ARTEFACTS SUBTASKS ───
+
+$T6_1 isa subtask,
+    has subtask-id "T6.1",
+    has subtask-name "Boundary Map Render",
+    has subtask-description "Render printable boundary map from O2 with 5-minute readability gate",
+    has cognitive-type "mechanical",
+    has actor-hint "system",
+    has subtask-order 1;
+
+$T6_2 isa subtask,
+    has subtask-id "T6.2",
+    has subtask-name "Ops Manual Render",
+    has subtask-description "Render governance document from O1-O16 for insurers and auditors",
+    has cognitive-type "mechanical",
+    has actor-hint "system",
+    has subtask-order 2;
+
+$T6_3 isa subtask,
+    has subtask-id "T6.3",
+    has subtask-name "Decision Log Capture",
+    has subtask-description "Continuously capture design decisions with required why field",
+    has cognitive-type "analytical",
+    has actor-hint "agent",
+    has subtask-order 3;
+
+# ─── SG7: ECOSYSTEM SUBTASKS ───
+
+$T7_1 isa subtask,
+    has subtask-id "T7.1",
+    has subtask-name "Pattern Identification",
+    has subtask-description "Identify genuinely novel patterns with validation evidence",
+    has cognitive-type "analytical",
+    has actor-hint "agent",
+    has subtask-order 1;
+
+$T7_2 isa subtask,
+    has subtask-id "T7.2",
+    has subtask-name "Curriculum Module Draft",
+    has subtask-description "Draft teachable curriculum module from decision log and patterns",
+    has cognitive-type "generative",
+    has actor-hint "agent",
+    has subtask-order 2;
+
+# ─── SG8: OPERATIONAL ENVIRONMENT SUBTASKS ───
+
+$T8_1 isa subtask,
+    has subtask-id "T8.1",
+    has subtask-name "Tool Audit and Spec",
+    has subtask-description "Audit and specify all tools; every tool must map to inside_scope",
+    has cognitive-type "analytical+intuitive",
+    has actor-hint "collaborative",
+    has subtask-order 1;
+
+$T8_2 isa subtask,
+    has subtask-id "T8.2",
+    has subtask-name "Context Protocol Design",
+    has subtask-description "Design budget-aware context protocol with hard ceiling",
+    has cognitive-type "analytical",
+    has actor-hint "agent",
+    has subtask-order 2;
+
+$T8_3 isa subtask,
+    has subtask-id "T8.3",
+    has subtask-name "Knowledge Base Spec",
+    has subtask-description "Specify curated KB scoped to O1 with freshness requirements",
+    has cognitive-type "analytical+intuitive",
+    has actor-hint "collaborative",
+    has subtask-order 3;
+
+$T8_4 isa subtask,
+    has subtask-id "T8.4",
+    has subtask-name "Memory Architecture",
+    has subtask-description "Specify what agent retains with retention policy and human-deletable default",
+    has cognitive-type "analytical+evaluative",
+    has actor-hint "collaborative",
+    has subtask-order 4;
+
+$T8_5 isa subtask,
+    has subtask-id "T8.5",
+    has subtask-name "Storage Specification",
+    has subtask-description "Specify storage destinations with schema_registry validation for every output",
+    has cognitive-type "mechanical+analytical",
+    has actor-hint "agent",
+    has subtask-order 5;
+
+# ─── FAILURE MODES ───
+
+$FM1 isa failure-mode, has fm-id "FM1",
+    has fm-name "Multiple purposes tangled",
+    has fm-description "Multiple purposes tangled together without clear priority or separation",
+    has fm-invert-boundary "anti-goals field enforced";
+
+$FM2 isa failure-mode, has fm-id "FM2",
+    has fm-name "Wrong class chosen",
+    has fm-description "Wrong authority class chosen — downstream contracts built on wrong foundation",
+    has fm-invert-boundary "5-class taxonomy check before proceeding";
+
+$FM3 isa failure-mode, has fm-id "FM3",
+    has fm-name "Scope too broad or narrow",
+    has fm-description "Scope is too broad to be enforceable or too narrow to be useful",
+    has fm-invert-boundary "stress test each inside_scope item";
+
+$FM4 isa failure-mode, has fm-id "FM4",
+    has fm-name "Too abstract to implement",
+    has fm-description "Job description too abstract for a developer to implement",
+    has fm-invert-boundary "Agno dev can implement from this alone gate";
+
+$FM5 isa failure-mode, has fm-id "FM5",
+    has fm-name "Contract on wrong foundation",
+    has fm-description "CRITICAL — contract architecture built on wrong authority class",
+    has fm-invert-boundary "authority class validated at T1.2";
+
+$FM6 isa failure-mode, has fm-id "FM6",
+    has fm-name "Inconsistent specialisations",
+    has fm-description "Contract templates specialised inconsistently from the parent contract",
+    has fm-invert-boundary "cross-template consistency check";
+
+$FM7 isa failure-mode, has fm-id "FM7",
+    has fm-name "Template passes in isolation, fails in combination",
+    has fm-description "Each template validates alone but breaks when composed",
+    has fm-invert-boundary "integration validation";
+
+$FM8 isa failure-mode, has fm-id "FM8",
+    has fm-name "Personality decorates, not serves",
+    has fm-description "Personality is aesthetic rather than tied to the agent purpose",
+    has fm-invert-boundary "personality-purpose link must be explicit";
+
+$FM9 isa failure-mode, has fm-id "FM9",
+    has fm-name "Promotion without evidence",
+    has fm-description "Autonomy level promoted without quantitative evidence",
+    has fm-invert-boundary "quantitative threshold for each level";
+
+$FM10 isa failure-mode, has fm-id "FM10",
+    has fm-name "Ledger cannot query by dimension",
+    has fm-description "Trust ledger schema does not support 3-axis queryability",
+    has fm-invert-boundary "3-axis queryability test";
+
+$FM11 isa failure-mode, has fm-id "FM11",
+    has fm-name "Cadences too rigid",
+    has fm-description "Review cadences are calendar-only with no event-based triggers",
+    has fm-invert-boundary "event-based triggers supplement calendar";
+
+$FM12 isa failure-mode, has fm-id "FM12",
+    has fm-name "Agno cannot enforce contract",
+    has fm-description "CRITICAL — generated Agno code cannot enforce contract primitives",
+    has fm-invert-boundary "CAWDP governance layer";
+
+$FM13 isa failure-mode, has fm-id "FM13",
+    has fm-name "Tests pass but miss edge cases",
+    has fm-description "Tests pass on happy path but miss failure mode edge cases",
+    has fm-invert-boundary "FMEA-driven test design";
+
+$FM14 isa failure-mode, has fm-id "FM14",
+    has fm-name "Isolated pass, integrated fail",
+    has fm-description "Agent passes unit tests but fails in end-to-end pipeline",
+    has fm-invert-boundary "end-to-end pipeline test";
+
+$FM15 isa failure-mode, has fm-id "FM15",
+    has fm-name "Map too technical",
+    has fm-description "Boundary map uses technical language non-technical person cannot read",
+    has fm-invert-boundary "5-minute readability test";
+
+$FM16 isa failure-mode, has fm-id "FM16",
+    has fm-name "Manual does not answer insurer questions",
+    has fm-description "Ops manual does not address PI insurer risk assessment questions",
+    has fm-invert-boundary "PI insurer review template";
+
+$FM17 isa failure-mode, has fm-id "FM17",
+    has fm-name "Decisions logged without reasoning",
+    has fm-description "Decision log entries record what without recording why",
+    has fm-invert-boundary "why field required";
+
+$FM18 isa failure-mode, has fm-id "FM18",
+    has fm-name "False pattern",
+    has fm-description "Pattern captured as novel but lacks validation evidence",
+    has fm-invert-boundary "validation evidence required";
+
+$FM19 isa failure-mode, has fm-id "FM19",
+    has fm-name "Module too abstract",
+    has fm-description "Curriculum module too abstract to be taught from",
+    has fm-invert-boundary "teachable from this module gate";
+
+$FM20 isa failure-mode, has fm-id "FM20",
+    has fm-name "Tool grants more access than scope",
+    has fm-description "Tool provides capabilities beyond the agent inside_scope",
+    has fm-invert-boundary "tool-to-scope mapping required";
+
+$FM21 isa failure-mode, has fm-id "FM21",
+    has fm-name "Context window overflow",
+    has fm-description "Context protocol has no hard ceiling and overflows token budget",
+    has fm-invert-boundary "hard ceiling with budget accounting";
+
+$FM22 isa failure-mode, has fm-id "FM22",
+    has fm-name "KB scope wider than agent scope",
+    has fm-description "Knowledge base contains information outside the agent boundary",
+    has fm-invert-boundary "KB scope must match O2";
+
+$FM23 isa failure-mode, has fm-id "FM23",
+    has fm-name "Memory without governance",
+    has fm-description "Memory specification lacks retention policy or human-deletable default",
+    has fm-invert-boundary "retention policy and human-deletable default";
+
+$FM24 isa failure-mode, has fm-id "FM24",
+    has fm-name "Output schema mismatch",
+    has fm-description "Output stored without a matching schema_registry entry",
+    has fm-invert-boundary "schema_registry validation for every output";
+
+# ─── SUBTASK GROUP MEMBERSHIPS ───
+
+(containing-subtask-group: $SG1, grouped-subtask: $T1_1) isa subtask-group-membership;
+(containing-subtask-group: $SG1, grouped-subtask: $T1_2) isa subtask-group-membership;
+(containing-subtask-group: $SG1, grouped-subtask: $T1_3) isa subtask-group-membership;
+(containing-subtask-group: $SG1, grouped-subtask: $T1_4) isa subtask-group-membership;
+(containing-subtask-group: $SG1, grouped-subtask: $T1_5) isa subtask-group-membership;
+(containing-subtask-group: $SG2, grouped-subtask: $T2_1) isa subtask-group-membership;
+(containing-subtask-group: $SG2, grouped-subtask: $T2_2) isa subtask-group-membership;
+(containing-subtask-group: $SG3, grouped-subtask: $T3_1) isa subtask-group-membership;
+(containing-subtask-group: $SG3, grouped-subtask: $T3_2) isa subtask-group-membership;
+(containing-subtask-group: $SG4, grouped-subtask: $T4_1) isa subtask-group-membership;
+(containing-subtask-group: $SG4, grouped-subtask: $T4_2) isa subtask-group-membership;
+(containing-subtask-group: $SG5, grouped-subtask: $T5_1) isa subtask-group-membership;
+(containing-subtask-group: $SG5, grouped-subtask: $T5_2) isa subtask-group-membership;
+(containing-subtask-group: $SG5, grouped-subtask: $T5_3) isa subtask-group-membership;
+(containing-subtask-group: $SG6, grouped-subtask: $T6_1) isa subtask-group-membership;
+(containing-subtask-group: $SG6, grouped-subtask: $T6_2) isa subtask-group-membership;
+(containing-subtask-group: $SG6, grouped-subtask: $T6_3) isa subtask-group-membership;
+(containing-subtask-group: $SG7, grouped-subtask: $T7_1) isa subtask-group-membership;
+(containing-subtask-group: $SG7, grouped-subtask: $T7_2) isa subtask-group-membership;
+(containing-subtask-group: $SG8, grouped-subtask: $T8_1) isa subtask-group-membership;
+(containing-subtask-group: $SG8, grouped-subtask: $T8_2) isa subtask-group-membership;
+(containing-subtask-group: $SG8, grouped-subtask: $T8_3) isa subtask-group-membership;
+(containing-subtask-group: $SG8, grouped-subtask: $T8_4) isa subtask-group-membership;
+(containing-subtask-group: $SG8, grouped-subtask: $T8_5) isa subtask-group-membership;
+
+# ─── SUBTASK DEPENDENCIES (60 edges) ───
+
+# SG1 chain
+(depending-subtask: $T1_2, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_3, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_3, required-subtask: $T1_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_4, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_4, required-subtask: $T1_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_4, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T1_5, required-subtask: $T1_4) isa subtask-dependency, has dep-type "hard";
+
+# SG2
+(depending-subtask: $T2_1, required-subtask: $T1_5) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T2_2, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+
+# SG3
+(depending-subtask: $T3_1, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T3_1, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T3_2, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T3_2, required-subtask: $T2_2) isa subtask-dependency, has dep-type "hard";
+
+# SG4
+(depending-subtask: $T4_1, required-subtask: $T1_5) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T4_1, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T4_2, required-subtask: $T1_4) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T4_2, required-subtask: $T1_5) isa subtask-dependency, has dep-type "hard";
+
+# SG5 — T5.1 depends on all T1.1-T4.2
+(depending-subtask: $T5_1, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T1_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T1_4) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T1_5) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T2_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T3_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T3_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T4_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_1, required-subtask: $T4_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_2, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_2, required-subtask: $T5_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_3, required-subtask: $T5_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T5_3, required-subtask: $T5_2) isa subtask-dependency, has dep-type "hard";
+
+# SG6
+(depending-subtask: $T6_1, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+# T6.2 depends on T1.1-T4.2
+(depending-subtask: $T6_2, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T1_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T1_4) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T1_5) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T2_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T3_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T3_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T4_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T6_2, required-subtask: $T4_2) isa subtask-dependency, has dep-type "hard";
+# T6.3 is continuous — no hard dependencies
+
+# SG7
+(depending-subtask: $T7_1, required-subtask: $T4_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T7_2, required-subtask: $T6_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T7_2, required-subtask: $T7_1) isa subtask-dependency, has dep-type "hard";
+
+# SG8
+(depending-subtask: $T8_1, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_1, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_2, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_2, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_2, required-subtask: $T8_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_3, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_3, required-subtask: $T1_3) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_3, required-subtask: $T4_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_4, required-subtask: $T1_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_4, required-subtask: $T1_2) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_4, required-subtask: $T3_1) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_5, required-subtask: $T1_4) isa subtask-dependency, has dep-type "hard";
+(depending-subtask: $T8_5, required-subtask: $T2_1) isa subtask-dependency, has dep-type "hard";
+
+# ─── SUBTASK → FAILURE MODE LINKS ───
+
+(fm-subtask: $T1_1, fm-entity: $FM1) isa subtask-has-fm;
+(fm-subtask: $T1_2, fm-entity: $FM2) isa subtask-has-fm;
+(fm-subtask: $T1_3, fm-entity: $FM3) isa subtask-has-fm;
+(fm-subtask: $T1_4, fm-entity: $FM4) isa subtask-has-fm;
+(fm-subtask: $T1_5, fm-entity: $FM5) isa subtask-has-fm;
+(fm-subtask: $T2_1, fm-entity: $FM6) isa subtask-has-fm;
+(fm-subtask: $T2_2, fm-entity: $FM7) isa subtask-has-fm;
+(fm-subtask: $T3_1, fm-entity: $FM8) isa subtask-has-fm;
+(fm-subtask: $T3_2, fm-entity: $FM9) isa subtask-has-fm;
+(fm-subtask: $T4_1, fm-entity: $FM10) isa subtask-has-fm;
+(fm-subtask: $T4_2, fm-entity: $FM11) isa subtask-has-fm;
+(fm-subtask: $T5_1, fm-entity: $FM12) isa subtask-has-fm;
+(fm-subtask: $T5_2, fm-entity: $FM13) isa subtask-has-fm;
+(fm-subtask: $T5_3, fm-entity: $FM14) isa subtask-has-fm;
+(fm-subtask: $T6_1, fm-entity: $FM15) isa subtask-has-fm;
+(fm-subtask: $T6_2, fm-entity: $FM16) isa subtask-has-fm;
+(fm-subtask: $T6_3, fm-entity: $FM17) isa subtask-has-fm;
+(fm-subtask: $T7_1, fm-entity: $FM18) isa subtask-has-fm;
+(fm-subtask: $T7_2, fm-entity: $FM19) isa subtask-has-fm;
+(fm-subtask: $T8_1, fm-entity: $FM20) isa subtask-has-fm;
+(fm-subtask: $T8_2, fm-entity: $FM21) isa subtask-has-fm;
+(fm-subtask: $T8_3, fm-entity: $FM22) isa subtask-has-fm;
+(fm-subtask: $T8_4, fm-entity: $FM23) isa subtask-has-fm;
+(fm-subtask: $T8_5, fm-entity: $FM24) isa subtask-has-fm;

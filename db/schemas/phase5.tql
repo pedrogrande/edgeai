@@ -1,0 +1,135 @@
+# ─── PHASE 5: EVENT STORMING ───
+# Additive define — extends Phase 4 schema
+#
+# Uses abstract base type pattern: pipeline-event → domain-event + failure-event
+# TypeDB v3.10.1 does NOT support `abstract` keyword — pipeline-event is concrete
+# but should never be instantiated directly. domain-event and failure-event inherit
+# its attributes via `sub pipeline-event`.
+#
+# Corrections vs source spec (phase-5-event-storming.md):
+#   1. v2 → v3 syntax (entity/relation/attribute keywords, no sub on kind)
+#   2. value long → value integer (recovery-max-attempts)
+#   3. Role name conflicts resolved:
+#      - failure-recovery: role 'failure-event' → 'failed-event' (entity type clash)
+#      - failure-recovery: role 'recovery-path' → 'recovery-instance' (entity type clash)
+#      - failure-system-trigger: role 'failure-event' → 'triggered-failure' (entity type clash)
+#      - failure-system-trigger: role 'system-trigger' → 'sys-trigger-instance' (entity type clash)
+#   4. @key added to event-id, recovery-id, sys-trigger-id
+#   5. v2 plays stubs on entity declarations → v3 plays relation:role at block end
+#   6. pipeline-event plays event-sequence:preceding-event AND :succeeding-event (both roles)
+#   7. Missing relations added: subtask-trigger, subtask-emits, failure-interrupts
+#   8. sys-trigger-name kept (used in ST table)
+#   9. event-condition AND trigger-condition both declared (different scopes)
+#  10. failure-severity, failure-cascade, failure-detection-method attributes added
+#  11. Abstract keyword not supported in v3.10.1 — pipeline-event is concrete but should
+#      never be instantiated directly (domain-event and failure-event are the real types)
+#  12. domain-event plays subtask-trigger:trigger-event AND subtask-emits:emitted-event
+#      (not just one — events both trigger and are produced by subtasks)
+
+define
+
+# ── ABSTRACT BASE (concrete in TypeDB, but never instantiated directly) ──
+
+entity pipeline-event,
+    owns event-id @key,
+    owns event-name,
+    owns event-description,
+    owns event-source;
+
+# ── TRIGGER & MILESTONE EVENTS ──
+
+entity domain-event,
+    sub pipeline-event,
+    owns event-type,
+    owns event-payload-schema,
+    owns event-condition @card(0..);
+
+# ── FAILURE EVENTS ──
+
+entity failure-event,
+    sub pipeline-event,
+    owns failure-severity,
+    owns failure-cascade @card(0..),
+    owns failure-detection-method @card(0..);
+
+# ── RECOVERY PATHS ──
+
+entity recovery-path,
+    owns recovery-id @key,
+    owns recovery-type,
+    owns recovery-actor,
+    owns recovery-max-attempts,
+    owns recovery-description;
+
+# ── SYSTEM TRIGGERS ──
+
+entity system-trigger,
+    owns sys-trigger-id @key,
+    owns sys-trigger-name,
+    owns sys-trigger-condition,
+    owns sys-trigger-action @card(0..),
+    owns sys-trigger-enforcement;
+
+# ── RELATIONS ──
+
+# Domain event triggers a subtask
+relation subtask-trigger,
+    relates triggered-subtask,
+    relates trigger-event,
+    owns trigger-condition;
+
+# Subtask emits a domain event on completion
+relation subtask-emits,
+    relates emitting-subtask,
+    relates emitted-event;
+
+# Event sequencing (both domain-events and failure-events can participate)
+relation event-sequence,
+    relates preceding-event,
+    relates succeeding-event,
+    owns sequence-condition;
+
+# Failure event interrupts a subtask
+relation failure-interrupts,
+    relates interrupted-subtask,
+    relates interrupting-failure;
+
+# Failure event has a recovery path
+relation failure-recovery,
+    relates failed-event,
+    relates recovery-instance;
+
+# Failure event triggers a system trigger
+relation failure-system-trigger,
+    relates triggered-failure,
+    relates sys-trigger-instance;
+
+# ── ROLE PLAYERS ──
+
+pipeline-event plays event-sequence:preceding-event;
+pipeline-event plays event-sequence:succeeding-event;
+domain-event plays subtask-trigger:trigger-event;
+domain-event plays subtask-emits:emitted-event;
+failure-event plays failure-interrupts:interrupting-failure;
+failure-event plays failure-recovery:failed-event;
+failure-event plays failure-system-trigger:triggered-failure;
+recovery-path plays failure-recovery:recovery-instance;
+system-trigger plays failure-system-trigger:sys-trigger-instance;
+subtask plays subtask-trigger:triggered-subtask;
+subtask plays subtask-emits:emitting-subtask;
+subtask plays failure-interrupts:interrupted-subtask;
+
+# ── ATTRIBUTE TYPES (new ones not already in schema) ──
+
+attribute failure-severity, value string;
+attribute failure-cascade, value string;
+attribute failure-detection-method, value string;
+attribute trigger-condition, value string;
+attribute sequence-condition, value string;
+attribute recovery-type, value string;
+attribute recovery-actor, value string;
+attribute recovery-max-attempts, value integer;
+attribute sys-trigger-name, value string;
+attribute sys-trigger-condition, value string;
+attribute sys-trigger-action, value string;
+attribute sys-trigger-enforcement, value string;

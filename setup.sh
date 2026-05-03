@@ -115,11 +115,11 @@ fi
 ok "Schema applied"
 
 # ── 9. Seed the database ─────────────────────────────────────────────────────
-info "Seeding Agno docs data..."
+# info "Seeding Agno docs data..."
 
-python3 db/seed_agno_docs.py
+# python3 db/seed_agno_docs.py
 
-ok "Database seeded"
+# ok "Database seeded"
 
 # ── 10. Wait for MCP Toolbox to be ready ────────────────────────────────────
 info "Waiting for MCP Toolbox to be ready..."

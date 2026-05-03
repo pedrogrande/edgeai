@@ -1,0 +1,221 @@
+# ─── PHASE 6: SYSTEM ARCHITECTURE ───
+# Additive define — extends Phase 5 schema
+#
+# Corrections vs source spec (phase-6-system-architecture.md):
+#   1. v2 → v3 syntax (entity/relation/attribute keywords, no sub on kind)
+#   2. value long → value integer (10 attributes: stage-ordinal, oc-fallback-tier-limit,
+#      fmea-severity, fmea-occurrence, fmea-detection, fmea-rpn, fmea-residual-rpn,
+#      tt-usage-count, ft-tier, ft-max-attempts)
+#   3. Role name conflicts resolved:
+#      - orchestration-has-decision: role 'orchestration-decision' → 'od-record' (entity type clash)
+#      - template-has-instance: role 'template-instance' → 'ti-record' (entity type clash)
+#      - subtask-has-fallback: role 'fallback-tier' → 'ft-record' (entity type clash)
+#   4. Dangling plays removed (no corresponding relation defined):
+#      - oc-defines-orchestration → replaced with orchestration-has-decision:od-orchestration
+#      - od-for-orchestration → replaced with orchestration-has-decision:od-record
+#      - cc-defines-composition → no composition relation exists, omit
+#      - fmea-for-subtask → no FMEA-subtask relation (uses string refs), omit
+#      - ti-of-type → replaced with template-has-instance:ti-record
+#      - ti-for-subtask → no relation (uses ti-subtask-ref string), omit
+#      - ft-for-subtask → replaced with subtask-has-fallback:ft-record
+#   5. @key added to all ID attributes: stage-id, oc-id, od-id, fmea-id, tt-id, ti-id, cc-id, ft-id
+#   6. stage-parallel kept as value boolean (TypeDB v3 supports it)
+#   7. ft-preserve-state kept as value string per spec (semantically boolean but stored as string)
+#   8. stage-contains role names: stage-containing + stage-contained-subtask (from spec)
+#   9. stage-sequence role names: preceding-stage + succeeding-stage (from spec)
+
+define
+
+# ── ATTRIBUTE TYPES ──
+
+# Pipeline stage attributes
+attribute stage-id, value string;
+attribute stage-name, value string;
+attribute stage-description, value string;
+attribute stage-ordinal, value integer;
+attribute stage-gate-ref, value string;
+attribute stage-entry-event, value string;
+attribute stage-exit-event, value string;
+attribute stage-parallel, value boolean;
+
+# Orchestration config attributes
+attribute oc-id, value string;
+attribute oc-composition-type, value string;
+attribute oc-orchestration-pattern, value string;
+attribute oc-session-model, value string;
+attribute oc-state-sharing, value string;
+attribute oc-fallback-tier-limit, value integer;
+
+# Orchestration decision attributes
+attribute od-id, value string;
+attribute od-question, value string;
+attribute od-chosen, value string;
+attribute od-reason, value string;
+attribute od-alternatives, value string;
+
+# FMEA attributes
+attribute fmea-id, value string;
+attribute fmea-subtask-ref, value string;
+attribute fmea-failure-ref, value string;
+attribute fmea-event-ref, value string;
+attribute fmea-effect, value string;
+attribute fmea-severity, value integer;
+attribute fmea-occurrence, value integer;
+attribute fmea-detection, value integer;
+attribute fmea-rpn, value integer;
+attribute fmea-mitigation, value string;
+attribute fmea-mitigation-type, value string;
+attribute fmea-residual-rpn, value integer;
+
+# Template type attributes
+attribute tt-id, value string;
+attribute tt-name, value string;
+attribute tt-description, value string;
+attribute tt-schema-ref, value string;
+attribute tt-usage-count, value integer;
+
+# Template instance attributes
+attribute ti-id, value string;
+attribute ti-template-type-ref, value string;
+attribute ti-subtask-ref, value string;
+attribute ti-specialisation, value string;
+attribute ti-schema, value string;
+
+# Composition config attributes
+attribute cc-id, value string;
+attribute cc-type, value string;
+attribute cc-justification, value string;
+attribute cc-agno-mapping, value string;
+attribute cc-steps, value string;
+attribute cc-step-choices, value string;
+attribute cc-session-config, value string;
+
+# Fallback tier attributes
+attribute ft-id, value string;
+attribute ft-tier, value integer;
+attribute ft-name, value string;
+attribute ft-trigger, value string;
+attribute ft-action, value string;
+attribute ft-max-attempts, value integer;
+attribute ft-preserve-state, value string;
+
+# ── ENTITY TYPES ──
+
+# Pipeline stage — gated checkpoint in the 9-stage pipeline
+entity pipeline-stage,
+    owns stage-id @key,
+    owns stage-name,
+    owns stage-description,
+    owns stage-ordinal,
+    owns stage-gate-ref @card(0..),
+    owns stage-entry-event,
+    owns stage-exit-event,
+    owns stage-parallel;
+
+# Orchestration configuration — how the pipeline is orchestrated
+entity orchestration-config,
+    owns oc-id @key,
+    owns oc-composition-type,
+    owns oc-orchestration-pattern @card(0..),
+    owns oc-session-model,
+    owns oc-state-sharing,
+    owns oc-fallback-tier-limit;
+
+# Orchestration decision — key architectural decisions
+entity orchestration-decision,
+    owns od-id @key,
+    owns od-question,
+    owns od-chosen,
+    owns od-reason @card(0..),
+    owns od-alternatives @card(0..);
+
+# FMEA entry — failure mode effects analysis
+entity fmea-entry,
+    owns fmea-id @key,
+    owns fmea-subtask-ref @card(0..),
+    owns fmea-failure-ref @card(0..),
+    owns fmea-event-ref @card(0..),
+    owns fmea-effect @card(0..),
+    owns fmea-severity,
+    owns fmea-occurrence,
+    owns fmea-detection,
+    owns fmea-rpn,
+    owns fmea-mitigation @card(0..),
+    owns fmea-mitigation-type @card(0..),
+    owns fmea-residual-rpn;
+
+# Template type — one of 7 template categories
+entity template-type,
+    owns tt-id @key,
+    owns tt-name,
+    owns tt-description,
+    owns tt-schema-ref @card(0..),
+    owns tt-usage-count;
+
+# Template instance — a specific specialisation of a template type for a subtask
+entity template-instance,
+    owns ti-id @key,
+    owns ti-template-type-ref,
+    owns ti-subtask-ref,
+    owns ti-specialisation,
+    owns ti-schema;
+
+# Composition config — workflow composition validated against Agno
+entity composition-config,
+    owns cc-id @key,
+    owns cc-type,
+    owns cc-justification,
+    owns cc-agno-mapping,
+    owns cc-steps @card(0..),
+    owns cc-step-choices @card(0..),
+    owns cc-session-config;
+
+# Fallback tier — per-subtask failure recovery tier
+entity fallback-tier,
+    owns ft-id @key,
+    owns ft-tier,
+    owns ft-name,
+    owns ft-trigger @card(0..),
+    owns ft-action @card(0..),
+    owns ft-max-attempts,
+    owns ft-preserve-state;
+
+# ── RELATION TYPES ──
+
+# Stage contains subtasks
+relation stage-contains,
+    relates stage-containing,
+    relates stage-contained-subtask;
+
+# Stage sequencing (S1 → S2 → ... → S9)
+relation stage-sequence,
+    relates preceding-stage,
+    relates succeeding-stage;
+
+# Orchestration config has decisions
+relation orchestration-has-decision,
+    relates od-orchestration,
+    relates od-record;
+
+# Template type has instances
+relation template-has-instance,
+    relates tt-type,
+    relates ti-record;
+
+# Subtask has fallback tier
+relation subtask-has-fallback,
+    relates fallback-subtask,
+    relates ft-record;
+
+# ── ROLE PLAYERS ──
+
+pipeline-stage plays stage-contains:stage-containing;
+subtask plays stage-contains:stage-contained-subtask;
+pipeline-stage plays stage-sequence:preceding-stage;
+pipeline-stage plays stage-sequence:succeeding-stage;
+orchestration-config plays orchestration-has-decision:od-orchestration;
+orchestration-decision plays orchestration-has-decision:od-record;
+template-type plays template-has-instance:tt-type;
+template-instance plays template-has-instance:ti-record;
+subtask plays subtask-has-fallback:fallback-subtask;
+fallback-tier plays subtask-has-fallback:ft-record;

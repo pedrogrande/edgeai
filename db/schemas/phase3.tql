@@ -1,0 +1,96 @@
+# ─── PHASE 3: TASK DECOMPOSITION ───
+# TypeQL Schema for TypeDB v3 — additive define on Phase 0+1
+#
+# Corrections vs spec:
+# 1. All `sub entity/relation/attribute` → v3 `entity/relation/attribute`
+# 2. Added missing `relation subtask-group-membership` (spec referenced roles without a relation)
+# 3. `subtask-has-fm` role names: `fm-subtask` + `fm-entity` (was `subtask-with-fm` + `failure-mode` — entity/role conflict)
+# 4. `subtask plays subtask-has-failure-mode` → `subtask plays subtask-has-fm:fm-subtask` (wrong role name)
+# 5. `failure-mode plays fm-for-subtask` → `failure-mode plays subtask-has-fm:fm-entity` (role didn't exist)
+# 6. All `plays` moved to standalone role-players section in v3 style
+# 7. Stub `entity input-requirement` added for Phase 2 compatibility
+
+define
+
+# ─── NEW ATTRIBUTES ───
+
+attribute subtask-id, value string;
+attribute subtask-name, value string;
+attribute subtask-description, value string;
+attribute cognitive-type, value string;
+attribute actor-hint, value string;
+attribute subtask-order, value integer;
+attribute subgroup-id, value string;
+attribute subgroup-name, value string;
+attribute dep-type, value string;
+attribute fm-id, value string;
+attribute fm-name, value string;
+attribute fm-description, value string;
+attribute fm-invert-boundary, value string;
+attribute input-req-id, value string;
+
+# ─── NEW ENTITIES ───
+
+entity subtask,
+    owns subtask-id @key,
+    owns subtask-name,
+    owns subtask-description,
+    owns cognitive-type,
+    owns actor-hint @card(0..),
+    owns subtask-order;
+
+entity subtask-group,
+    owns subgroup-id @key,
+    owns subgroup-name;
+
+entity failure-mode,
+    owns fm-id @key,
+    owns fm-name,
+    owns fm-description,
+    owns fm-invert-boundary;
+
+# Stub for Phase 2 — full input-requirement schema defined when Phase 2 is applied
+entity input-requirement,
+    owns input-req-id @key;
+
+# ─── NEW RELATIONS ───
+
+# Groups subtasks — resolves missing relation (spec referenced group-containing-subtask role without a relation)
+relation subtask-group-membership,
+    relates containing-subtask-group,
+    relates grouped-subtask;
+
+# Dependency chain between subtasks
+relation subtask-dependency,
+    relates depending-subtask,
+    relates required-subtask,
+    owns dep-type;
+
+# Links subtask to the design-output it produces
+relation subtask-produces,
+    relates producing-subtask,
+    relates produced-output;
+
+# Links subtask to the input-requirement it needs (Phase 2 data)
+relation subtask-requires-req,
+    relates requiring-subtask,
+    relates required-input;
+
+# Links subtask to its failure mode
+# Note: role names use fm-subtask/fm-entity to avoid conflict with entity type name `failure-mode`
+relation subtask-has-fm,
+    relates fm-subtask,
+    relates fm-entity;
+
+# ─── ROLE PLAYERS ───
+
+subtask-group plays subtask-group-membership:containing-subtask-group;
+subtask plays subtask-group-membership:grouped-subtask;
+subtask plays subtask-dependency:depending-subtask;
+subtask plays subtask-dependency:required-subtask;
+subtask plays subtask-produces:producing-subtask;
+design-output plays subtask-produces:produced-output;
+subtask plays subtask-requires-req:requiring-subtask;
+input-requirement plays subtask-requires-req:required-input;
+subtask plays subtask-has-fm:fm-subtask;
+failure-mode plays subtask-has-fm:fm-entity;

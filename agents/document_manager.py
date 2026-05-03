@@ -77,8 +77,10 @@ from textwrap import dedent
 import yaml
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
+from agno.knowledge.chunking.markdown import MarkdownChunking
 from agno.knowledge.embedder.openai import OpenAIEmbedder
 from agno.knowledge.knowledge import Knowledge
+from agno.knowledge.reader.markdown_reader import MarkdownReader
 from agno.models.ollama import Ollama
 from agno.tools.file import FileTools
 from agno.tools.local_file_system import LocalFileSystemTools
@@ -89,13 +91,9 @@ from agno.vectordb.pgvector import PgVector
 # Configuration
 # ---------------------------------------------------------------------------
 # Staging: where domain agents drop files for processing
-STAGING_BASE_DIR = Path(
-    os.environ.get("STAGING_BASE_DIR", "artifacts")
-)
+STAGING_BASE_DIR = Path(os.environ.get("STAGING_BASE_DIR", "artifacts"))
 # Archive: where processed files are moved (cold storage backup)
-ARCHIVE_BASE_DIR = Path(
-    os.environ.get("ARCHIVE_BASE_DIR", "artifacts/_archive")
-)
+ARCHIVE_BASE_DIR = Path(os.environ.get("ARCHIVE_BASE_DIR", "artifacts/_archive"))
 
 # Supported artifact types — must match AI Assisted Learning Designer
 ARTIFACT_TYPES = [
@@ -159,6 +157,18 @@ knowledge = Knowledge(
     vector_db=ai_learning_vector_db,
 )
 
+# Markdown reader with heading-based chunking for artifact indexing.
+# split_on_headings=2 splits at H1/H2 boundaries, keeping H3-H6 content
+# together with their parent H2. This preserves semantic coherence — each
+# chunk is a complete section rather than an arbitrary fragment.
+# For most agent artifacts (~1500 words), the entire document fits in one
+# chunk. Longer documents split naturally at section boundaries.
+md_reader = MarkdownReader(
+    name="Artifact Markdown Reader",
+    chunking_strategy=MarkdownChunking(split_on_headings=2),
+)
+
+
 # ---------------------------------------------------------------------------
 # Helper: Build front matter for markdown files
 # ---------------------------------------------------------------------------
@@ -196,6 +206,7 @@ def _build_front_matter(
 # ---------------------------------------------------------------------------
 # Custom Tools
 # ---------------------------------------------------------------------------
+
 
 def scan_staging_directory() -> str:
     """
@@ -312,6 +323,15 @@ def process_file(file_path: str) -> str:
     # Write back the validated file
     source_path.write_text(new_content, encoding="utf-8")
 
+    # Index content into the domain's PgVector knowledge base
+    # Uses MarkdownChunking (split_on_headings=2) to split at H1/H2
+    # boundaries, preserving semantic coherence of each section.
+    try:
+        knowledge.ainsert_sync(path=str(source_path), reader=md_reader)
+        indexing_status = "indexed"
+    except Exception as e:
+        indexing_status = f"indexing failed: {e}"
+
     # Determine domain and archive path
     # Parse domain from file path (first segment after staging base)
     path_parts = Path(file_path).parts
@@ -332,7 +352,7 @@ def process_file(file_path: str) -> str:
         f"   Type: {artifact_type} | Domain: {domain}\n"
         f"   Archive: {archive_rel_path}\n"
         f"   Front matter applied: True\n"
-        f"   Vector indexed: via knowledge base\n"
+        f"   Vector indexed: {indexing_status}\n"
         f"   Status: processed"
     )
 
@@ -552,9 +572,9 @@ document_manager = Agent(
         # Step-by-step front matter validation
         ReasoningTools(add_instructions=True),
         # Custom processing tools
-        scan_staging_directory,     # Find unprocessed files
-        process_file,               # Core processing pipeline
-        get_processing_stats,       # Pipeline health and statistics
+        scan_staging_directory,  # Find unprocessed files
+        process_file,  # Core processing pipeline
+        get_processing_stats,  # Pipeline health and statistics
     ],
     # --- Memory ---
     # Agent memory only — infrastructure agent, no per-user preferences
